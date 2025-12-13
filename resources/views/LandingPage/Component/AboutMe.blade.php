@@ -1,5 +1,5 @@
 {{-- resources/views/LandingPage/Component/AboutMe.blade.php --}}
-<div class="max-w-6xl mx-auto my-20">
+<div id="tentang" class="max-w-6xl mx-auto py-20">
     <style>
         .text-heading {
             font-size: 40px;

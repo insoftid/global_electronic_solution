@@ -38,7 +38,7 @@
                     <ul class="space-y-2 text-md text-white">
                         <li><a href="/tentang" class="hover:underline">Tentang Kami</a></li>
                         <li><a href="/portfolio" class="hover:underline">Portfolio</a></li>
-                        <li><a href="/kontak" class="hover:underline">Kontak</a></li>
+                        <li><a href="/contact" class="hover:underline">Kontak</a></li>
                     </ul>
                 </div>
 

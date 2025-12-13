@@ -29,9 +29,9 @@
 
 			<!-- Right: nav links -->
 			<div class="hidden md:flex items-center space-x-6">
-				<a href="/tentang" class="nav-link text-md text-black hover:text-primary {{ (isset($active) && ( (is_array($active) && in_array('tentang',$active)) || $active === 'tentang')) ? 'active server-active' : '' }}">Tentang Kami</a>
+				<a href="/#tentang" class="nav-link text-md text-black hover:text-primary {{ (isset($active) && ( (is_array($active) && in_array('tentang',$active)) || $active === 'tentang')) ? 'active server-active' : '' }}">Tentang Kami</a>
 				<a href="/portfolio" class="nav-link text-md text-black hover:text-primary {{ (isset($active) && ( (is_array($active) && in_array('portofolio',$active)) || $active === 'portofolio')) ? 'active server-active' : '' }}">Portofolio</a>
-				<a href="/kontak" class="nav-link text-md text-black hover:text-primary {{ (isset($active) && ( (is_array($active) && in_array('kontak',$active)) || $active === 'kontak')) ? 'active server-active' : '' }}">Kontak</a>
+				<a href="/contact" class="nav-link text-md text-black hover:text-primary {{ (isset($active) && ( (is_array($active) && in_array('kontak',$active)) || $active === 'kontak')) ? 'active server-active' : '' }}">Kontak</a>
 			</div>
 
 			<!-- Mobile menu button -->
@@ -49,9 +49,9 @@
 	<div id="nav-menu" class="md:hidden hidden border-t border-gray-100">
 		<!-- Use flex-col so items stack vertically on mobile -->
 	<div class="px-4 pt-2 pb-3 flex flex-col items-start space-y-3">
-			<a href="/tentang" class="nav-link inline-block text-md text-black hover:text-primary {{ (isset($active) && ( (is_array($active) && in_array('tentang',$active)) || $active === 'tentang')) ? 'active server-active' : '' }}">Tentang Kami</a>
+			<a href="#tentang" class="nav-link inline-block text-md text-black hover:text-primary {{ (isset($active) && ( (is_array($active) && in_array('tentang',$active)) || $active === 'tentang')) ? 'active server-active' : '' }}">Tentang Kami</a>
 			<a href="/portfolio" class="nav-link inline-block text-md text-black hover:text-primary {{ (isset($active) && ( (is_array($active) && in_array('portofolio',$active)) || $active === 'portofolio')) ? 'active server-active' : '' }}">Portofolio</a>
-			<a href="/kontak" class="nav-link inline-block text-md text-black hover:text-primary {{ (isset($active) && ( (is_array($active) && in_array('kontak',$active)) || $active === 'kontak')) ? 'active server-active' : '' }}">Kontak</a>
+			<a href="/contact" class="nav-link inline-block text-md text-black hover:text-primary {{ (isset($active) && ( (is_array($active) && in_array('kontak',$active)) || $active === 'kontak')) ? 'active server-active' : '' }}">Kontak</a>
 		</div>
 	</div>
 
@@ -112,7 +112,81 @@
 				});
 			};
 
-			document.addEventListener('DOMContentLoaded', setActiveFromLocation);
+			// Smooth scroll behavior for nav links that point to anchors on the same page
+			const enableSmoothScroll = () => {
+				const links = document.querySelectorAll('.nav-link');
+				links.forEach(a => {
+					const href = a.getAttribute('href') || '';
+					if (!href.includes('#')) return; // not an anchor link
+					a.addEventListener('click', function(e){
+						// split path and hash
+						const parts = href.split('#');
+						const pathPart = parts[0] || '/';
+						const hash = parts[1] ? '#' + parts[1] : '';
+						const currentPath = window.location.pathname || '/';
+						// If the link points to the root and user is on another page, navigate to '/'
+						// first and store the desired hash so the landing page can scroll after load.
+						if ((pathPart === '' || pathPart === '/') && currentPath !== '/') {
+							e.preventDefault();
+							if (hash) sessionStorage.setItem('scrollAfterNavigate', hash);
+							window.location.href = '/';
+							return;
+						}
+						// If link points to some other page, let browser navigate normally
+						if (pathPart !== '' && pathPart !== '/' && pathPart !== currentPath) return;
+						// same-page anchor -> smooth scroll
+						e.preventDefault();
+						if (!hash) return;
+						const target = document.querySelector(hash);
+						const navHeight = navbar ? navbar.offsetHeight : 0;
+						if (target) {
+							const top = target.getBoundingClientRect().top + window.scrollY - navHeight - 8;
+							window.scrollTo({ top, behavior: 'smooth' });
+							// close mobile menu if open
+							if (menu && !menu.classList.contains('hidden')) menu.classList.add('hidden');
+							// update active classes client-side
+							links.forEach(x => x.classList.remove('active'));
+							a.classList.add('active');
+							// update URL hash without jumping
+							history.pushState(null, '', hash);
+						} else {
+							// if target not found, still update hash so server-side routing or other logic can handle it
+							history.pushState(null, '', hash);
+						}
+					});
+				});
+			};
+
+			document.addEventListener('DOMContentLoaded', () => {
+				setActiveFromLocation();
+				enableSmoothScroll();
+				// If navigation from another page stored a pending hash, perform smooth scroll now
+				const pending = sessionStorage.getItem('scrollAfterNavigate');
+				const doScrollToHash = (hash) => {
+					if (!hash) return;
+					const target = document.querySelector(hash);
+					const navHeight = navbar ? navbar.offsetHeight : 0;
+					if (target) {
+						// small timeout to allow layout and any images to settle
+						setTimeout(() => {
+							const top = target.getBoundingClientRect().top + window.scrollY - navHeight - 8;
+							window.scrollTo({ top, behavior: 'smooth' });
+							// mark active link client-side
+							const links = document.querySelectorAll('.nav-link');
+							links.forEach(x => x.classList.remove('active'));
+							const activeLink = Array.from(links).find(l => (l.getAttribute('href')||'').includes(hash));
+							if (activeLink) activeLink.classList.add('active');
+						}, 250);
+					}
+				};
+				if (pending) {
+					doScrollToHash(pending);
+					sessionStorage.removeItem('scrollAfterNavigate');
+				} else if (window.location.hash) {
+					// direct load with hash -> smooth scroll as well
+					doScrollToHash(window.location.hash);
+				}
+			});
 			window.addEventListener('hashchange', setActiveFromLocation);
 
 		})();
