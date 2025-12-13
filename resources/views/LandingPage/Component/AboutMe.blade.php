@@ -64,10 +64,10 @@
         </div>
 
         <div class="mx-10 w-1/3">
-            <div class="w-full overflow-hidden rounded-md">
+            <div class="w-full overflow-hidden rounded-t-xl">
                 <img src="{{ asset('img/bghero.png') }}" alt="work-1" class="w-full h-72 object-cover" />
             </div>
-            <div class="w-full overflow-hidden rounded-md">
+            <div class="w-full overflow-hidden rounded-b-xl">
                 <img src="{{ asset('img/bghero.png') }}" alt="work-2" class="w-full h-72 object-cover" />
             </div>
         </div>

@@ -30,7 +30,7 @@
 			<!-- Right: nav links -->
 			<div class="hidden md:flex items-center space-x-6">
 				<a href="/tentang" class="nav-link text-md text-black hover:text-primary {{ (isset($active) && ( (is_array($active) && in_array('tentang',$active)) || $active === 'tentang')) ? 'active server-active' : '' }}">Tentang Kami</a>
-				<a href="/portofolio" class="nav-link text-md text-black hover:text-primary {{ (isset($active) && ( (is_array($active) && in_array('portofolio',$active)) || $active === 'portofolio')) ? 'active server-active' : '' }}">Portofolio</a>
+				<a href="/portfolio" class="nav-link text-md text-black hover:text-primary {{ (isset($active) && ( (is_array($active) && in_array('portofolio',$active)) || $active === 'portofolio')) ? 'active server-active' : '' }}">Portofolio</a>
 				<a href="/kontak" class="nav-link text-md text-black hover:text-primary {{ (isset($active) && ( (is_array($active) && in_array('kontak',$active)) || $active === 'kontak')) ? 'active server-active' : '' }}">Kontak</a>
 			</div>
 
@@ -50,7 +50,7 @@
 		<!-- Use flex-col so items stack vertically on mobile -->
 	<div class="px-4 pt-2 pb-3 flex flex-col items-start space-y-3">
 			<a href="/tentang" class="nav-link inline-block text-md text-black hover:text-primary {{ (isset($active) && ( (is_array($active) && in_array('tentang',$active)) || $active === 'tentang')) ? 'active server-active' : '' }}">Tentang Kami</a>
-			<a href="/portofolio" class="nav-link inline-block text-md text-black hover:text-primary {{ (isset($active) && ( (is_array($active) && in_array('portofolio',$active)) || $active === 'portofolio')) ? 'active server-active' : '' }}">Portofolio</a>
+			<a href="/portfolio" class="nav-link inline-block text-md text-black hover:text-primary {{ (isset($active) && ( (is_array($active) && in_array('portofolio',$active)) || $active === 'portofolio')) ? 'active server-active' : '' }}">Portofolio</a>
 			<a href="/kontak" class="nav-link inline-block text-md text-black hover:text-primary {{ (isset($active) && ( (is_array($active) && in_array('kontak',$active)) || $active === 'kontak')) ? 'active server-active' : '' }}">Kontak</a>
 		</div>
 	</div>

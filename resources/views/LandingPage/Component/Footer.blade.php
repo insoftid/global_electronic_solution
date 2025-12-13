@@ -15,7 +15,7 @@
                 <div>
                     <p class="mt-3 text-lg text-white max-w-md">Layanan servis elektronik profesional dengan teknologi modern dan transparansi penuh untuk kepuasan pelanggan yang terbaik.</p>
                 </div>
-                <div class="mt-4 flex items-center gap-4">
+                <div class="mt-7 flex items-center gap-4">
                     <a href="/instagram" target="_blank" rel="noopener noreferrer" class="inline-block bg-white rounded-full p-3 hover:bg-white/70 transition-colors duration-300">
                         <img src="{{ asset('img/ig.png') }}" alt="Instagram" class="w-7 h-7 object-contain" />
                     </a>
@@ -33,16 +33,16 @@
 
             <!-- Right: columns -->
             <div class="lg:w-1/2 flex flex-col sm:flex-row justify-end gap-14">
-                <div class="min-w-[140px]">
+                <div class="min-w-35">
                     <h4 class="font-semibold mb-5 text-xl">Perusahaan</h4>
                     <ul class="space-y-2 text-md text-white">
                         <li><a href="/tentang" class="hover:underline">Tentang Kami</a></li>
-                        <li><a href="/portofolio" class="hover:underline">Portofolio</a></li>
+                        <li><a href="/portfolio" class="hover:underline">Portfolio</a></li>
                         <li><a href="/kontak" class="hover:underline">Kontak</a></li>
                     </ul>
                 </div>
 
-                <div class="min-w-[200px]">
+                <div class="min-w-50">
                     <h4 class="font-semibold mb-5 text-xl">Kontak</h4>
                     <div class="text-md text-white space-y-2 max-w-2xs">
                         <div>0812-3456-7890</div>
