@@ -7,6 +7,10 @@ Route::get('/', function () {
     return view('LandingPage.Homepage');
 });
 
+Route::get('/portfolio', function () {
+    return view('LandingPage.Portfolio');
+});
+
 Route::get('/welcome', function () {
     return view('welcome');
 });
