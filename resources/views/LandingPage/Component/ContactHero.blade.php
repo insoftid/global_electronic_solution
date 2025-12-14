@@ -9,7 +9,7 @@
 
         <!-- Content -->
         <div class="relative z-10 max-w-6xl mx-auto h-full flex flex-col items-center justify-center px-6 text-center">
-            <h3 class="text-graytext font-medium text-2xl">Home <span class="text-[#D1D5DB]">/ Kontak</span></h3>
+            <h3 class="text-white/60 font-medium text-2xl">Home <span class="text-white">/ Kontak</span></h3>
             <h1 class="uppercase text-3xl sm:text-4xl md:text-5xl lg:text-[70px] text-white font-extrabold leading-tight tracking-tight max-w-4xl">
                 Hubungi  
                 <span class="text-secondary">Kami</span>
