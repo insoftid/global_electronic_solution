@@ -23,4 +23,12 @@ Route::get('/welcome', function () {
     return view('welcome');
 });
 
+// Route::get('/admin/login', function () {
+//     return view('Admin.Login');
+// });
+
+Route::get('/admin', function () {
+    return view('Admin.Dashboard');
+});
+
 
