@@ -1,6 +1,6 @@
-<aside class="w-64 min-h-screen bg-secondary text-white flex flex-col" aria-label="Primary">
+<aside id="admin-sidebar" class="w-64 min-h-screen bg-secondary text-white flex flex-col fixed top-0 left-0 transform -translate-x-full md:translate-x-0 transition-transform duration-200 ease-in-out z-40" aria-label="Primary">
 	<!-- Brand / Header -->
-	<header class="px-4 py-4 border-b border-white/50">
+	<header class="px-4 py-4 border-b border-gray-300">
 		<a href="/admin" class="flex items-center gap-3">
 			<img src="{{ asset('img/logo_cv_ges.png') }}" alt="logo CV GES" class="w-10 h-10 bg-white rounded-md object-contain p-1"/>
 			<span class="font-semibold">Admin Panel</span>
@@ -79,3 +79,6 @@
 	</footer>
 
 </aside>
+
+<!-- overlay for mobile when sidebar open -->
+<div id="sidebar-overlay" class="fixed inset-0 bg-black/40 hidden z-30 md:hidden" aria-hidden="true"></div>
