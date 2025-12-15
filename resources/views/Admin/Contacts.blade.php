@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
     @php
-    $title = 'Dashboard Admin';
-    $active = 'dashboard';
+    $title = 'Kontak Masuk';
+    $active = 'kontak';
     $slot = 5; // dummy variable to avoid blade error
     @endphp
 
@@ -14,7 +14,7 @@
             @include('Admin.Component.Header', ['title' => $title ?? 'Dashboard Admin'])
 
             <div class="px-5 pt-24 md:pl-72 bg-gray-100 min-h-screen">
-                @include('Admin.Component.DashSection')
+                @include('Admin.Component.ContactsSection')
             </div>
         </main>
     </section>

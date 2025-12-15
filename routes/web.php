@@ -31,4 +31,18 @@ Route::get('/admin', function () {
     return view('Admin.Dashboard');
 });
 
+Route::get('/admin/settings', function () {
+    return view('Admin.Settings');
+});
 
+Route::get('/admin/landing-page', function () {
+    return view('Admin.LandingPage');
+});
+
+Route::get('/admin/contacts', function () {
+    return view('Admin.Contacts');
+});
+
+Route::get('/admin/users', function () {
+    return view('Admin.Users');
+});
