@@ -5,7 +5,7 @@
             <ul class="mt-8 space-y-6">
                 <li class="flex gap-5 text-xl items-start">
                     <div class="bg-primary rounded-full p-3">
-                        <img src="img/alamat.png" alt="alamat" class="h-5 w-10 object-contain" />
+                        <img src="img/alamat.png" alt="alamat" class="h-4 md:h-5 w-10 object-contain" />
                     </div>
                     <p><span class="font-semibold">Alamat: </span>Perum JL. Beringin Asri, RT 06/RW 12, Wonosari, Kec. Ngalian, Kota Semarang, Jawa Tengah, 50244</p>
                 </li>
