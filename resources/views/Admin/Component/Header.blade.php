@@ -1,4 +1,8 @@
+@if (isset($active) && $active === 'dashboard')
 <header class="w-full fixed bg-white border-b border-gray-300 px-4 py-4 md:pb-4 md:pt-5 flex items-center justify-between md:pl-72">
+@else 
+<header class="w-full fixed bg-white border-b border-gray-300 px-4 py-4 md:py-5 flex items-center justify-between md:pl-72">
+@endif
     <div class="flex items-center gap-3">
         <!-- Sidebar toggle (visible on small screens) -->
         <button id="sidebar-toggle" aria-controls="admin-sidebar" aria-expanded="false" class="md:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:bg-gray-100 focus:outline-none" title="Toggle sidebar">

@@ -32,9 +32,9 @@
 
 			<li>
 				@if(isset($active) && $active === 'landing')
-					<a href="/admin/landing" aria-current="page" class="flex items-center px-4 py-3 bg-[#12773a] text-white border-l-4 border-white">
+					<a href="/admin/landing-page" aria-current="page" class="flex items-center px-4 py-3 bg-[#12773a] text-white border-l-4 border-white">
 				@else
-					<a href="/admin/landing" class="flex items-center px-4 py-3 hover:bg-[#12773a]/80">
+					<a href="/admin/landing-page" class="flex items-center px-4 py-3 hover:bg-[#12773a]/80">
 				@endif
 					<span class="ml-1 text-sm">Landing Page</span>
 				</a>
