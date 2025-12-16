@@ -1,146 +1,45 @@
-<section class="space-y-4 pb-20">
+{{-- PROYEK / PORTFOLIO --}}
+@php
+  $projects = [
+    [
+      'id'=>1,
+      'title'=>'Integrasi Sistem Otomasi Produksi',
+      'subtitle'=>'Otomasi & IoT',
+      'detail'=>'Integrasi sensor, PLC, dan dashboard monitoring untuk meningkatkan efisiensi lini produksi.',
+      'date'=>'12 Jan 2026'
+    ],
+    [
+      'id'=>2,
+      'title'=>'Panel Kontrol & Monitoring Energi',
+      'subtitle'=>'Monitoring',
+      'detail'=>'Pembuatan panel kontrol serta sistem monitoring penggunaan energi berbasis web.',
+      'date'=>'10 Jan 2026'
+    ],
+    [
+      'id'=>3,
+      'title'=>'Prototype Perangkat Elektronik Industri',
+      'subtitle'=>'Prototyping',
+      'detail'=>'Perancangan dan uji coba prototipe perangkat elektronik untuk kebutuhan industri khusus.',
+      'date'=>'08 Jan 2026'
+    ],
+  ];
+@endphp
 
-  {{-- HERO SECTION --}}
-  <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden">
-    <div class="px-5 py-4 border-b border-gray-100 flex items-start justify-between gap-3">
-      <div>
-        <h3 class="font-bold text-gray-900">Hero Section</h3>
-        <p class="text-xs text-gray-500 mt-1">
-          Atur judul utama, subjudul, tombol CTA, dan background pada bagian paling atas landing page.
-        </p>
-      </div>
-      <span class="inline-flex items-center rounded-full bg-emerald-50 text-emerald-700 px-2.5 py-1 text-xs font-medium">
-        Utama
-      </span>
-    </div>
-
-    <div class="px-5 py-5 grid grid-cols-1 lg:grid-cols-2 gap-4">
-      <div>
-        <label class="text-xs text-gray-500">Judul Hero</label>
-        <input type="text" value="Riset & Inovasi Sistem Elektrikal"
-               class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
-      </div>
-
-      <div>
-        <label class="text-xs text-gray-500">Subjudul Hero</label>
-        <input type="text" value="Solusi elektrikal modern berbasis riset untuk industri dan instansi."
-               class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
-      </div>
-
-      <div>
-        <label class="text-xs text-gray-500">Teks Tombol CTA</label>
-        <input type="text" value="Konsultasi Proyek"
-               class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
-      </div>
-
-      <div>
-        <label class="text-xs text-gray-500">Link Tombol CTA</label>
-        <input type="text" value="/kontak"
-               class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
-      </div>
-
-      <div class="lg:col-span-1">
-        <label class="text-xs text-gray-500">Background Hero (gambar)</label>
-        <input type="file"
-               class="mt-1 w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm" />
-        <p class="text-[11px] text-gray-400 mt-2">
-          Disarankan ukuran lebar minimal 1600px dengan rasio 16:9.
-        </p>
-      </div>
-
-      <div class="lg:col-span-1 flex items-center gap-2">
-        <input id="heroVisible" type="checkbox" checked class="h-4 w-4 accent-green-600" />
-        <label for="heroVisible" class="text-sm text-gray-700">Tampilkan Hero di landing page</label>
-      </div>
-    </div>
+<div class="bg-white border border-gray-200 rounded-2xl overflow-hidden">
+  <div class="px-5 py-4 border-b border-gray-100">
+    <h3 class="font-bold text-gray-900">Proyek / Portfolio</h3>
+    <p class="text-xs text-gray-500 mt-1">
+      Kelola daftar proyek yang tampil di landing page. Klik item di kiri untuk edit di kanan. (UI saja)
+    </p>
   </div>
 
-  {{-- LAYANAN / SOLUSI --}}
-  <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden">
-    <div class="px-5 py-4 border-b border-gray-100">
-      <h3 class="font-bold text-gray-900">Layanan / Solusi</h3>
-      <p class="text-xs text-gray-500 mt-1">
-        Atur judul section layanan dan highlight beberapa layanan utama yang muncul di landing page.
-      </p>
-    </div>
+  <div class="px-5 py-5 space-y-4">
 
-    <div class="px-5 py-5 grid grid-cols-1 lg:grid-cols-2 gap-4">
-      <div>
-        <label class="text-xs text-gray-500">Judul Section</label>
-        <input type="text" value="Layanan Utama"
-               class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
-      </div>
-
-      <div>
-        <label class="text-xs text-gray-500">Subjudul Section</label>
-        <input type="text" value="Area riset dan pengembangan yang kami kerjakan untuk klien."
-               class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
-      </div>
-
-      <div class="lg:col-span-2">
-        <p class="text-xs text-gray-500 mb-2">Highlight Layanan</p>
-        <p class="text-[11px] text-gray-400 -mt-1 mb-4">
-          Isi 3–4 layanan yang akan tampil di halaman depan. Detail lengkap proyek bisa dikelola di menu lainnya.
-        </p>
-      </div>
-
-      {{-- Layanan 1 --}}
-      <div class="space-y-2">
-        <label class="text-xs text-gray-500">Layanan 1</label>
-        <input type="text" value="Riset & Pengembangan Sistem Elektrikal"
-               class="w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
-        <textarea rows="3"
-                  class="w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200">Perancangan dan pengembangan sistem elektrikal untuk kebutuhan industri dan proyek khusus.</textarea>
-      </div>
-
-      {{-- Layanan 2 --}}
-      <div class="space-y-2">
-        <label class="text-xs text-gray-500">Layanan 2</label>
-        <input type="text" value="Integrasi Otomasi & IoT"
-               class="w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
-        <textarea rows="3"
-                  class="w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200">Menghubungkan perangkat, sensor, dan sistem kontrol untuk otomasi yang cerdas.</textarea>
-      </div>
-
-      {{-- Layanan 3 --}}
-      <div class="space-y-2">
-        <label class="text-xs text-gray-500">Layanan 3</label>
-        <input type="text" value="Desain & Prototyping Perangkat Elektronik"
-               class="w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
-        <textarea rows="3"
-                  class="w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200">Membantu tahap desain, pembuatan prototipe, dan pengujian perangkat elektronik.</textarea>
-      </div>
-
-      {{-- Layanan 4 --}}
-      <div class="space-y-2">
-        <label class="text-xs text-gray-500">Layanan 4 (opsional)</label>
-        <input type="text" value="Analisis & Optimasi Sistem"
-               class="w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
-        <textarea rows="3"
-                  class="w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200">Evaluasi performa sistem untuk meningkatkan efisiensi dan keandalan.</textarea>
-      </div>
-    </div>
-  </div>
-
-  {{-- PROYEK / PORTFOLIO --}}
-  <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden">
-    <div class="px-5 py-4 border-b border-gray-100">
-      <h3 class="font-bold text-gray-900">Proyek / Portfolio</h3>
-      <p class="text-xs text-gray-500 mt-1">
-        Atur judul dan pengaturan ringkas untuk section portfolio di landing page.
-      </p>
-    </div>
-
-    <div class="px-5 py-5 grid grid-cols-1 lg:grid-cols-2 gap-4">
+    {{-- Judul section (tanpa subjudul) --}}
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
       <div>
         <label class="text-xs text-gray-500">Judul Section</label>
         <input type="text" value="Portfolio & Proyek Kami"
-               class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
-      </div>
-
-      <div>
-        <label class="text-xs text-gray-500">Subjudul Section</label>
-        <input type="text" value="Proyek-proyek terpilih yang telah kami kerjakan untuk klien."
                class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
       </div>
 
@@ -150,161 +49,564 @@
                class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
       </div>
 
-      <div>
+      <div class="lg:col-span-2">
         <label class="text-xs text-gray-500">Link ke halaman portfolio lengkap</label>
         <input type="text" value="/portfolio"
                class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
       </div>
     </div>
-  </div>
 
-  {{-- PARTNER / KERJASAMA --}}
-  <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden">
-    <div class="px-5 py-4 border-b border-gray-100">
-      <h3 class="font-bold text-gray-900">Partner / Kerjasama</h3>
-      <p class="text-xs text-gray-500 mt-1">
-        Atur teks utama untuk deretan logo perusahaan yang bekerja sama dengan CV. Global Electronic Solution.
-      </p>
-    </div>
+    {{-- GRID KIRI-KANAN --}}
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
 
-    <div class="px-5 py-5 grid grid-cols-1 lg:grid-cols-2 gap-4">
-      <div>
-        <label class="text-xs text-gray-500">Judul Section</label>
-        <input type="text" value="Kerjasama"
-               class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
-      </div>
+      {{-- KIRI: DAFTAR PROYEK --}}
+      <div class="lg:col-span-7 bg-white border border-gray-200 rounded-2xl p-4">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h4 class="font-semibold text-gray-900">Daftar Proyek</h4>
+            <p class="text-xs text-gray-500 mt-1">Klik baris untuk edit di panel kanan.</p>
+          </div>
 
-      <div>
-        <label class="text-xs text-gray-500">Subjudul Section</label>
-        <input type="text" value="Kami telah bekerja sama dengan berbagai perusahaan di Indonesia."
-               class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
-      </div>
+          <div class="flex gap-2">
+            <input id="projectSearch"
+                   type="text"
+                   placeholder="Cari judul..."
+                   class="w-full sm:w-56 rounded-xl border border-gray-200 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-green-200" />
+          </div>
+        </div>
 
-      <div class="lg:col-span-2">
-        <p class="text-[11px] text-gray-400">
-          Data logo dan link partner bisa dikelola di halaman khusus Partner apabila diperlukan.
-        </p>
-      </div>
-    </div>
-  </div>
-
-  {{-- SERTIFIKASI --}}
-  <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden">
-    <div class="px-5 py-4 border-b border-gray-100">
-      <h3 class="font-bold text-gray-900">Sertifikasi</h3>
-      <p class="text-xs text-gray-500 mt-1">
-        Atur tampilan section sertifikasi yang muncul sebelum footer.
-      </p>
-    </div>
-
-    <div class="px-5 py-5 grid grid-cols-1 lg:grid-cols-2 gap-4">
-      <div>
-        <label class="text-xs text-gray-500">Judul Section</label>
-        <input type="text" value="Sertifikasi"
-               class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
-      </div>
-
-      <div>
-        <label class="text-xs text-gray-500">Subjudul Section</label>
-        <input type="text" value="Standar mutu yang menjadi dasar kami dalam menjalankan proyek."
-               class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
-      </div>
-
-      <div class="lg:col-span-2">
-        <p class="text-xs text-gray-500 mb-2">Daftar Sertifikasi (ringkasan)</p>
-        <p class="text-[11px] text-gray-400 -mt-1 mb-3">
-          Detail sertifikat dapat diatur pada modul Sertifikasi jika dibutuhkan. Di landing page cukup tampil nama sertifikasi.
-        </p>
-
-        <div class="overflow-auto border border-gray-100 rounded-xl">
+        <div class="mt-3 overflow-auto">
           <table class="min-w-full text-sm">
             <thead>
-              <tr class="text-left text-xs text-gray-500 bg-gray-50">
-                <th class="py-3 px-4">Nama Sertifikasi</th>
-                <th class="py-3 px-4">Status</th>
-                <th class="py-3 px-4">Berlaku Sampai</th>
+              <tr class="text-left text-xs text-gray-500 border-b border-gray-100">
+                <th class="py-3 pr-3">Judul</th>
+                <th class="py-3 pr-3">Subjudul</th>
+                <th class="py-3">Tanggal</th>
               </tr>
             </thead>
-            <tbody>
-              <tr class="border-t border-gray-100">
-                <td class="py-3 px-4">ISO 9001:2015</td>
-                <td class="py-3 px-4">
-                  <span class="inline-flex rounded-full bg-emerald-100 text-emerald-700 px-2.5 py-1 text-xs">Aktif</span>
-                </td>
-                <td class="py-3 px-4">12 Des 2026</td>
+
+            <tbody id="projectBody">
+              @foreach($projects as $p)
+              <tr
+                class="project-row cursor-pointer border-b border-gray-50 hover:bg-gray-50 transition"
+                data-id="{{ $p['id'] }}"
+                data-title="{{ $p['title'] }}"
+                data-subtitle="{{ $p['subtitle'] }}"
+                data-detail="{{ $p['detail'] }}"
+                data-date="{{ $p['date'] }}"
+              >
+                <td class="py-3 pr-3 font-medium text-gray-900">{{ $p['title'] }}</td>
+                <td class="py-3 pr-3 text-gray-600">{{ $p['subtitle'] }}</td>
+                <td class="py-3 text-gray-700">{{ $p['date'] }}</td>
               </tr>
-              <tr class="border-t border-gray-100">
-                <td class="py-3 px-4">ISO 14001:2015</td>
-                <td class="py-3 px-4">
-                  <span class="inline-flex rounded-full bg-emerald-100 text-emerald-700 px-2.5 py-1 text-xs">Aktif</span>
-                </td>
-                <td class="py-3 px-4">30 Jun 2027</td>
-              </tr>
+              @endforeach
             </tbody>
           </table>
+
+          <div id="projectEmpty" class="hidden text-center py-10 text-sm text-gray-500">
+            Proyek tidak ditemukan.
+          </div>
+        </div>
+      </div>
+
+      {{-- KANAN: FORM TAMBAH / EDIT --}}
+      <div class="lg:col-span-5 bg-white border border-gray-200 rounded-2xl p-4">
+        <div>
+          <h4 class="font-semibold text-gray-900">Tambah / Edit Proyek</h4>
+          <p class="text-xs text-gray-500 mt-1">Isi data di bawah lalu simpan. (UI saja)</p>
+        </div>
+
+        <form id="projectForm" class="mt-4 space-y-3" onsubmit="return false;">
+          <input type="hidden" id="projectId" value="" />
+
+          <div>
+            <label class="text-xs text-gray-500">Judul Proyek</label>
+            <input id="titleInput" type="text"
+                   placeholder="Contoh: Integrasi Sistem Otomasi Produksi"
+                   class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
+          </div>
+
+          <div>
+            <label class="text-xs text-gray-500">Subjudul (singkat)</label>
+            <input id="subtitleInput" type="text"
+                   placeholder="Contoh: Otomasi & IoT"
+                   class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
+          </div>
+
+          <div>
+            <label class="text-xs text-gray-500">Detail Proyek</label>
+            <textarea id="detailInput" rows="4"
+                      placeholder="Jelaskan ringkas detail proyek: tujuan, scope, hasil, dll."
+                      class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200"></textarea>
+          </div>
+
+          <div>
+            <label class="text-xs text-gray-500">Upload Gambar Kegiatan</label>
+            <input id="imageInput" type="file"
+                   class="mt-1 w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm" />
+            <p class="text-[11px] text-gray-400 mt-2">*UI saja, file belum tersimpan.</p>
+          </div>
+
+          <div class="flex items-center justify-end gap-2 pt-2">
+            <button type="button" id="projResetBtn"
+                    class="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm hover:bg-gray-50">
+              Reset
+            </button>
+
+            <button type="button" id="projDeleteBtn"
+                    class="rounded-full border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700 hover:bg-red-100">
+              Hapus
+            </button>
+
+            <button type="button" id="projSaveBtn"
+                    class="rounded-full bg-green-600 px-4 py-2 text-sm text-white hover:bg-green-700">
+              Simpan
+            </button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{{-- SERTIFIKASI --}}
+@php
+  $certs = [
+    ['id'=>1,'name'=>'ISO 9001:2015','file'=>'iso-9001.jpg'],
+    ['id'=>2,'name'=>'ISO 14001:2015','file'=>'iso-14001.jpg'],
+  ];
+@endphp
+
+<div class="bg-white border border-gray-200 rounded-2xl overflow-hidden mt-6">
+  <div class="px-5 py-4 border-b border-gray-100">
+    <h3 class="font-bold text-gray-900">Sertifikasi</h3>
+    <p class="text-xs text-gray-500 mt-1">
+      Kiri: daftar sertifikasi. Kanan: tambah/edit sertifikasi + upload sertifikat. (UI saja)
+    </p>
+  </div>
+
+  <div class="px-5 py-5 grid grid-cols-1 lg:grid-cols-12 gap-4">
+
+    {{-- KIRI: DAFTAR --}}
+    <div class="lg:col-span-7 bg-white border border-gray-200 rounded-2xl p-4">
+      <div class="flex items-center justify-between gap-2">
+        <div>
+          <h4 class="font-semibold text-gray-900">Daftar Sertifikasi</h4>
+          <p class="text-xs text-gray-500 mt-1">Klik baris untuk edit di kanan.</p>
+        </div>
+
+        <input id="certSearch" type="text" placeholder="Cari sertifikasi..."
+               class="w-56 rounded-xl border border-gray-200 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-green-200" />
+      </div>
+
+      <div class="mt-3 overflow-auto">
+        <table class="min-w-full text-sm">
+          <thead>
+            <tr class="text-left text-xs text-gray-500 border-b border-gray-100">
+              <th class="py-3 pr-3">Nama</th>
+              <th class="py-3">File</th>
+            </tr>
+          </thead>
+
+          <tbody id="certBody">
+            @foreach($certs as $c)
+            <tr class="cert-row cursor-pointer border-b border-gray-50 hover:bg-gray-50 transition"
+                data-id="{{ $c['id'] }}"
+                data-name="{{ $c['name'] }}"
+                data-file="{{ $c['file'] }}">
+              <td class="py-3 pr-3 font-medium text-gray-900">{{ $c['name'] }}</td>
+              <td class="py-3 text-gray-600">{{ $c['file'] }}</td>
+            </tr>
+            @endforeach
+          </tbody>
+        </table>
+
+        <div id="certEmpty" class="hidden text-center py-10 text-sm text-gray-500">
+          Sertifikasi tidak ditemukan.
         </div>
       </div>
     </div>
-  </div>
 
-  {{-- VISIBILITY --}}
-  <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden">
-    <div class="px-5 py-4 border-b border-gray-100">
-      <h3 class="font-bold text-gray-900">Visibility Section</h3>
-      <p class="text-xs text-gray-500 mt-1">
-        Atur section mana saja yang ingin ditampilkan di landing page.
-      </p>
-    </div>
-
-    <div class="px-5 py-5 grid grid-cols-1 lg:grid-cols-2 gap-4">
+    {{-- KANAN: FORM TAMBAH / EDIT --}}
+    <div class="lg:col-span-5 bg-white border border-gray-200 rounded-2xl p-4">
       <div>
-        <p class="text-xs text-gray-500 mb-2">Tampilkan Section</p>
-        <div class="space-y-2 text-sm text-gray-700">
-          <label class="flex items-center gap-2">
-            <input type="checkbox" checked class="h-4 w-4 accent-green-600">
-            Hero
-          </label>
-          <label class="flex items-center gap-2">
-            <input type="checkbox" checked class="h-4 w-4 accent-green-600">
-            Layanan
-          </label>
-          <label class="flex items-center gap-2">
-            <input type="checkbox" checked class="h-4 w-4 accent-green-600">
-            Proyek / Portfolio
-          </label>
-          <label class="flex items-center gap-2">
-            <input type="checkbox" checked class="h-4 w-4 accent-green-600">
-            Partner / Kerjasama
-          </label>
-          <label class="flex items-center gap-2">
-            <input type="checkbox" checked class="h-4 w-4 accent-green-600">
-            Sertifikasi
-          </label>
-        </div>
+        <h4 class="font-semibold text-gray-900">Tambah / Edit Sertifikasi</h4>
+        <p class="text-xs text-gray-500 mt-1">Isi data lalu simpan. (UI saja)</p>
       </div>
 
-      <div>
-        <p class="text-xs text-gray-500 mb-2">Catatan</p>
-        <div class="rounded-xl border border-gray-200 bg-gray-50 p-4 text-sm text-gray-700">
-          Checklist di atas hanya mengatur apakah section muncul di landing page.
-          Konten masing-masing section tetap tersimpan di sistem meskipun disembunyikan.
+      <form class="mt-4 space-y-3" onsubmit="return false;">
+        <input type="hidden" id="certId" value="" />
+
+        <div>
+          <label class="text-xs text-gray-500">Nama Sertifikasi</label>
+          <input id="certName" type="text" placeholder="Contoh: ISO 9001:2015"
+                 class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
+        </div>
+
+        <div>
+          <label class="text-xs text-gray-500">Upload Gambar Sertifikat</label>
+          <input id="certFile" type="file"
+                 class="mt-1 w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm" />
+          <p id="certFileInfo" class="text-[11px] text-gray-400 mt-2">Belum ada file dipilih.</p>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-2">
+          <button type="button" id="certReset"
+                  class="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm hover:bg-gray-50">
+            Reset
+          </button>
+
+          <button type="button" id="certDelete"
+                  class="rounded-full border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700 hover:bg-red-100">
+            Hapus
+          </button>
+
+          <button type="button" id="certSave"
+                  class="rounded-full bg-green-600 px-4 py-2 text-sm text-white hover:bg-green-700">
+            Simpan
+          </button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+
+{{-- PARTNER / KERJASAMA --}}
+@php
+  $partners = [
+    ['id'=>1,'name'=>'IndoFood','file'=>'logo-indofood.png'],
+    ['id'=>2,'name'=>'Putra Karya Baja','file'=>'logo-pkb.png'],
+    ['id'=>3,'name'=>'BK Foundation','file'=>'logo-bk.png'],
+  ];
+@endphp
+
+<div class="bg-white border border-gray-200 rounded-2xl overflow-hidden mt-6">
+  <div class="px-5 py-4 border-b border-gray-100">
+    <h3 class="font-bold text-gray-900">Partner / Kerjasama</h3>
+    <p class="text-xs text-gray-500 mt-1">
+      Kiri: daftar partner. Kanan: tambah/edit partner + upload logo. (UI saja)
+    </p>
+  </div>
+
+  <div class="px-5 py-5 grid grid-cols-1 lg:grid-cols-12 gap-4">
+
+    {{-- KIRI: DAFTAR --}}
+    <div class="lg:col-span-7 bg-white border border-gray-200 rounded-2xl p-4">
+      <div class="flex items-center justify-between gap-2">
+        <div>
+          <h4 class="font-semibold text-gray-900">Daftar Partner</h4>
+          <p class="text-xs text-gray-500 mt-1">Klik baris untuk edit di kanan.</p>
+        </div>
+
+        <input id="partnerSearch" type="text" placeholder="Cari partner..."
+               class="w-56 rounded-xl border border-gray-200 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-green-200" />
+      </div>
+
+      <div class="mt-3 overflow-auto">
+        <table class="min-w-full text-sm">
+          <thead>
+            <tr class="text-left text-xs text-gray-500 border-b border-gray-100">
+              <th class="py-3 pr-3">Nama</th>
+              <th class="py-3">File</th>
+            </tr>
+          </thead>
+
+          <tbody id="partnerBody">
+            @foreach($partners as $p)
+            <tr class="partner-row cursor-pointer border-b border-gray-50 hover:bg-gray-50 transition"
+                data-id="{{ $p['id'] }}"
+                data-name="{{ $p['name'] }}"
+                data-file="{{ $p['file'] }}">
+              <td class="py-3 pr-3 font-medium text-gray-900">{{ $p['name'] }}</td>
+              <td class="py-3 text-gray-600">{{ $p['file'] }}</td>
+            </tr>
+            @endforeach
+          </tbody>
+        </table>
+
+        <div id="partnerEmpty" class="hidden text-center py-10 text-sm text-gray-500">
+          Partner tidak ditemukan.
         </div>
       </div>
     </div>
-  </div>
 
-  {{-- FOOT ACTIONS --}}
-  <div class="flex items-center justify-end gap-2 pt-2">
-    <button type="button"
-            onclick="alert('UI saja: preview belum dihubungkan.')"
-            class="rounded-full bg-gray-200 px-4 py-2 text-sm text-gray-800 hover:bg-gray-300">
-      Preview
-    </button>
-    <button type="button"
-            onclick="alert('UI saja: perubahan belum disimpan ke database.')"
-            class="rounded-full bg-green-600 px-4 py-2 text-sm text-white hover:bg-green-700">
-      Simpan Perubahan
-    </button>
-  </div>
+    {{-- KANAN: FORM TAMBAH / EDIT --}}
+    <div class="lg:col-span-5 bg-white border border-gray-200 rounded-2xl p-4">
+      <div>
+        <h4 class="font-semibold text-gray-900">Tambah / Edit Partner</h4>
+        <p class="text-xs text-gray-500 mt-1">Isi data lalu simpan. (UI saja)</p>
+      </div>
 
-</section>
+      <form class="mt-4 space-y-3" onsubmit="return false;">
+        <input type="hidden" id="partnerId" value="" />
+
+        <div>
+          <label class="text-xs text-gray-500">Nama Partner</label>
+          <input id="partnerName" type="text" placeholder="Contoh: IndoFood"
+                 class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
+        </div>
+
+        <div>
+          <label class="text-xs text-gray-500">Upload Logo / Gambar</label>
+          <input id="partnerFile" type="file"
+                 class="mt-1 w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm" />
+          <p id="partnerFileInfo" class="text-[11px] text-gray-400 mt-2">Belum ada file dipilih.</p>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-2">
+          <button type="button" id="partnerReset"
+                  class="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm hover:bg-gray-50">
+            Reset
+          </button>
+
+          <button type="button" id="partnerDelete"
+                  class="rounded-full border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700 hover:bg-red-100">
+            Hapus
+          </button>
+
+          <button type="button" id="partnerSave"
+                  class="rounded-full bg-green-600 px-4 py-2 text-sm text-white hover:bg-green-700">
+            Simpan
+          </button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+
+{{-- UI-only JS --}}
+<script>
+(function () {
+
+  /* =====================================================
+     HELPER UMUM
+     ===================================================== */
+  function setActive(rows, row){
+    rows.forEach(r => r.classList.remove('ring-2','ring-green-200','bg-green-50'));
+    if(row) row.classList.add('ring-2','ring-green-200','bg-green-50');
+  }
+
+  function applySearch(rows, query, emptyEl, matcher){
+    const q = (query || '').toLowerCase().trim();
+    let visible = 0;
+
+    rows.forEach(row => {
+      const text = matcher(row).toLowerCase();
+      const show = !q || text.includes(q);
+      row.style.display = show ? '' : 'none';
+      if(show) visible++;
+    });
+
+    if(emptyEl) emptyEl.classList.toggle('hidden', visible !== 0);
+  }
+
+  /* =====================================================
+     1️⃣ PROYEK / PORTFOLIO
+     ===================================================== */
+  (function(){
+    const rows = Array.from(document.querySelectorAll('.project-row'));
+
+    const search = document.getElementById('projectSearch');
+    const empty  = document.getElementById('projectEmpty');
+
+    const idEl    = document.getElementById('projectId');
+    const titleEl = document.getElementById('titleInput');
+    const subEl   = document.getElementById('subtitleInput');
+    const detEl   = document.getElementById('detailInput');
+    const imgEl   = document.getElementById('imageInput');
+
+    const btnReset  = document.getElementById('projResetBtn');
+    const btnDelete = document.getElementById('projDeleteBtn');
+    const btnSave   = document.getElementById('projSaveBtn');
+
+    function fill(row){
+      idEl.value = row.dataset.id || '';
+      titleEl.value = row.dataset.title || '';
+      subEl.value = row.dataset.subtitle || '';
+      detEl.value = row.dataset.detail || '';
+      imgEl.value = '';
+    }
+
+    rows.forEach(row => {
+      row.addEventListener('click', () => {
+        setActive(rows, row);
+        fill(row);
+      });
+    });
+
+    search.addEventListener('input', () => {
+      applySearch(rows, search.value, empty,
+        r => (r.dataset.title || '') + ' ' + (r.dataset.subtitle || '')
+      );
+    });
+
+    btnReset.addEventListener('click', () => {
+      setActive(rows, null);
+      idEl.value = titleEl.value = subEl.value = detEl.value = '';
+      imgEl.value = '';
+      search.value = '';
+      applySearch(rows, '', empty, r => r.dataset.title || '');
+    });
+
+    btnSave.addEventListener('click', () => {
+      alert('UI saja: Simpan proyek belum terhubung ke database.');
+    });
+
+    btnDelete.addEventListener('click', () => {
+      if(!idEl.value){
+        alert('Pilih proyek dulu dari tabel sebelum menghapus.');
+        return;
+      }
+      const row = document.querySelector(`.project-row[data-id="${idEl.value}"]`);
+      if(row) row.remove();
+      btnReset.click();
+      alert('UI saja: proyek dihapus dari tampilan.');
+    });
+
+    if(rows[0]){
+      setActive(rows, rows[0]);
+      fill(rows[0]);
+    }
+  })();
+
+  /* =====================================================
+     2️⃣ PARTNER / KERJASAMA
+     ===================================================== */
+  (function(){
+    const rows = Array.from(document.querySelectorAll('.partner-row'));
+
+    const search = document.getElementById('partnerSearch');
+    const empty  = document.getElementById('partnerEmpty');
+
+    const idEl   = document.getElementById('partnerId');
+    const nameEl = document.getElementById('partnerName');
+    const fileEl = document.getElementById('partnerFile');
+    const infoEl = document.getElementById('partnerFileInfo');
+
+    const btnReset  = document.getElementById('partnerReset');
+    const btnDelete = document.getElementById('partnerDelete');
+    const btnSave   = document.getElementById('partnerSave');
+
+    function fill(row){
+      idEl.value = row.dataset.id || '';
+      nameEl.value = row.dataset.name || '';
+      fileEl.value = '';
+      infoEl.textContent = row.dataset.file
+        ? `File saat ini: ${row.dataset.file}`
+        : 'Belum ada file dipilih.';
+    }
+
+    rows.forEach(row => {
+      row.addEventListener('click', () => {
+        setActive(rows, row);
+        fill(row);
+      });
+    });
+
+    search.addEventListener('input', () => {
+      applySearch(rows, search.value, empty, r => r.dataset.name || '');
+    });
+
+    btnReset.addEventListener('click', () => {
+      setActive(rows, null);
+      idEl.value = nameEl.value = '';
+      fileEl.value = '';
+      infoEl.textContent = 'Belum ada file dipilih.';
+      search.value = '';
+      applySearch(rows, '', empty, r => r.dataset.name || '');
+    });
+
+    btnSave.addEventListener('click', () => {
+      alert('UI saja: Simpan partner belum terhubung ke database.');
+    });
+
+    btnDelete.addEventListener('click', () => {
+      if(!idEl.value){
+        alert('Pilih partner dulu dari tabel sebelum menghapus.');
+        return;
+      }
+      const row = document.querySelector(`.partner-row[data-id="${idEl.value}"]`);
+      if(row) row.remove();
+      btnReset.click();
+      alert('UI saja: partner dihapus dari tampilan.');
+    });
+
+    if(rows[0]){
+      setActive(rows, rows[0]);
+      fill(rows[0]);
+    }
+  })();
+
+  /* =====================================================
+     3️⃣ SERTIFIKASI
+     ===================================================== */
+  (function(){
+    const rows = Array.from(document.querySelectorAll('.cert-row'));
+
+    const search = document.getElementById('certSearch');
+    const empty  = document.getElementById('certEmpty');
+
+    const idEl   = document.getElementById('certId');
+    const nameEl = document.getElementById('certName');
+    const fileEl = document.getElementById('certFile');
+    const infoEl = document.getElementById('certFileInfo');
+
+    const btnReset  = document.getElementById('certReset');
+    const btnDelete = document.getElementById('certDelete');
+    const btnSave   = document.getElementById('certSave');
+
+    function fill(row){
+      idEl.value = row.dataset.id || '';
+      nameEl.value = row.dataset.name || '';
+      fileEl.value = '';
+      infoEl.textContent = row.dataset.file
+        ? `File saat ini: ${row.dataset.file}`
+        : 'Belum ada file dipilih.';
+    }
+
+    rows.forEach(row => {
+      row.addEventListener('click', () => {
+        setActive(rows, row);
+        fill(row);
+      });
+    });
+
+    search.addEventListener('input', () => {
+      applySearch(rows, search.value, empty, r => r.dataset.name || '');
+    });
+
+    btnReset.addEventListener('click', () => {
+      setActive(rows, null);
+      idEl.value = nameEl.value = '';
+      fileEl.value = '';
+      infoEl.textContent = 'Belum ada file dipilih.';
+      search.value = '';
+      applySearch(rows, '', empty, r => r.dataset.name || '');
+    });
+
+    btnSave.addEventListener('click', () => {
+      alert('UI saja: Simpan sertifikasi belum terhubung ke database.');
+    });
+
+    btnDelete.addEventListener('click', () => {
+      if(!idEl.value){
+        alert('Pilih sertifikasi dulu dari tabel sebelum menghapus.');
+        return;
+      }
+      const row = document.querySelector(`.cert-row[data-id="${idEl.value}"]`);
+      if(row) row.remove();
+      btnReset.click();
+      alert('UI saja: sertifikasi dihapus dari tampilan.');
+    });
+
+    if(rows[0]){
+      setActive(rows, rows[0]);
+      fill(rows[0]);
+    }
+  })();
+
+})();
+</script>
