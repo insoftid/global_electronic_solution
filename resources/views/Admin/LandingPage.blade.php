@@ -14,9 +14,9 @@
             @include('Admin.Component.Header', ['title' => $title ?? 'Dashboard Admin'])
 
             <div class="px-5 pt-24 md:pl-72 bg-gray-100 min-h-screen">
-                @include('Admin.Component.SettingsSection')
+                @include('Admin.Component.LandingSection')
             </div>
-        </main>
+        </main> 
     </section>
 </body>
 </html>
