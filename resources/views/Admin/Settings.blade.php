@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     @php
-    $title = 'Pengaturan Website';
+    $title = 'Pengaturan & Tentang Kami';
     $active = 'pengaturan';
     $slot = 5; // dummy variable to avoid blade error
     @endphp
