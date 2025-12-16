@@ -26,7 +26,7 @@
 				@else
 					<a href="/admin/settings" class="flex items-center px-4 py-3 hover:bg-[#12773a]/80">
 				@endif
-					<span class="ml-1 text-sm">Pengaturan</span>
+					<span class="ml-1 text-sm">Pengaturan & Tentang Kami</span>
 				</a>
 			</li>
 

@@ -17,7 +17,7 @@
             <p class="mt-4 text-white/90 max-w-3xl text-xl">
                 Sistem otomasi lini produksi makanan dengan kontrol kualitas terintegrasi dan efisiensi maksimal untuk Indofood Manufacturing.
             </p>
-            <div class="grid grid-cols-2 md:grid-cols-4 mt-6 gap-10">
+            {{-- <div class="grid grid-cols-2 md:grid-cols-4 mt-6 gap-10">
                 <div>
                     <h6 class="uppercase text-white/60 font-medium mb-3">Klien</h6>
                     <p class="text-white text-lg font-medium">Indofood Manufacturing</p>
@@ -34,7 +34,7 @@
                     <h6 class="uppercase text-white/60 font-medium mb-3">Status</h6>
                     <p class="text-white text-lg font-medium">Completed</p>
                 </div>
-            </div>
+            </div> --}}
         </div>
     </div>
 </section>
