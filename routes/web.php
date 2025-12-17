@@ -7,11 +7,11 @@ Route::get('/', function () {
     return view('LandingPage.Homepage');
 });
 
-Route::get('/portfolio', function () {
+Route::get('/produk', function () {
     return view('LandingPage.Portfolio');
 });
 
-Route::get('/portfolio/{id}', function ($id) {
+Route::get('/produk/{id}', function ($id) {
     return view('LandingPage.PortDetail');
 });
 

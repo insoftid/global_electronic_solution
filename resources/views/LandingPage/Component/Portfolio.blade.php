@@ -1,6 +1,6 @@
 <section>
     <div class="max-w-6xl mx-auto px-6 pb-20">
-        <h2 class="text-3xl font-extrabold text-heading mb-10 text-center">Portofolio & Proyek Kami</h2>
+        <h2 class="text-3xl font-extrabold text-heading mb-10 text-center">Produk & Proyek Kami</h2>
         <!-- Carousel wrapper -->
         <div class="relative">
             <!-- track viewport -->
@@ -81,7 +81,7 @@
                 <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             </button>
 
-            <a href="/portfolio" class="text-primary font-semibold flex justify-center text-xl mt-5 hover:underline">Lihat Selengkapnya -></a>
+            <a href="/produk" class="text-primary font-semibold flex justify-center text-xl mt-5 hover:underline">Lihat Selengkapnya -></a>
 
             <!-- autoplay script -->
             <script>
