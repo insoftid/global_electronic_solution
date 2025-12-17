@@ -356,8 +356,5 @@
             })();
         </script>
 
-        {{-- <div class="mt-6 text-center">
-            <a href="/portfolio" class="text-primary font-semibold flex justify-center text-xl mt-5 hover:underline">Lihat Selengkapnya -></a>
-        </div> --}}
     </div>
 </section>

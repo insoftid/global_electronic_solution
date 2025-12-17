@@ -37,7 +37,7 @@
                     <h4 class="font-semibold mb-5 text-xl">Perusahaan</h4>
                     <ul class="space-y-2 text-md text-white">
                         <li><a href="/tentang" class="hover:underline">Tentang Kami</a></li>
-                        <li><a href="/portfolio" class="hover:underline">Portfolio</a></li>
+                        <li><a href="/produk" class="hover:underline">Portfolio</a></li>
                         <li><a href="/contact" class="hover:underline">Kontak</a></li>
                     </ul>
                 </div>

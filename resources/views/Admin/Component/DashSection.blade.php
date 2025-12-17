@@ -33,10 +33,10 @@
             <div class="lg:col-span-2 bg-white rounded-xl shadow p-6">
                 <div class="flex items-center justify-between">
                     <h3 class="text-lg font-semibold text-gray-800">Ringkasan Landing Page</h3>
-                    <a href="#" class="text-sm text-green-500 hover:underline">(dummy) Kelola Landing Page</a>
+                    <a href="#" class="text-sm text-green-500 hover:underline">Kelola Landing Page</a>
                 </div>
 
-                <div class="mt-4 border rounded-md overflow-hidden">
+                <div class="mt-4 overflow-hidden">
                     <table class="w-full text-sm">
                         <thead class="sr-only">
                             <tr><th>Section</th><th>Status</th><th>Item Aktif</th></tr>
@@ -86,9 +86,9 @@
                 </div>
 
                 <div class="mt-4 flex gap-3">
-                    <a href="#" class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg shadow-sm text-sm hover:bg-green-700">Edit Landing Page</a>
-                    <a href="#" class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm hover:bg-gray-200">Pengaturan Website</a>
-                    <a href="#" class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm hover:bg-gray-200">Lihat Kontak Masuk</a>
+                    <a href="/admin/landing" class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg shadow-sm text-sm hover:bg-green-700">Edit Landing Page</a>
+                    <a href="/admin/settings" class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm hover:bg-gray-200">Pengaturan Website</a>
+                    <a href="/admin/contacts" class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm hover:bg-gray-200">Lihat Kontak Masuk</a>
                 </div>
             </div>
 
@@ -96,7 +96,7 @@
             <div class="bg-white rounded-xl shadow p-6">
                 <div class="flex items-center justify-between">
                     <h3 class="text-lg font-semibold text-gray-800">Kontak Masuk Terbaru</h3>
-                    <a href="#" class="text-sm text-green-500 hover:underline">(dummy) Lihat semua</a>
+                    <a href="/admin/contacts" class="text-sm text-green-500 hover:underline">Lihat semua</a>
                 </div>
 
                 @php

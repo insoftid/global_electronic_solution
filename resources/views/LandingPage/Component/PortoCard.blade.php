@@ -1,4 +1,4 @@
-<a href='/portfolio/1'>
+<a href='/produk/1'>
     <div class="bg-white min-h-[450px] rounded-lg shadow-lg overflow-hidden hover:scale-105 hover:shadow-xl transition-all duration-300 ease-in-out">
         <div class="relative">
             @php

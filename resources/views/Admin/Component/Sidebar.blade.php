@@ -1,4 +1,4 @@
-<aside id="admin-sidebar" class="w-64 min-h-screen bg-secondary text-white flex flex-col fixed top-0 left-0 transform -translate-x-full md:translate-x-0 transition-transform duration-200 ease-in-out z-40" aria-label="Primary">
+<aside id="admin-sidebar" style="position:fixed !important; top:0; left:0; height:100vh; z-index:80;" class="w-64 min-h-screen bg-secondary text-white flex flex-col fixed top-0 left-0 transform -translate-x-full md:translate-x-0 transition-transform duration-200 ease-in-out z-40" aria-label="Primary">
 	<!-- Brand / Header -->
 	<header class="px-4 py-4 border-b border-gray-300">
 		<a href="/admin" class="flex items-center gap-3">
@@ -26,7 +26,7 @@
 				@else
 					<a href="/admin/settings" class="flex items-center px-4 py-3 hover:bg-[#12773a]/80">
 				@endif
-					<span class="ml-1 text-sm">Pengaturan & Tentang Kami</span>
+					<span class="ml-1 text-sm">Tentang Perusahaan</span>
 				</a>
 			</li>
 

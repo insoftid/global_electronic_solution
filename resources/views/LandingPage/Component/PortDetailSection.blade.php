@@ -1,5 +1,5 @@
 <section>
-    <div class="max-w-6xl mx-auto px-6 py-20 md:flex">
+    <div class="max-w-6xl mx-auto px-6 py-20">
         <div class="w-full">
             <h2 class="text-heading">Ringkasan Proyek</h2>
             <div class="flex gap-5 items-center mt-6">
@@ -7,36 +7,34 @@
                 <p class="text-graytext font-bold text-2xl">Mon, May 25th 2023</p>
             </div>
             <p class="mt-6 text-graytext font-medium text-xl leading-relaxed">
-                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum
+                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum
             </p>
         </div>
-        {{-- <div class="md:ml-12 md:w-1/4">
-            <div class="divide-y divide-gray-200">
-            <div class="py-6 text-center md:text-left">
-                <p class="text-graytext">Peningkatan Efisiensi</p>
-                <p class="text-primary font-bold text-2xl">45%</p>
-            </div>
+        <div class="mt-8 w-full">
+            {{-- Responsive YouTube embed. Provide either $youtubeId (video id) or $youtubeUrl (full YouTube link) from the controller. --}}
+            @php
+                // prefer explicit video id if provided
+                $embedId = null;
+                if (!empty($youtubeId ?? '')) {
+                    $embedId = $youtubeId;
+                }
 
-            <div class="py-6 text-center md:text-left">
-                <p class="text-graytext">Pengurangan Waste</p>
-                <p class="text-primary font-bold text-2xl">30%</p>
-            </div>
+                // if no id, try to extract from a full youtube URL
+                if (empty($embedId) && !empty($youtubeUrl ?? '')) {
+                    $matches = [];
+                    // match common YouTube URL patterns
+                    preg_match('/(?:v=|v\/|embed\/|youtu\.be\/|watch\?v=|&v=)([A-Za-z0-9_-]{11})/', $youtubeUrl, $matches);
+                    if (!empty($matches[1])) {
+                        $embedId = $matches[1];
+                    }
+                }
 
-            <div class="py-6 text-center md:text-left">
-                <p class="text-graytext">ROI dalam</p>
-                <p class="text-primary font-bold text-2xl">18 Bulan</p>
+                // fallback to a sample video if none provided (optional)
+                $embedId = $embedId ?? 'dQw4w9WgXcQ';
+            @endphp
+            <div class="aspect-video w-full rounded-lg overflow-hidden bg-black">
+                <iframe class="w-full h-full" src="https://www.youtube.com/embed/{{ $embedId }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
             </div>
-
-            <div class="py-6 text-center md:text-left">
-                <p class="text-graytext">Downtime Berkurang</p>
-                <p class="text-primary font-bold text-2xl">60%</p>
-            </div>
-
-            <div class="py-6 text-center md:text-left">
-                <p class="text-graytext">Quality Rate</p>
-                <p class="text-primary font-bold text-2xl">99.7%</p>
-            </div>
-            </div>
-        </div> --}}
+        </div>
     </div>
 </section>
