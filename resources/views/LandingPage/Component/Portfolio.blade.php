@@ -1,93 +1,54 @@
 <section>
     <div class="max-w-6xl mx-auto px-6 pb-20">
-        <h2 class="text-3xl font-extrabold text-heading mb-10 text-center">Portofolio & Proyek Kami</h2>
+        <h2 class="text-3xl font-extrabold text-heading mb-10 text-center">Produk & Proyek Kami</h2>
         <!-- Carousel wrapper -->
         <div class="relative">
             <!-- track viewport -->
-            @php
-                // Dummy project data — add/remove items here to change the carousel slides
-                $projects = [
-                    [
-                        'image' => 'img/porto.png',
-                        'title' => 'Automated Production Line',
-                        'company' => 'Indofood Manufacturing',
-                        'description' => 'Sistem otomatis lini produksi makanan dengan kontrol kualitas terintegrasi dan efisiensi maksimal.',
-                        'link' => '/porto/1',
-                        'category' => 'AUTOMATION',
-                        'tags' => ['Robotics','Quality Control','HMI']
-                    ],
-                    [
-                        'image' => 'img/porto.png',
-                        'title' => 'Industrial Control System',
-                        'company' => 'PT. Teknologi Nusantara',
-                        'description' => 'Solusi SCADA dan PLC terintegrasi untuk monitoring dan optimasi proses industri.',
-                        'link' => '/porto/2',
-                        'category' => 'CONTROL',
-                        'tags' => ['SCADA','PLC']
-                    ],
-                    [
-                        'image' => 'img/porto.png',
-                        'title' => 'Energy Monitoring Platform',
-                        'company' => 'GreenEnergy Co',
-                        'description' => 'Platform monitoring energi realtime untuk pengurangan konsumsi dan optimasi biaya.',
-                        'link' => '/porto/3',
-                        'category' => 'ENERGY',
-                        'tags' => ['IoT','Analytics','Dashboard']
-                    ],
-                    [
-                        'image' => 'img/porto.png',
-                        'title' => 'Packaging Optimization',
-                        'company' => 'PT. Sukses Pack',
-                        'description' => 'Optimasi proses pengepakan dengan vision system untuk menurunkan reject rate.',
-                        'link' => '/porto/4',
-                        'category' => 'OPTIMIZATION',
-                        'tags' => ['Vision','Automation']
-                    ],
-                    [
-                        'image' => 'img/porto.png',
-                        'title' => 'Smart Meter Integration',
-                        'company' => 'Kota Energi',
-                        'description' => 'Integrasi smart meter untuk analitik konsumsi warga dan penghematan biaya.',
-                        'link' => '/porto/5',
-                        'category' => 'SMART GRID',
-                        'tags' => ['IoT','SmartGrid']
-                    ],
-                ];
-            @endphp
-
             <div id="portfolio-viewport" class="overflow-hidden h-125 p-4 justify-center">
                 <div id="portfolio-track" class="flex items-center gap-5 transition-transform duration-700 ease-in-out">
-                    @foreach($projects as $p)
+                    @forelse($portfolios as $portfolio)
                         <div class="shrink-0 w-full md:w-1/3">
                             @include('LandingPage.Component.PortoCard', [
-                                'image' => $p['image'],
-                                'title' => $p['title'],
-                                'company' => $p['company'],
-                                'description' => $p['description'],
-                                'link' => $p['link'],
-                                'category' => $p['category'],
-                                'tags' => $p['tags']
+                                'image' => $portfolio->thumbnail ? asset('storage/' . $portfolio->thumbnail) : asset('img/porto.png'),
+                                'title' => $portfolio->title,
+                                'company' => $portfolio->subtitle ?? '',
+                                'description' => $portfolio->description,
+                                'link' => route('portfolio.show', $portfolio->slug),
+                                'category' => $portfolio->category->name ?? 'UNCATEGORIZED',
+                                'tags' => $portfolio->tags->pluck('name')->toArray()
                             ])
+                            </div>
+                    @empty
+                                                <div class="w-full text-center py
+                        -               10 text-gray-500">
+                                                    Belum ada proyek yang ditampilkan.
+
+
+                                                                </div>
+                    @endforelse
+       
                         </div>
-                    @endforeach
-                </div>
-            </div>
+ 
+                
+                                </div>
 
             <!-- arrows -->
-            <button id="porto-prev" aria-label="Previous" class="absolute left-2 top-1/2 -translate-y-1/2 bg-primary/80 hover:bg-primary shadow rounded-full p-2 z-20">
+
+               
+                           <button id="porto-prev" aria-label="Previous" class="absolute left-2 top-1/2 -translate-y-1/2 bg-primary/80 hover:bg-primary shadow rounded-full p-2 z-20">
                 <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
             </button>
-            <button id="porto-next" aria-label="Next" class="absolute right-2 top-1/2 -translate-y-1/2 bg-primary/80 hover:bg-primary shadow rounded-full p-2 z-20">
+            <button id="p or to-next" aria-label="Next" class="absolute right-2 top-1/2 -translate-y-1/2 bg-primary/80 hover:bg-primary shadow rounded-full p-2 z-20">
                 <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             </button>
 
-            <a href="/portofolio" class="text-primary font-semibold flex justify-center text-xl mt-5 hover:underline">Lihat Selengkapnya -></a>
+            <a href="{{ route('portfolio.index') }}" class="text-primary font-semibold flex justify-center text-xl mt-5 hover:underline">Lihat Selengkapnya -></a>
 
             <!-- autoplay script -->
             <script>
                 (function(){
                     const track = document.getElementById('portfolio-track');
-                    const getSlides = () => Array.from(track.children);
+                    const getSlides = () =>  Array.from(track.children);
                     const prevBtn = document.getElementById('porto-prev');
                     const nextBtn = document.getElementById('porto-next');
                     const viewport = document.getElementById('portfolio-viewport');
@@ -95,7 +56,7 @@
                     let index = 0;
                     let autoplayInterval = null;
 
-                    function visibleCount(){
+                     function visibleCount(){
                         const w = window.innerWidth;
                         if (w >= 768) return 3;
                         if (w >= 640) return 2;
@@ -103,7 +64,7 @@
                     }
 
                     function updateSizes(){
-                        const v = visibleCount();
+                        const v = visi bleCount();
                         const slides = getSlides();
                         slides.forEach(s => {
                             s.style.flex = `0 0 ${100 / v}%`;
@@ -126,18 +87,18 @@
                         const firstRect = first.getBoundingClientRect();
                         let gap = 0;
                         if (slides.length > 1) {
-                            const secondRect = slides[1].getBoundingClientRect();
-                            // gap = distance between left edge of second and right edge of first
+                            const s econdRect = slides[1].getBoundingClientRect();
+                            // gap  = distance between left edge of second and right edge of first
                             gap = Math.max(0, secondRect.left - firstRect.right);
                         }
                         const step = Math.round(firstRect.width + gap);
                         track.style.transform = `translateX(-${index * step}px)`;
                     }
 
-                    function next(){ moveTo(index + 1); }
+                     function next(){ moveTo(index + 1); }
                     function prev(){ moveTo(index - 1); }
 
-                    nextBtn.addEventListener('click', () => { next(); resetAutoplay(); });
+                    nextBtn.addEventListener ('click', () => { next(); resetAutoplay(); });
                     prevBtn.addEventListener('click', () => { prev(); resetAutoplay(); });
 
                     // autoplay

@@ -16,22 +16,45 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create Admin User
+        // 1. Create Admin Users
         User::firstOrCreate(
             ['email' => 'admin@globalelectronic.com'],
             [
                 'name' => 'Administrator',
                 'password' => Hash::make('admin123'),
+                'role' => 'Superadmin',
+                'status' => 'Aktif',
             ]
         );
 
-        // Optional: Create a test user
         User::firstOrCreate(
-            ['email' => 'test@example.com'],
+            ['email' => 'editor@globalelectronic.com'],
             [
-                'name' => 'Test User',
-                'password' => Hash::make('password'),
+                'name' => 'Editor',
+                'password' => Hash::make('editor123'),
+                'role' => 'Editor',
+                'status' => 'Aktif',
             ]
         );
+
+        // 2. Run all seeders in correct order
+        $this->call([
+            // Site settings first (no dependencies)
+            SiteSettingSeeder::class,
+            GalleryPhotoSeeder::class,
+
+            // Categories and Tags before Portfolio
+            CategorySeeder::class,
+            TagSeeder::class,
+
+            // Portfolio depends on Categories and Tags
+            PortfolioSeeder::class,
+            PortfolioImageSeeder::class,
+
+            // Independent seeders
+            CertificateSeeder::class,
+            PartnerSeeder::class,
+            ContactMessageSeeder::class,
+        ]);
     }
 }

@@ -1,82 +1,39 @@
 <section>
     <div class="max-w-6xl mx-auto px-6 py-10">
-        @php
-            $projects = [
-                [
-                    'image' => 'img/porto.png',
-                    'title' => 'Automated Production Line',
-                    'company' => 'Indofood Manufacturing',
-                    'description' => 'Sistem otomatis lini produksi makanan dengan kontrol kualitas terintegrasi dan efisiensi maksimal.',
-                    'link' => '/porto/1',
-                    'category' => 'AUTOMATION',
-                    'tags' => ['Robotics','Quality Control','HMI']
-                ],
-                [
-                    'image' => 'img/porto.png',
-                    'title' => 'Industrial Control System',
-                    'company' => 'PT. Teknologi Nusantara',
-                    'description' => 'Solusi SCADA dan PLC terintegrasi untuk monitoring dan optimasi proses industri.',
-                    'link' => '/porto/2',
-                    'category' => 'CONTROL',
-                    'tags' => ['SCADA','PLC']
-                ],
-                [
-                    'image' => 'img/porto.png',
-                    'title' => 'Energy Monitoring Platform',
-                    'company' => 'GreenEnergy Co',
-                    'description' => 'Platform monitoring energi realtime untuk pengurangan konsumsi dan optimasi biaya.',
-                    'link' => '/porto/3',
-                    'category' => 'ENERGY',
-                    'tags' => ['IoT','Analytics','Dashboard']
-                ],
-                [
-                    'image' => 'img/porto.png',
-                    'title' => 'Packaging Optimization',
-                    'company' => 'PT. Sukses Pack',
-                    'description' => 'Optimasi proses pengepakan dengan vision system untuk menurunkan reject rate.',
-                    'link' => '/porto/4',
-                    'category' => 'OPTIMIZATION',
-                    'tags' => ['Vision','Automation']
-                ],
-                [
-                    'image' => 'img/porto.png',
-                    'title' => 'Smart Meter Integration',
-                    'company' => 'Kota Energi',
-                    'description' => 'Integrasi smart meter untuk analitik konsumsi warga dan penghematan biaya.',
-                    'link' => '/porto/5',
-                    'category' => 'SMART GRID',
-                    'tags' => ['IoT','SmartGrid']
-                ],
-                [
-                    'image' => 'img/porto.png',
-                    'title' => 'Packaging Optimization 2',
-                    'company' => 'PT. Packaging',
-                    'description' => 'Solusi tambahan untuk optimasi proses pengepakan.',
-                    'link' => '/porto/6',
-                    'category' => 'OPTIMIZATION',
-                    'tags' => ['Vision','Automation']
-                ],
-            ];
-        @endphp
+        @if(isset($portfolios) && $portfolios->count() > 0)
+            <div id="projects-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                @foreach($portfolios as $portfolio)
+                    <div class="project-card" data-idx="{{ $loop->index }}">
+                        @include('LandingPage.Component.PortoCard', [
+                            'image' => $portfolio->thumbnail 
+                                ? 'storage/' . $portfolio->thumbnail 
+                                : 'img/porto.png',
+                            'title' => $portfolio->title,
+                            'company' => $portfolio->subtitle,
+                            'description' => Str::limit($portfolio->description, 120),
+                            'link' => route('portfolio.show', $portfolio->slug),
+                            'category' => $portfolio->category->name ?? '',
+                            'tags' => $portfolio->tags->pluck('name')->toArray()
+                        ])
+                    </div>
+                @endforeach
+            </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-            @foreach($projects as $p)
-                <div>
-                    @include('LandingPage.Component.PortoCard', [
-                        'image' => $p['image'],
-                        'title' => $p['title'],
-                        'company' => $p['company'],
-                        'description' => $p['description'],
-                        'link' => $p['link'],
-                        'category' => $p['category'],
-                        'tags' => $p['tags']
-                    ])
-                </div>
-            @endforeach
-        </div>
-
-        <div class="mt-6 text-center">
-            <a href="/portofolio" class="text-primary font-semibold flex justify-center text-xl mt-5 hover:underline">Lihat Selengkapnya -></a>
-        </div>
+            {{-- Pagination (Laravel built-in) --}}
+            @if($portfolios->hasPages())
+            <div class="mt-8 flex justify-center">
+                {{ $portfolios->links() }}
+            </div>
+            @endif
+        @else
+            {{-- Empty State --}}
+            <div class="text-center py-20">
+                <svg class="mx-auto h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                </svg>
+                <h3 class="mt-4 text-lg font-medium text-gray-900">Belum ada proyek</h3>
+                <p class="mt-2 text-gray-500">Proyek portfolio akan ditampilkan di sini.</p>
+            </div>
+        @endif
     </div>
 </section>
