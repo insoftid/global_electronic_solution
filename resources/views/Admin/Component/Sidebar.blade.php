@@ -57,16 +57,18 @@
 					</a>
 			</li>
 
-			<li>
-				@if(isset($active) && $active === 'adminakses')
-					<a href="/admin/users" aria-current="page"
-						class="flex items-center px-4 py-3 bg-[#12773a] text-white border-l-4 border-white">
-				@else
-						<a href="/admin/users" class="flex items-center px-4 py-3 hover:bg-[#12773a]/80">
-					@endif
-						<span class="ml-1 text-sm">Admin & Akses</span>
-					</a>
-			</li>
+			@if(auth()->user() && auth()->user()->isSuperadmin())
+				<li>
+					@if(isset($active) && $active === 'adminakses')
+						<a href="/admin/users" aria-current="page"
+							class="flex items-center px-4 py-3 bg-[#12773a] text-white border-l-4 border-white">
+					@else
+							<a href="/admin/users" class="flex items-center px-4 py-3 hover:bg-[#12773a]/80">
+						@endif
+							<span class="ml-1 text-sm">Admin & Akses</span>
+						</a>
+				</li>
+			@endif
 		</ul>
 	</nav>
 
