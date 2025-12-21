@@ -61,7 +61,7 @@ class PartnerController extends Controller
             'description' => $validated['description'] ?? null,
             'logo_path' => $logoPath,
             'display_order' => $validated['display_order'] ?? 0,
-            'is_active' => $validated['is_active'] ?? true,
+            'is_active' => $request->boolean('is_active'),
         ]);
 
         return response()->json([
@@ -96,7 +96,7 @@ class PartnerController extends Controller
             'description' => $validated['description'] ?? null,
             'logo_path' => $validated['logo_path'] ?? $partner->logo_path,
             'display_order' => $validated['display_order'] ?? $partner->display_order,
-            'is_active' => $validated['is_active'] ?? $partner->is_active,
+            'is_active' => $request->boolean('is_active'),
         ]);
 
         return response()->json([
