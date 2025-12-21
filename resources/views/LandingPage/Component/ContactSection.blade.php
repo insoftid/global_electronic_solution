@@ -106,13 +106,25 @@
                         class="w-full bg-white/80 border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white">{{ old('message') }}</textarea>
                 </div>
                 <div class="flex justify-center">
-                    <div class="g-recaptcha" data-sitekey="{{ config('services.recaptcha.site_key') }}"></div>
+                    <div class="g-recaptcha" data-sitekey="{{ config('services.recaptcha.site_key') }}"
+                        data-callback="onRecaptchaSuccess" data-expired-callback="onRecaptchaExpired"></div>
                 </div>
                 <div>
-                    <button type="submit"
-                        class="bg-secondary flex mx-auto text-white font-semibold px-10 py-3 rounded-md hover:bg-secondary/80 transition-colors duration-200">Kirim</button>
+                    <button type="submit" id="contactSubmitBtn" disabled
+                        class="bg-secondary flex mx-auto text-white font-semibold px-10 py-3 rounded-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-secondary/80 disabled:hover:bg-secondary">Kirim</button>
                 </div>
             </form>
         </div>
     </div>
+
+    <script>
+        // reCAPTCHA callbacks
+        function onRecaptchaSuccess(token) {
+            document.getElementById('contactSubmitBtn').disabled = false;
+        }
+
+        function onRecaptchaExpired() {
+            document.getElementById('contactSubmitBtn').disabled = true;
+        }
+    </script>
 </section>

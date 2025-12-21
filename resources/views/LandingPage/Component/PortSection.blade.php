@@ -19,10 +19,10 @@
                 @endforeach
             </div>
 
-            {{-- Pagination (Laravel built-in) --}}
+            {{-- Custom Pagination --}}
             @if($portfolios->hasPages())
             <div class="mt-8 flex justify-center">
-                {{ $portfolios->links() }}
+                {{ $portfolios->links('vendor.pagination.custom') }}
             </div>
             @endif
         @else
