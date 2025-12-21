@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    @php($title = 'Portfolio')
+    @php($title = 'Product & Portfolio')
     @include('Component.Head')
 </head>
 <body>
