@@ -33,7 +33,7 @@ class PortfolioController extends Controller
         return view('LandingPage.Portfolio', [
             'settings' => SiteSetting::allAsArray(),
             'gallery' => GalleryPhoto::all()->keyBy('slot_key'),
-            'portfolios' => $query->paginate(3),
+            'portfolios' => $query->paginate(9),
             'categories' => Category::all(),
         ]);
     }
