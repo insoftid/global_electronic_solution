@@ -138,6 +138,9 @@
 </section>
 
 {{-- AJAX JS --}}
+{{-- Toast Container --}}
+<div id="toast-container" class="fixed top-5 right-5 z-50 space-y-2"></div>
+
 <script>
   (function () {
     const rows = () => Array.from(document.querySelectorAll('.msg-row'));
@@ -161,6 +164,44 @@
     const deleteBtn = document.getElementById('deleteBtn');
 
     const csrfToken = '{{ csrf_token() }}';
+
+    // Toast notification system
+    function showToast(message, type = 'success', duration = 4000) {
+      const container = document.getElementById('toast-container');
+      if (!container) return;
+      const toast = document.createElement('div');
+
+      const bgColor = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
+      const icon = type === 'success'
+        ? '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>'
+        : type === 'error'
+          ? '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>'
+          : '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
+
+      toast.className = `${bgColor} text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 transform translate-x-full transition-transform duration-300 max-w-sm`;
+      toast.innerHTML = `
+          <span class="flex-shrink-0">${icon}</span>
+          <span class="flex-1 text-sm font-medium">${message}</span>
+          <button class="flex-shrink-0 hover:opacity-80" onclick="this.parentElement.remove()">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+          </button>
+      `;
+
+      container.appendChild(toast);
+
+      requestAnimationFrame(() => {
+        toast.classList.remove('translate-x-full');
+        toast.classList.add('translate-x-0');
+      });
+
+      setTimeout(() => {
+        toast.classList.remove('translate-x-0');
+        toast.classList.add('translate-x-full');
+        setTimeout(() => toast.remove(), 300);
+      }, duration);
+
+      return toast;
+    }
 
     function clearActive() {
       rows().forEach(r => r.classList.remove('ring-2', 'ring-green-200', 'bg-green-50'));
@@ -190,7 +231,10 @@
     // Update status
     updateStatusBtn.addEventListener('click', async () => {
       const id = selectedMsgId.value;
-      if (!id) { alert('Pilih pesan terlebih dahulu'); return; }
+      if (!id) {
+        showToast('Pilih pesan terlebih dahulu', 'error');
+        return;
+      }
 
       try {
         const response = await fetch(`/admin/contacts/${id}/status`, {
@@ -199,26 +243,45 @@
             'Content-Type': 'application/json',
             'Accept': 'application/json',
             'X-CSRF-TOKEN': csrfToken,
+            'X-Requested-With': 'XMLHttpRequest',
           },
           body: JSON.stringify({ status: statusChange.value }),
         });
 
         const result = await response.json();
         if (response.ok && result.success) {
-          alert(result.message);
-          location.reload();
+          showToast(result.message || 'Status berhasil diperbarui', 'success');
+          // Update row status in table without reload
+          const row = document.querySelector(`.msg-row[data-id="${id}"]`);
+          if (row) {
+            row.dataset.status = statusChange.value;
+            dStatus.textContent = statusChange.value;
+            // Update badge color
+            const badge = row.querySelector('td:nth-child(4) span');
+            if (badge) {
+              badge.className = statusChange.value === 'Baru'
+                ? 'inline-flex rounded-full bg-red-100 text-red-700 px-2.5 py-1 text-xs'
+                : statusChange.value === 'Dibaca'
+                  ? 'inline-flex rounded-full bg-sky-100 text-sky-700 px-2.5 py-1 text-xs'
+                  : 'inline-flex rounded-full bg-green-100 text-green-700 px-2.5 py-1 text-xs';
+              badge.textContent = statusChange.value;
+            }
+          }
         } else {
-          alert(result.message || 'Gagal update status');
+          showToast(result.message || 'Gagal update status', 'error');
         }
       } catch (err) {
-        alert('Terjadi kesalahan koneksi');
+        showToast('Terjadi kesalahan koneksi', 'error');
       }
     });
 
     // Delete
     deleteBtn.addEventListener('click', async () => {
       const id = selectedMsgId.value;
-      if (!id) { alert('Pilih pesan terlebih dahulu'); return; }
+      if (!id) {
+        showToast('Pilih pesan terlebih dahulu', 'error');
+        return;
+      }
       if (!confirm('Yakin ingin menghapus pesan ini?')) return;
 
       try {
@@ -227,18 +290,35 @@
           headers: {
             'Accept': 'application/json',
             'X-CSRF-TOKEN': csrfToken,
+            'X-Requested-With': 'XMLHttpRequest',
           },
         });
 
         const result = await response.json();
         if (response.ok && result.success) {
-          alert(result.message);
-          location.reload();
+          showToast(result.message || 'Pesan berhasil dihapus', 'success');
+          // Remove row from table
+          const row = document.querySelector(`.msg-row[data-id="${id}"]`);
+          if (row) {
+            row.remove();
+            // Reset detail panel
+            selectedMsgId.value = '';
+            detailSubject.textContent = 'Pilih pesan untuk melihat detail';
+            detailName.textContent = '-';
+            detailEmail.textContent = '-';
+            dName.textContent = '-';
+            dEmail.textContent = '-';
+            dDate.textContent = '-';
+            dStatus.textContent = '-';
+            dContent.textContent = '-';
+            // Update total count
+            totalMsg.textContent = parseInt(totalMsg.textContent) - 1;
+          }
         } else {
-          alert(result.message || 'Gagal menghapus');
+          showToast(result.message || 'Gagal menghapus', 'error');
         }
       } catch (err) {
-        alert('Terjadi kesalahan koneksi');
+        showToast('Terjadi kesalahan koneksi', 'error');
       }
     });
 
