@@ -99,7 +99,7 @@ class PortfolioController extends Controller
             'project_date' => $validated['project_date'] ?? null,
             'thumbnail' => $thumbnailPath,
             'is_featured' => $validated['is_featured'] ?? false,
-            'is_active' => $validated['is_active'] ?? true,
+            'is_active' => $request->boolean('is_active'),
             'display_order' => $validated['display_order'] ?? 0,
             // Project metrics
             'efficiency_increase' => $validated['efficiency_increase'] ?? null,
@@ -181,7 +181,7 @@ class PortfolioController extends Controller
             'project_date' => $validated['project_date'] ?? null,
             'thumbnail' => $validated['thumbnail'] ?? $portfolio->thumbnail,
             'is_featured' => $validated['is_featured'] ?? false,
-            'is_active' => $validated['is_active'] ?? true,
+            'is_active' => $request->boolean('is_active'),
             'display_order' => $validated['display_order'] ?? 0,
             // Project metrics
             'efficiency_increase' => $validated['efficiency_increase'] ?? null,

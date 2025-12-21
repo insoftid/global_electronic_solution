@@ -59,7 +59,7 @@ class CertificateController extends Controller
             'description' => $validated['description'] ?? null,
             'image_path' => $imagePath,
             'display_order' => $validated['display_order'] ?? 0,
-            'is_active' => $validated['is_active'] ?? true,
+            'is_active' => $request->boolean('is_active'),
         ]);
 
         return response()->json([
@@ -92,7 +92,7 @@ class CertificateController extends Controller
             'description' => $validated['description'] ?? null,
             'image_path' => $validated['image_path'] ?? $certificate->image_path,
             'display_order' => $validated['display_order'] ?? $certificate->display_order,
-            'is_active' => $validated['is_active'] ?? $certificate->is_active,
+            'is_active' => $request->boolean('is_active'),
         ]);
 
         return response()->json([
