@@ -44,46 +44,47 @@
             </div>
 
             {{-- Right Column: Metrics --}}
-            @if($portfolio->efficiency_increase || $portfolio->waste_reduction || $portfolio->roi_months || $portfolio->downtime_reduction || $portfolio->quality_rate)
-                <div class="w-full lg:w-1/3">
-                    <div class="space-y-6">
-                        @if($portfolio->efficiency_increase)
-                            <div>
-                                <p class="text-sm text-gray-500 font-medium">Peningkatan Efisiensi</p>
-                                <p class="text-3xl font-bold text-primary">{{ $portfolio->efficiency_increase }}</p>
-                            </div>
-                        @endif
-
-                        @if($portfolio->waste_reduction)
-                            <div>
-                                <p class="text-sm text-gray-500 font-medium">Pengurangan Waste</p>
-                                <p class="text-3xl font-bold text-primary">{{ $portfolio->waste_reduction }}</p>
-                            </div>
-                        @endif
-
-                        @if($portfolio->roi_months)
-                            <div>
-                                <p class="text-sm text-gray-500 font-medium">ROI dalam</p>
-                                <p class="text-3xl font-bold text-primary">{{ $portfolio->roi_months }}</p>
-                            </div>
-                        @endif
-
-                        @if($portfolio->downtime_reduction)
-                            <div>
-                                <p class="text-sm text-gray-500 font-medium">Downtime Berkurang</p>
-                                <p class="text-3xl font-bold text-primary">{{ $portfolio->downtime_reduction }}</p>
-                            </div>
-                        @endif
-
-                        @if($portfolio->quality_rate)
-                            <div>
-                                <p class="text-sm text-gray-500 font-medium">Quality Rate</p>
-                                <p class="text-3xl font-bold text-primary">{{ $portfolio->quality_rate }}</p>
-                            </div>
-                        @endif
+            {{-- @if($portfolio->efficiency_increase || $portfolio->waste_reduction || $portfolio->roi_months ||
+            $portfolio->downtime_reduction || $portfolio->quality_rate)
+            <div class="w-full lg:w-1/3">
+                <div class="space-y-6">
+                    @if($portfolio->efficiency_increase)
+                    <div>
+                        <p class="text-sm text-gray-500 font-medium">Peningkatan Efisiensi</p>
+                        <p class="text-3xl font-bold text-primary">{{ $portfolio->efficiency_increase }}</p>
                     </div>
+                    @endif
+
+                    @if($portfolio->waste_reduction)
+                    <div>
+                        <p class="text-sm text-gray-500 font-medium">Pengurangan Waste</p>
+                        <p class="text-3xl font-bold text-primary">{{ $portfolio->waste_reduction }}</p>
+                    </div>
+                    @endif
+
+                    @if($portfolio->roi_months)
+                    <div>
+                        <p class="text-sm text-gray-500 font-medium">ROI dalam</p>
+                        <p class="text-3xl font-bold text-primary">{{ $portfolio->roi_months }}</p>
+                    </div>
+                    @endif
+
+                    @if($portfolio->downtime_reduction)
+                    <div>
+                        <p class="text-sm text-gray-500 font-medium">Downtime Berkurang</p>
+                        <p class="text-3xl font-bold text-primary">{{ $portfolio->downtime_reduction }}</p>
+                    </div>
+                    @endif
+
+                    @if($portfolio->quality_rate)
+                    <div>
+                        <p class="text-sm text-gray-500 font-medium">Quality Rate</p>
+                        <p class="text-3xl font-bold text-primary">{{ $portfolio->quality_rate }}</p>
+                    </div>
+                    @endif
                 </div>
-            @endif
+            </div>
+            @endif --}}
         </div>
 
         {{-- YouTube Video (if available) --}}
