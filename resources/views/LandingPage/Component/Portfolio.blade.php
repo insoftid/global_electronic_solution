@@ -7,7 +7,7 @@
                 <div id="portfolio-track" class="flex items-center gap-5 transition-transform duration-700 ease-in-out">
                     @forelse($portfolios as $portfolio)
                         <div class="shrink-0 w-full md:w-1/3">
-                            <a href="{{ route('portfolio.show', $portfolio->slug) }}" class="block w-full h-full">
+                            <a href="{{ route('portfolio.show', $portfolio->slug) }}">
                                 <div class="bg-white min-h-[450px] rounded-lg shadow-lg overflow-hidden hover:scale-105 hover:shadow-xl transition-all duration-300 ease-in-out">
                                     <div class="relative">
                                         <img src="{{ $portfolio->thumbnail ? asset('storage/' . $portfolio->thumbnail) : asset('img/porto.png') }}" 
