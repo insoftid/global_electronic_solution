@@ -18,12 +18,7 @@ class HomeController extends Controller
     {
         return view('LandingPage.Homepage', [
             'settings' => SiteSetting::allAsArray(),
-            'portfolios' => Portfolio::active()
-                ->featured()
-                ->ordered()
-                ->limit(6)
-                ->with(['category', 'tags'])
-                ->get(),
+            'portfolios' => Portfolio::limit(6)->get(),
             'certificates' => Certificate::active()->ordered()->get(),
             'partners' => Partner::active()->ordered()->get(),
             'gallery' => GalleryPhoto::all()->keyBy('slot_key'),

@@ -17,7 +17,8 @@
                         @endif
                     </span>
                     <h3 class="font-semibold text-white text-2xl">
-                        {{ $settings['company_name'] ?? 'Global Electronic Solution' }}</h3>
+                        {{ $settings['company_name'] ?? 'Global Electronic Solution' }}
+                    </h3>
                 </div>
                 <div>
                     <p class="mt-3 text-lg text-white max-w-md">
@@ -78,7 +79,8 @@
 
     </div>
     <div class="border-t-2 border-secondary/70 mt-8 py-6">
-        <p class="text-center text-sm text-white">Designed By Insoft.id © {{ date('Y') }}
-            {{ $settings['company_name'] ?? 'CV. Global Electronic Solution' }}. All rights reserved.</p>
+        <p class="text-center text-sm text-white">Developed By Insoft.id © {{ date('Y') }}
+            {{ $settings['company_name'] ?? 'CV. Global Electronic Solution' }}. All rights reserved.
+        </p>
     </div>
 </footer>
