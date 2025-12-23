@@ -2,15 +2,8 @@
     <div
         class="bg-white min-h-[450px] rounded-lg shadow-lg overflow-hidden hover:scale-105 hover:shadow-xl transition-all duration-300 ease-in-out">
         <div class="relative">
-            @php
-                // If the provided image already points into public/img (starts with 'img/' or '/img/'), use it directly.
-                // Otherwise fall back to the img/porto/ folder so legacy usage still works.
-                $imgSrc = asset($image);
-            @endphp
-
-            <img src="{{ $imgSrc }}" alt="{{ $title }}"
+            <img src="{{ $image }}" alt="{{ $title }}"
                 class="w-full h-48 object-cover hover:scale-105 transition-transform duration-300 ease-in-out" />
-
         </div>
 
         <div class="p-6">
