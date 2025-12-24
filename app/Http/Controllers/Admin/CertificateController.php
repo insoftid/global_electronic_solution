@@ -52,21 +52,29 @@ class CertificateController extends Controller
             'is_active' => 'boolean',
         ]);
 
-        $imagePath = $this->fileUploadService->upload($request->file('image'), 'certificates');
+        try {
+            $imagePath = $this->fileUploadService->upload($request->file('image'), 'certificates');
 
-        $certificate = Certificate::create([
-            'name' => $validated['name'],
-            'description' => $validated['description'] ?? null,
-            'image_path' => $imagePath,
-            'display_order' => $validated['display_order'] ?? 0,
-            'is_active' => $request->boolean('is_active'),
-        ]);
+            $certificate = Certificate::create([
+                'name' => $validated['name'],
+                'description' => $validated['description'] ?? null,
+                'image_path' => $imagePath,
+                'display_order' => $validated['display_order'] ?? 0,
+                'is_active' => $request->boolean('is_active'),
+            ]);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Sertifikat berhasil ditambahkan',
-            'certificate' => $certificate,
-        ]);
+            return response()->json([
+                'success' => true,
+                'message' => 'Sertifikat berhasil ditambahkan',
+                'certificate' => $certificate,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menambahkan sertifikat',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
@@ -82,24 +90,32 @@ class CertificateController extends Controller
             'is_active' => 'boolean',
         ]);
 
-        if ($request->hasFile('image')) {
-            $this->fileUploadService->delete($certificate->image_path);
-            $validated['image_path'] = $this->fileUploadService->upload($request->file('image'), 'certificates');
+        try {
+            if ($request->hasFile('image')) {
+                $this->fileUploadService->delete($certificate->image_path);
+                $validated['image_path'] = $this->fileUploadService->upload($request->file('image'), 'certificates');
+            }
+
+            $certificate->update([
+                'name' => $validated['name'],
+                'description' => $validated['description'] ?? null,
+                'image_path' => $validated['image_path'] ?? $certificate->image_path,
+                'display_order' => $validated['display_order'] ?? $certificate->display_order,
+                'is_active' => $request->boolean('is_active'),
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Sertifikat berhasil diperbarui',
+                'certificate' => $certificate,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memperbarui sertifikat',
+                'error' => $e->getMessage(),
+            ], 500);
         }
-
-        $certificate->update([
-            'name' => $validated['name'],
-            'description' => $validated['description'] ?? null,
-            'image_path' => $validated['image_path'] ?? $certificate->image_path,
-            'display_order' => $validated['display_order'] ?? $certificate->display_order,
-            'is_active' => $request->boolean('is_active'),
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Sertifikat berhasil diperbarui',
-            'certificate' => $certificate,
-        ]);
     }
 
     /**

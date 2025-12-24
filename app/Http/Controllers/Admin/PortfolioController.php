@@ -82,47 +82,58 @@ class PortfolioController extends Controller
             'quality_rate' => 'nullable|string|max:50',
         ]);
 
-        // Handle thumbnail upload
-        $thumbnailPath = null;
-        if ($request->hasFile('thumbnail')) {
-            $thumbnailPath = $this->fileUploadService->upload($request->file('thumbnail'), 'portfolios');
-        }
+        try {
+            // Handle thumbnail upload
+            $thumbnailPath = null;
+            if ($request->hasFile('thumbnail')) {
+                $thumbnailPath = $this->fileUploadService->upload($request->file('thumbnail'), 'portfolios');
+            }
 
-        $portfolio = Portfolio::create([
-            'title' => $validated['title'],
-            'subtitle' => $validated['subtitle'] ?? null,
-            'slug' => Str::slug($validated['title']),
-            'description' => $validated['description'],
-            'detail' => $validated['detail'] ?? null,
-            'category_id' => $validated['category_id'] ?? null,
-            'youtube_url' => $validated['youtube_url'] ?? null,
-            'project_date' => $validated['project_date'] ?? null,
-            'thumbnail' => $thumbnailPath,
-            'is_featured' => $validated['is_featured'] ?? false,
-            'is_active' => $request->boolean('is_active'),
-            'display_order' => $validated['display_order'] ?? 0,
-            // Project metrics
-            'efficiency_increase' => $validated['efficiency_increase'] ?? null,
-            'waste_reduction' => $validated['waste_reduction'] ?? null,
-            'roi_months' => $validated['roi_months'] ?? null,
-            'downtime_reduction' => $validated['downtime_reduction'] ?? null,
-            'quality_rate' => $validated['quality_rate'] ?? null,
-        ]);
-
-        // Attach tags
-        if (!empty($validated['tags'])) {
-            $portfolio->tags()->sync($validated['tags']);
-        }
-
-        if ($request->ajax()) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Portfolio berhasil ditambahkan',
-                'portfolio' => $portfolio->load(['category', 'tags']),
+            $portfolio = Portfolio::create([
+                'title' => $validated['title'],
+                'subtitle' => $validated['subtitle'] ?? null,
+                'slug' => Str::slug($validated['title']),
+                'description' => $validated['description'],
+                'detail' => $validated['detail'] ?? null,
+                'category_id' => $validated['category_id'] ?? null,
+                'youtube_url' => $validated['youtube_url'] ?? null,
+                'project_date' => $validated['project_date'] ?? null,
+                'thumbnail' => $thumbnailPath,
+                'is_featured' => $validated['is_featured'] ?? false,
+                'is_active' => $request->boolean('is_active'),
+                'display_order' => $validated['display_order'] ?? 0,
+                // Project metrics
+                'efficiency_increase' => $validated['efficiency_increase'] ?? null,
+                'waste_reduction' => $validated['waste_reduction'] ?? null,
+                'roi_months' => $validated['roi_months'] ?? null,
+                'downtime_reduction' => $validated['downtime_reduction'] ?? null,
+                'quality_rate' => $validated['quality_rate'] ?? null,
             ]);
-        }
 
-        return back()->with('success', 'Portfolio berhasil ditambahkan');
+            // Attach tags
+            if (!empty($validated['tags'])) {
+                $portfolio->tags()->sync($validated['tags']);
+            }
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Portfolio berhasil ditambahkan',
+                    'portfolio' => $portfolio->load(['category', 'tags']),
+                ]);
+            }
+
+            return back()->with('success', 'Portfolio berhasil ditambahkan');
+        } catch (\Exception $e) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal menambahkan portfolio',
+                    'error' => $e->getMessage(),
+                ], 500);
+            }
+            return back()->with('error', 'Gagal menambahkan portfolio: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -162,47 +173,58 @@ class PortfolioController extends Controller
             'quality_rate' => 'nullable|string|max:50',
         ]);
 
-        // Handle thumbnail upload
-        if ($request->hasFile('thumbnail')) {
-            // Delete old thumbnail
-            if ($portfolio->thumbnail) {
-                $this->fileUploadService->delete($portfolio->thumbnail);
+        try {
+            // Handle thumbnail upload
+            if ($request->hasFile('thumbnail')) {
+                // Delete old thumbnail
+                if ($portfolio->thumbnail) {
+                    $this->fileUploadService->delete($portfolio->thumbnail);
+                }
+                $validated['thumbnail'] = $this->fileUploadService->upload($request->file('thumbnail'), 'portfolios');
             }
-            $validated['thumbnail'] = $this->fileUploadService->upload($request->file('thumbnail'), 'portfolios');
-        }
 
-        $portfolio->update([
-            'title' => $validated['title'],
-            'subtitle' => $validated['subtitle'] ?? null,
-            'description' => $validated['description'],
-            'detail' => $validated['detail'] ?? null,
-            'category_id' => $validated['category_id'] ?? null,
-            'youtube_url' => $validated['youtube_url'] ?? null,
-            'project_date' => $validated['project_date'] ?? null,
-            'thumbnail' => $validated['thumbnail'] ?? $portfolio->thumbnail,
-            'is_featured' => $validated['is_featured'] ?? false,
-            'is_active' => $request->boolean('is_active'),
-            'display_order' => $validated['display_order'] ?? 0,
-            // Project metrics
-            'efficiency_increase' => $validated['efficiency_increase'] ?? null,
-            'waste_reduction' => $validated['waste_reduction'] ?? null,
-            'roi_months' => $validated['roi_months'] ?? null,
-            'downtime_reduction' => $validated['downtime_reduction'] ?? null,
-            'quality_rate' => $validated['quality_rate'] ?? null,
-        ]);
-
-        // Sync tags
-        $portfolio->tags()->sync($validated['tags'] ?? []);
-
-        if ($request->ajax()) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Portfolio berhasil diperbarui',
-                'portfolio' => $portfolio->load(['category', 'tags']),
+            $portfolio->update([
+                'title' => $validated['title'],
+                'subtitle' => $validated['subtitle'] ?? null,
+                'description' => $validated['description'],
+                'detail' => $validated['detail'] ?? null,
+                'category_id' => $validated['category_id'] ?? null,
+                'youtube_url' => $validated['youtube_url'] ?? null,
+                'project_date' => $validated['project_date'] ?? null,
+                'thumbnail' => $validated['thumbnail'] ?? $portfolio->thumbnail,
+                'is_featured' => $validated['is_featured'] ?? false,
+                'is_active' => $request->boolean('is_active'),
+                'display_order' => $validated['display_order'] ?? 0,
+                // Project metrics
+                'efficiency_increase' => $validated['efficiency_increase'] ?? null,
+                'waste_reduction' => $validated['waste_reduction'] ?? null,
+                'roi_months' => $validated['roi_months'] ?? null,
+                'downtime_reduction' => $validated['downtime_reduction'] ?? null,
+                'quality_rate' => $validated['quality_rate'] ?? null,
             ]);
-        }
 
-        return back()->with('success', 'Portfolio berhasil diperbarui');
+            // Sync tags
+            $portfolio->tags()->sync($validated['tags'] ?? []);
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Portfolio berhasil diperbarui',
+                    'portfolio' => $portfolio->load(['category', 'tags']),
+                ]);
+            }
+
+            return back()->with('success', 'Portfolio berhasil diperbarui');
+        } catch (\Exception $e) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal memperbarui portfolio',
+                    'error' => $e->getMessage(),
+                ], 500);
+            }
+            return back()->with('error', 'Gagal memperbarui portfolio: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -242,22 +264,30 @@ class PortfolioController extends Controller
             'images.*' => 'image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
-        $uploadedImages = [];
-        foreach ($request->file('images') as $image) {
-            $path = $this->fileUploadService->upload($image, 'portfolios/gallery');
-            $portfolioImage = PortfolioImage::create([
-                'portfolio_id' => $portfolio->id,
-                'image_path' => $path,
-                'display_order' => $portfolio->images()->count(),
-            ]);
-            $uploadedImages[] = $portfolioImage;
-        }
+        try {
+            $uploadedImages = [];
+            foreach ($request->file('images') as $image) {
+                $path = $this->fileUploadService->upload($image, 'portfolios/gallery');
+                $portfolioImage = PortfolioImage::create([
+                    'portfolio_id' => $portfolio->id,
+                    'image_path' => $path,
+                    'display_order' => $portfolio->images()->count(),
+                ]);
+                $uploadedImages[] = $portfolioImage;
+            }
 
-        return response()->json([
-            'success' => true,
-            'message' => count($uploadedImages) . ' gambar berhasil diupload',
-            'images' => $uploadedImages,
-        ]);
+            return response()->json([
+                'success' => true,
+                'message' => count($uploadedImages) . ' gambar berhasil diupload',
+                'images' => $uploadedImages,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengupload gambar',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**

@@ -22,62 +22,8 @@
 <div id="toast-container" class="fixed top-5 right-5 z-50 space-y-2"></div>
 
 <script>
-    // Global toast function
-    window.showToast = function (message, type = 'success', duration = 4000) {
-        const container = document.getElementById('toast-container');
-        if (!container) return;
-        const toast = document.createElement('div');
-
-        const bgColor = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
-        const icon = type === 'success'
-            ? '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>'
-            : '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
-
-        toast.className = `${bgColor} text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 transform translate-x-full transition-transform duration-300 max-w-sm`;
-        toast.innerHTML = `
-        <span class="flex-shrink-0">${icon}</span>
-        <span class="flex-1 text-sm font-medium">${message}</span>
-        <button class="flex-shrink-0 hover:opacity-80" onclick="this.parentElement.remove()">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-        </button>
-    `;
-
-        container.appendChild(toast);
-        requestAnimationFrame(() => {
-            toast.classList.remove('translate-x-full');
-            toast.classList.add('translate-x-0');
-        });
-
-        if (type !== 'loading') {
-            setTimeout(() => {
-                toast.classList.remove('translate-x-0');
-                toast.classList.add('translate-x-full');
-                setTimeout(() => toast.remove(), 300);
-            }, duration);
-        }
-
-        return toast;
-    };
-
-    // Global setButtonLoading function
-    window.setButtonLoading = function (button, isLoading) {
-        if (isLoading) {
-            button.disabled = true;
-            button.dataset.originalText = button.innerHTML;
-            button.innerHTML = `
-            <svg class="animate-spin h-4 w-4 inline-block mr-2" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-            </svg>
-            Menyimpan...
-        `;
-            button.classList.add('opacity-70', 'cursor-not-allowed');
-        } else {
-            button.disabled = false;
-            button.innerHTML = button.dataset.originalText || 'Simpan';
-            button.classList.remove('opacity-70', 'cursor-not-allowed');
-        }
-    };
+    // Note: showToast and setButtonLoading are already defined globally in Header.blade.php
+    // They support both string messages and error objects with detailed field information
 
     // Image modal handlers
     (function () {

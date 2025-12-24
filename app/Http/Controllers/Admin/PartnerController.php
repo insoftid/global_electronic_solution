@@ -53,22 +53,30 @@ class PartnerController extends Controller
             'is_active' => 'boolean',
         ]);
 
-        $logoPath = $this->fileUploadService->upload($request->file('logo'), 'partners');
+        try {
+            $logoPath = $this->fileUploadService->upload($request->file('logo'), 'partners');
 
-        $partner = Partner::create([
-            'name' => $validated['name'],
-            'website_url' => $validated['website_url'] ?? null,
-            'description' => $validated['description'] ?? null,
-            'logo_path' => $logoPath,
-            'display_order' => $validated['display_order'] ?? 0,
-            'is_active' => $request->boolean('is_active'),
-        ]);
+            $partner = Partner::create([
+                'name' => $validated['name'],
+                'website_url' => $validated['website_url'] ?? null,
+                'description' => $validated['description'] ?? null,
+                'logo_path' => $logoPath,
+                'display_order' => $validated['display_order'] ?? 0,
+                'is_active' => $request->boolean('is_active'),
+            ]);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Partner berhasil ditambahkan',
-            'partner' => $partner,
-        ]);
+            return response()->json([
+                'success' => true,
+                'message' => 'Partner berhasil ditambahkan',
+                'partner' => $partner,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menambahkan partner',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
@@ -85,25 +93,33 @@ class PartnerController extends Controller
             'is_active' => 'boolean',
         ]);
 
-        if ($request->hasFile('logo')) {
-            $this->fileUploadService->delete($partner->logo_path);
-            $validated['logo_path'] = $this->fileUploadService->upload($request->file('logo'), 'partners');
+        try {
+            if ($request->hasFile('logo')) {
+                $this->fileUploadService->delete($partner->logo_path);
+                $validated['logo_path'] = $this->fileUploadService->upload($request->file('logo'), 'partners');
+            }
+
+            $partner->update([
+                'name' => $validated['name'],
+                'website_url' => $validated['website_url'] ?? null,
+                'description' => $validated['description'] ?? null,
+                'logo_path' => $validated['logo_path'] ?? $partner->logo_path,
+                'display_order' => $validated['display_order'] ?? $partner->display_order,
+                'is_active' => $request->boolean('is_active'),
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Partner berhasil diperbarui',
+                'partner' => $partner,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memperbarui partner',
+                'error' => $e->getMessage(),
+            ], 500);
         }
-
-        $partner->update([
-            'name' => $validated['name'],
-            'website_url' => $validated['website_url'] ?? null,
-            'description' => $validated['description'] ?? null,
-            'logo_path' => $validated['logo_path'] ?? $partner->logo_path,
-            'display_order' => $validated['display_order'] ?? $partner->display_order,
-            'is_active' => $request->boolean('is_active'),
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Partner berhasil diperbarui',
-            'partner' => $partner,
-        ]);
     }
 
     /**
