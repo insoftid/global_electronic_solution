@@ -92,15 +92,17 @@
                 <input type="hidden" id="partnerId" value="" />
 
                 <div>
-                    <label class="text-xs text-gray-500">Nama Partner *</label>
+                    <label class="text-xs text-gray-500">Nama Partner <span class="text-red-500">*</span></label>
                     <input id="partnerName" name="name" type="text" required placeholder="Contoh: PT. Indofood"
                         class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
+                    <p class="text-xs text-gray-400 mt-1">Maksimal 255 karakter</p>
                 </div>
 
                 <div>
                     <label class="text-xs text-gray-500">Website URL</label>
                     <input id="partnerWebsite" name="website_url" type="url" placeholder="https://www.example.com"
                         class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
+                    <p class="text-xs text-gray-400 mt-1">Masukkan URL yang valid (https://...)</p>
                 </div>
 
                 <div>
@@ -258,11 +260,15 @@
                     showToast(result.message || 'Berhasil disimpan', 'success');
                     setTimeout(() => location.reload(), 1000);
                 } else {
-                    const errors = result.errors ? Object.values(result.errors).flat().join(', ') : result.message;
-                    showToast(errors || 'Gagal menyimpan', 'error');
+                    const errorObj = formatApiError(response, result);
+                    showToast(errorObj, 'error');
                 }
             } catch (err) {
-                showToast('Terjadi kesalahan koneksi', 'error');
+                showToast({
+                    title: 'Koneksi Error',
+                    message: 'Gagal menghubungi server',
+                    details: [`• ${err.message || 'Network request failed'}`]
+                }, 'error');
             } finally {
                 setButtonLoading(btnSave, false);
             }
@@ -290,10 +296,15 @@
                     showToast(result.message || 'Berhasil dihapus', 'success');
                     setTimeout(() => location.reload(), 1000);
                 } else {
-                    showToast(result.message || 'Gagal menghapus', 'error');
+                    const errorObj = formatApiError(response, result);
+                    showToast(errorObj, 'error');
                 }
             } catch (err) {
-                showToast('Terjadi kesalahan koneksi', 'error');
+                showToast({
+                    title: 'Koneksi Error',
+                    message: 'Gagal menghubungi server',
+                    details: [`• ${err.message || 'Network request failed'}`]
+                }, 'error');
             } finally {
                 setButtonLoading(btnDelete, false);
             }

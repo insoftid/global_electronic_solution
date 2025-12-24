@@ -93,10 +93,11 @@
                     <input type="hidden" id="projectId" value="" />
 
                     <div>
-                        <label class="text-xs text-gray-500">Judul Proyek *</label>
+                        <label class="text-xs text-gray-500">Judul Proyek <span class="text-red-500">*</span></label>
                         <input id="titleInput" name="title" type="text" required
                             placeholder="Contoh: Integrasi Sistem Otomasi"
                             class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
+                        <p class="text-xs text-gray-400 mt-1">Maksimal 255 karakter</p>
                     </div>
 
                     <div>
@@ -117,7 +118,8 @@
                     </div>
 
                     <div>
-                        <label class="text-xs text-gray-500">Deskripsi Singkat *</label>
+                        <label class="text-xs text-gray-500">Deskripsi Singkat <span
+                                class="text-red-500">*</span></label>
                         <textarea id="descriptionInput" name="description" rows="2" required
                             placeholder="Deskripsi singkat untuk preview"
                             class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200"></textarea>
@@ -141,6 +143,7 @@
                         <input id="youtubeInput" name="youtube_url" type="url"
                             placeholder="https://www.youtube.com/watch?v=..."
                             class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
+                        <p class="text-xs text-gray-400 mt-1">Masukkan URL YouTube yang valid</p>
                     </div>
 
                     <div data-field="thumbnail">
@@ -158,6 +161,7 @@
                                 class="flex w-28 h-9 px-2 bg-secondary rounded-r-lg shadow text-white text-xs font-semibold items-center justify-center">Choose
                                 File</span>
                         </label>
+                        <p class="text-xs text-gray-400 mt-1">Format: JPG, PNG, WebP. Maks. 2MB</p>
                     </div>
 
                     <div class="flex items-center gap-4">
@@ -172,7 +176,7 @@
                     </div>
 
                     {{-- PROJECT METRICS SECTION --}}
-                    <div class="pt-3 mt-3 border-t border-gray-200">
+                    {{-- <div class="pt-3 mt-3 border-t border-gray-200">
                         <div class="mb-3">
                             <h5 class="font-semibold text-gray-900 text-sm">Statistik Proyek</h5>
                             <p class="text-xs text-gray-500">Opsional. Pencapaian/metrics proyek yang akan ditampilkan.
@@ -205,7 +209,7 @@
                                     class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-green-200" />
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
 
                     {{-- GALERI FOTO - Terintegrasi dalam form --}}
                     <div class="pt-3 mt-3 border-t border-gray-200">
@@ -493,22 +497,31 @@
                             if (galleryResponse.ok && galleryResult.success) {
                                 showToast(galleryResult.message || 'Foto galeri berhasil diupload', 'success');
                             } else {
-                                showToast('Gagal upload foto galeri: ' + (galleryResult.message || 'Unknown error'), 'error');
+                                const galleryError = formatApiError(galleryResponse, galleryResult);
+                                showToast(galleryError, 'error');
                             }
                         } catch (galleryErr) {
                             console.error('Gallery upload error:', galleryErr);
-                            showToast('Error saat upload foto galeri', 'error');
+                            showToast({
+                                title: 'Upload Error',
+                                message: 'Gagal mengupload foto galeri',
+                                details: [`• ${galleryErr.message || 'Network error'}`]
+                            }, 'error');
                         }
                     }
 
                     // Step 3: Reload page after all done
                     setTimeout(() => location.reload(), 1500);
                 } else {
-                    const errors = result.errors ? Object.values(result.errors).flat().join(', ') : result.message;
-                    showToast(errors || 'Gagal menyimpan', 'error');
+                    const errorObj = formatApiError(response, result);
+                    showToast(errorObj, 'error');
                 }
             } catch (err) {
-                showToast('Terjadi kesalahan koneksi', 'error');
+                showToast({
+                    title: 'Koneksi Error',
+                    message: 'Gagal menghubungi server',
+                    details: [`• ${err.message || 'Network request failed'}`]
+                }, 'error');
             } finally {
                 setButtonLoading(btnSave, false);
             }
@@ -536,10 +549,15 @@
                     showToast(result.message || 'Berhasil dihapus', 'success');
                     setTimeout(() => location.reload(), 1000);
                 } else {
-                    showToast(result.message || 'Gagal menghapus', 'error');
+                    const errorObj = formatApiError(response, result);
+                    showToast(errorObj, 'error');
                 }
             } catch (err) {
-                showToast('Terjadi kesalahan koneksi', 'error');
+                showToast({
+                    title: 'Koneksi Error',
+                    message: 'Gagal menghubungi server',
+                    details: [`• ${err.message || 'Network request failed'}`]
+                }, 'error');
             } finally {
                 setButtonLoading(btnDelete, false);
             }
@@ -624,12 +642,17 @@
                                 portfolioImages[pid] = portfolioImages[pid].filter(i => i.id != imgId);
                             }
                         } else {
-                            showToast(result.message || 'Gagal menghapus', 'error');
+                            const errorObj = formatApiError(response, result);
+                            showToast(errorObj, 'error');
                             btn.disabled = false;
                             btn.innerHTML = '&times;';
                         }
                     } catch (err) {
-                        showToast('Terjadi kesalahan koneksi', 'error');
+                        showToast({
+                            title: 'Koneksi Error',
+                            message: 'Gagal menghapus foto',
+                            details: [`• ${err.message || 'Network error'}`]
+                        }, 'error');
                         btn.disabled = false;
                         btn.innerHTML = '&times;';
                     }

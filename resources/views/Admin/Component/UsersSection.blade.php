@@ -95,15 +95,16 @@
         <input type="hidden" id="formMethod" value="POST" />
 
         <div>
-          <label class="text-xs text-gray-500">Nama</label>
+          <label class="text-xs text-gray-500">Nama <span class="text-red-500">*</span></label>
           <input id="nameInput" name="name" type="text" placeholder="Contoh: Budi Santoso"
             class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
         </div>
 
         <div>
-          <label class="text-xs text-gray-500">Email</label>
+          <label class="text-xs text-gray-500">Email <span class="text-red-500">*</span></label>
           <input id="emailInput" name="email" type="email" placeholder="contoh@domain.com"
             class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
+          <p class="text-xs text-gray-400 mt-1">Gunakan email yang valid</p>
         </div>
 
         <div>
@@ -125,9 +126,11 @@
         </div>
 
         <div>
-          <label class="text-xs text-gray-500">Password <span id="passHint">(wajib untuk user baru)</span></label>
+          <label class="text-xs text-gray-500">Password <span id="passHint" class="text-red-500">(wajib untuk user
+              baru)</span></label>
           <input id="passInput" name="password" type="password" placeholder="Minimal 8 karakter"
             class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
+          <p class="text-xs text-gray-400 mt-1">Minimal 8 karakter. Kosongkan jika tidak ingin mengubah.</p>
         </div>
 
         <div id="formMessage" class="hidden text-sm py-2 px-3 rounded-lg"></div>
@@ -273,11 +276,22 @@
           showMessage(result.message);
           setTimeout(() => location.reload(), 1000);
         } else {
-          const errors = result.errors ? Object.values(result.errors).flat().join(', ') : result.message;
-          showMessage(errors || 'Terjadi kesalahan', true);
+          const errorObj = formatApiError(response, result);
+          // Format for inline message display
+          let errorMsg = errorObj.message;
+          if (errorObj.details && errorObj.details.length > 0) {
+            errorMsg += '\n' + errorObj.details.join('\n');
+          }
+          showMessage(errorMsg, true);
+          showToast(errorObj, 'error');
         }
       } catch (err) {
-        showMessage('Terjadi kesalahan koneksi', true);
+        showMessage('Terjadi kesalahan koneksi: ' + err.message, true);
+        showToast({
+          title: 'Koneksi Error',
+          message: 'Gagal menghubungi server',
+          details: [`• ${err.message || 'Network request failed'}`]
+        }, 'error');
       }
     });
 
@@ -301,10 +315,17 @@
           showMessage(result.message);
           setTimeout(() => location.reload(), 1000);
         } else {
-          showMessage(result.message || 'Gagal menghapus', true);
+          const errorObj = formatApiError(response, result);
+          showMessage(errorObj.message, true);
+          showToast(errorObj, 'error');
         }
       } catch (err) {
         showMessage('Terjadi kesalahan koneksi', true);
+        showToast({
+          title: 'Koneksi Error',
+          message: 'Gagal menghubungi server',
+          details: [`• ${err.message || 'Network request failed'}`]
+        }, 'error');
       }
     });
 

@@ -165,43 +165,7 @@
 
     const csrfToken = '{{ csrf_token() }}';
 
-    // Toast notification system
-    function showToast(message, type = 'success', duration = 4000) {
-      const container = document.getElementById('toast-container');
-      if (!container) return;
-      const toast = document.createElement('div');
-
-      const bgColor = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
-      const icon = type === 'success'
-        ? '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>'
-        : type === 'error'
-          ? '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>'
-          : '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
-
-      toast.className = `${bgColor} text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 transform translate-x-full transition-transform duration-300 max-w-sm`;
-      toast.innerHTML = `
-          <span class="flex-shrink-0">${icon}</span>
-          <span class="flex-1 text-sm font-medium">${message}</span>
-          <button class="flex-shrink-0 hover:opacity-80" onclick="this.parentElement.remove()">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-          </button>
-      `;
-
-      container.appendChild(toast);
-
-      requestAnimationFrame(() => {
-        toast.classList.remove('translate-x-full');
-        toast.classList.add('translate-x-0');
-      });
-
-      setTimeout(() => {
-        toast.classList.remove('translate-x-0');
-        toast.classList.add('translate-x-full');
-        setTimeout(() => toast.remove(), 300);
-      }, duration);
-
-      return toast;
-    }
+    // Using global showToast from Header.blade.php
 
     function clearActive() {
       rows().forEach(r => r.classList.remove('ring-2', 'ring-green-200', 'bg-green-50'));
@@ -268,10 +232,15 @@
             }
           }
         } else {
-          showToast(result.message || 'Gagal update status', 'error');
+          const errorObj = formatApiError(response, result);
+          showToast(errorObj, 'error');
         }
       } catch (err) {
-        showToast('Terjadi kesalahan koneksi', 'error');
+        showToast({
+          title: 'Koneksi Error',
+          message: 'Gagal menghubungi server',
+          details: [`• ${err.message || 'Network request failed'}`]
+        }, 'error');
       }
     });
 
@@ -315,10 +284,15 @@
             totalMsg.textContent = parseInt(totalMsg.textContent) - 1;
           }
         } else {
-          showToast(result.message || 'Gagal menghapus', 'error');
+          const errorObj = formatApiError(response, result);
+          showToast(errorObj, 'error');
         }
       } catch (err) {
-        showToast('Terjadi kesalahan koneksi', 'error');
+        showToast({
+          title: 'Koneksi Error',
+          message: 'Gagal menghubungi server',
+          details: [`• ${err.message || 'Network request failed'}`]
+        }, 'error');
       }
     });
 

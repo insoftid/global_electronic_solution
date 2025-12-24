@@ -312,66 +312,7 @@
     (function () {
         const csrfToken = '{{ csrf_token() }}';
 
-        // Toast notification system
-        function showToast(message, type = 'success', duration = 4000) {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-
-            const bgColor = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
-            const icon = type === 'success'
-                ? '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>'
-                : type === 'error'
-                    ? '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>'
-                    : '<svg class="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>';
-
-            toast.className = `${bgColor} text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 transform translate-x-full transition-transform duration-300 max-w-sm`;
-            toast.innerHTML = `
-                <span class="flex-shrink-0">${icon}</span>
-                <span class="flex-1 text-sm font-medium">${message}</span>
-                <button class="flex-shrink-0 hover:opacity-80" onclick="this.parentElement.remove()">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
-            `;
-
-            container.appendChild(toast);
-
-            // Animate in
-            requestAnimationFrame(() => {
-                toast.classList.remove('translate-x-full');
-                toast.classList.add('translate-x-0');
-            });
-
-            // Auto dismiss
-            if (type !== 'loading') {
-                setTimeout(() => {
-                    toast.classList.remove('translate-x-0');
-                    toast.classList.add('translate-x-full');
-                    setTimeout(() => toast.remove(), 300);
-                }, duration);
-            }
-
-            return toast;
-        }
-
-        // Set button loading state
-        function setButtonLoading(button, isLoading) {
-            if (isLoading) {
-                button.disabled = true;
-                button.dataset.originalText = button.innerHTML;
-                button.innerHTML = `
-                    <svg class="animate-spin h-4 w-4 inline-block mr-2" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-                    </svg>
-                    Menyimpan...
-                `;
-                button.classList.add('opacity-70', 'cursor-not-allowed');
-            } else {
-                button.disabled = false;
-                button.innerHTML = button.dataset.originalText || 'Simpan';
-                button.classList.remove('opacity-70', 'cursor-not-allowed');
-            }
-        }
+        // Using global showToast and setButtonLoading from Header.blade.php
 
         // Generic form submit handler
         async function handleFormSubmit(form, url, isFormData = false) {
@@ -397,11 +338,15 @@
                 if (response.ok) {
                     showToast(result.message || 'Data berhasil disimpan!', 'success');
                 } else {
-                    const errors = result.errors ? Object.values(result.errors).flat().join(', ') : result.message;
-                    showToast(errors || 'Terjadi kesalahan', 'error');
+                    const errorObj = formatApiError(response, result);
+                    showToast(errorObj, 'error');
                 }
             } catch (err) {
-                showToast('Terjadi kesalahan koneksi', 'error');
+                showToast({
+                    title: 'Koneksi Error',
+                    message: 'Gagal menghubungi server',
+                    details: [`• ${err.message || 'Network request failed'}`]
+                }, 'error');
             } finally {
                 setButtonLoading(submitBtn, false);
             }
@@ -457,10 +402,15 @@
                         showToast(result.message || 'Gambar berhasil diupload!', 'success');
                         setTimeout(() => location.reload(), 1500);
                     } else {
-                        showToast(result.message || 'Gagal mengupload gambar', 'error');
+                        const errorObj = formatApiError(response, result);
+                        showToast(errorObj, 'error');
                     }
                 } catch (err) {
-                    showToast('Terjadi kesalahan koneksi', 'error');
+                    showToast({
+                        title: 'Koneksi Error',
+                        message: 'Gagal menghubungi server',
+                        details: [`• ${err.message || 'Network request failed'}`]
+                    }, 'error');
                 } finally {
                     setButtonLoading(submitBtn, false);
                 }
