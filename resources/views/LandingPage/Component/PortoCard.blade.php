@@ -1,6 +1,7 @@
 <a href="{{ $link ?? '#' }}">
-    <div
-        class="bg-white min-h-[450px] rounded-lg shadow-lg overflow-hidden hover:scale-105 hover:shadow-xl transition-all duration-300 ease-in-out">
+    <div class="bg-white min-h-[450px] rounded-lg shadow-lg overflow-hidden hover:scale-105 hover:shadow-xl transition-all duration-300 ease-in-out"
+        data-category="{{ $category ?? '' }}"
+        data-tags="{{ !empty($tags) && is_array($tags) ? implode(',', $tags) : '' }}">
         <div class="relative">
             <img src="{{ $image }}" alt="{{ $title }}"
                 class="w-full h-48 object-cover hover:scale-105 transition-transform duration-300 ease-in-out" />

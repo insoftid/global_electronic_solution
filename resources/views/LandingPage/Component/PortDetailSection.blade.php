@@ -5,13 +5,13 @@
             <div class="w-full lg:w-2/3">
                 <h2 class="text-heading">Ringkasan Proyek</h2>
 
-                {{-- Project Date --}}
+                <!-- {{-- Project Date --}}
                 @if($portfolio->project_date)
                     <div class="flex gap-5 items-center mt-6">
                         <img src="{{ asset('img/calendar.png') }}" alt="calendar" class="w-8 h-8" />
                         <p class="text-graytext font-bold text-2xl">{{ $portfolio->project_date->format('l, F jS Y') }}</p>
                     </div>
-                @endif
+                @endif -->
 
                 {{-- Description (rendered as HTML from WYSIWYG editor) --}}
                 <div
