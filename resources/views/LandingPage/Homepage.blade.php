@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-    {{-- set page-specific title (option A: set $title variable) --}}
-    @php($title = 'Selamat Datang')
-    @include('Component.Head')
+{{-- set page-specific title (option A: set $title variable) --}}
+@php($title = 'Selamat Datang')
+@include('Component.Head')
+
 <body>
     {{-- include navbar partial --}}
     @include('LandingPage.Component.Navbar')
@@ -15,12 +16,13 @@
         {{-- include portfolio partial --}}
         @include('LandingPage.Component.Portfolio')
         {{-- include certificate partial --}}
-        @include('LandingPage.Component.Certificate')
+        <!-- @include('LandingPage.Component.Certificate') -->
         {{-- include cooperation partial --}}
         @include('LandingPage.Component.Cooperation')
-    </main> 
+    </main>
 
     {{-- include footer partial --}}
     @include('LandingPage.Component.Footer')
 </body>
+
 </html>

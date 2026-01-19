@@ -35,4 +35,10 @@ return [
         ],
     ],
 
+    // Google reCAPTCHA keys (site key used in views, secret used on server)
+    'recaptcha' => [
+        'site_key' => env('RECAPTCHA_SITE_KEY'),
+        'secret' => env('RECAPTCHA_SECRET'),
+    ],
+
 ];

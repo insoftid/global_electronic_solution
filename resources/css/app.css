@@ -10,5 +10,37 @@
     --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
     --color-primary: #1F7654; 
+    --color-secondary: #16A34A;
     --color-graytext: #767676;
+}
+
+.text-heading {
+    font-size: 40px;
+    font-weight: 700;
+    color: var(--color-primary);
+}
+.text-paragraph {
+    font-size: 25px;
+    font-weight: 400;
+    color: var(--color-graytext);
+}
+/* list with separated bullets and hanging indent */
+.list-dot {
+    list-style: none;
+    padding-left: 1.25rem; /* space for custom marker */
+    margin: 0;
+}
+.list-dot li {
+    position: relative;
+    padding-left: 1.25rem; /* space between marker and text */
+    margin-bottom: .5rem;
+}
+.list-dot li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    top: 0.25rem;
+    color: var(--color-primary);
+    font-size: 1.1em;
+    line-height: 1;
 }
