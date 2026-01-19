@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Builder;
 
 class User extends Authenticatable
 {
@@ -21,6 +22,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'status',
     ];
 
     /**
@@ -44,5 +47,65 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Scopes
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * Scope a query to only include active users.
+     */
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->where('status', 'Aktif');
+    }
+
+    /**
+     * Scope a query to only include superadmins.
+     */
+    public function scopeSuperadmin(Builder $query): Builder
+    {
+        return $query->where('role', 'Superadmin');
+    }
+
+    /**
+     * Scope a query to only include editors.
+     */
+    public function scopeEditor(Builder $query): Builder
+    {
+        return $query->where('role', 'Editor');
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Helper Methods
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * Check if user is active.
+     */
+    public function isActive(): bool
+    {
+        return $this->status === 'Aktif';
+    }
+
+    /**
+     * Check if user is superadmin.
+     */
+    public function isSuperadmin(): bool
+    {
+        return $this->role === 'Superadmin';
+    }
+
+    /**
+     * Check if user is editor.
+     */
+    public function isEditor(): bool
+    {
+        return $this->role === 'Editor';
     }
 }

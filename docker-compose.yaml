@@ -1,0 +1,37 @@
+services:
+  mysql:
+    image: mysql
+    container_name: mysql_cvges
+    restart: always
+    command: --port=3310
+    environment:
+      MYSQL_USER: "cvges"
+      MYSQL_PASSWORD: "cvges"
+      MYSQL_ROOT_PASSWORD: "password"
+      MYSQL_DATABASE: "cvges"
+      MYSQL_ROOT_HOST: "%"
+      TZ: Asia/Jakarta
+    ports:
+      - "3310:3310"
+    volumes:
+      - ./.docker_volumes/mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-ppassword", "--port=3310"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+  
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin_cvges
+    restart: always
+    depends_on:
+      - mysql
+    ports:
+      - "5764:80"
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3310  # ← Sekarang 3310 sudah benar
+      PMA_USER: root
+      PMA_PASSWORD: password
+    mem_limit: 512m
