@@ -47,7 +47,7 @@
             @endif
 
             {{-- Meta Info --}}
-            <div class="grid grid-cols-2 md:grid-cols-3 mt-8 gap-8">
+            <!-- <div class="grid grid-cols-2 md:grid-cols-3 mt-8 gap-8">
                 @if($portfolio->category)
                     <div>
                         <h6 class="uppercase text-white/60 font-medium mb-2 text-sm">Kategori</h6>
@@ -64,7 +64,7 @@
                     <h6 class="uppercase text-white/60 font-medium mb-2 text-sm">Status</h6>
                     <p class="text-white text-lg font-medium">{{ $portfolio->is_active ? 'Selesai' : 'Draft' }}</p>
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
 </section>
