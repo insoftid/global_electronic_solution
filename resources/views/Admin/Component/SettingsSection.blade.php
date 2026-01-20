@@ -54,7 +54,7 @@
                                     class="flex w-28 h-9 px-2 flex-col bg-secondary rounded-r-lg shadow text-white text-xs font-semibold leading-4 items-center justify-center">Choose
                                     File</span>
                             </label>
-                            <p class="text-[10px] text-graytext">SVG, PNG or JPG (Max 2 MB).</p>
+                            <p class="text-[10px] text-graytext">PNG, JPG, WebP, SVG (Max 2 MB).</p>
                         </div>
                     </div>
                     <div class="w-full md:w-1/2">
@@ -85,7 +85,7 @@
                                     class="flex w-28 h-9 px-2 flex-col bg-secondary rounded-r-lg shadow text-white text-xs font-semibold leading-4 items-center justify-center">Choose
                                     File</span>
                             </label>
-                            <p class="text-[10px] text-graytext">SVG, PNG or JPG (Max 2 MB).</p>
+                            <p class="text-[10px] text-graytext">PNG, JPG, WebP, SVG (Max 2 MB).</p>
                         </div>
                     </div>
                 </div>
@@ -241,7 +241,7 @@
                 <h2 class="font-bold text-lg">Galeri Foto</h2>
                 <span class="text-sm font-base text-graytext">Upload foto untuk Hero dan bagian About Us.</span>
             </div>
-            <div class="text-sm text-gray-500">PNG/JPG, max 2MB.</div>
+            <div class="text-sm text-gray-500">PNG, JPG, WebP, SVG (Max 2 MB).</div>
         </div>
 
         <div class="p-5">

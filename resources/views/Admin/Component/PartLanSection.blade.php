@@ -125,7 +125,8 @@
                             class="flex w-28 h-9 px-2 bg-secondary rounded-r-lg shadow text-white text-xs font-semibold items-center justify-center">Choose
                             File</span>
                     </label>
-                    <p class="text-[10px] text-gray-500 mt-1">PNG, JPG, SVG (Max 2 MB). Wajib untuk partner baru.</p>
+                    <p class="text-[10px] text-gray-500 mt-1">PNG, JPG, WebP, SVG (Max 2 MB). Wajib untuk partner baru.
+                    </p>
                 </div>
 
                 <div>
