@@ -54,110 +54,110 @@
         @endif
     </div>
 
-    {{-- Search and Filter Script --}}
+    {{-- AJAX Search Script --}}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const searchInput = document.getElementById('search-input');
-            const filterBtns = document.querySelectorAll('.filter-btn');
-            const projectCards = document.querySelectorAll('.project-card');
+            const projectsGrid = document.getElementById('projects-grid');
+            const paginationContainer = document.querySelector('.mt-8.flex.justify-center');
             
-            let currentFilter = 'all';
             let searchTimeout;
+            let currentSearchTerm = '';
 
-            // Search functionality with debouncing
+            // AJAX Search functionality with debouncing
             if (searchInput) {
                 searchInput.addEventListener('input', function(e) {
                     clearTimeout(searchTimeout);
+                    const searchTerm = e.target.value.trim();
+                    
+                    // Debounce: wait 400ms before making request
                     searchTimeout = setTimeout(() => {
-                        filterProjects();
-                    }, 300); // 300ms debounce
+                        if (searchTerm !== currentSearchTerm) {
+                            currentSearchTerm = searchTerm;
+                            performSearch(searchTerm);
+                        }
+                    }, 400);
+                });
+
+                // Handle Enter key
+                searchInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        clearTimeout(searchTimeout);
+                        currentSearchTerm = e.target.value.trim();
+                        performSearch(currentSearchTerm);
+                    }
                 });
             }
 
-            // Filter button functionality
-            filterBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    // Update active state
-                    filterBtns.forEach(b => {
-                        b.classList.remove('bg-blue-600', 'text-white', 'shadow-md', 'hover:shadow-lg');
-                        b.classList.add('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
-                    });
-                    this.classList.remove('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
-                    this.classList.add('bg-blue-600', 'text-white', 'shadow-md', 'hover:shadow-lg');
-                    
-                    currentFilter = this.dataset.filter;
-                    filterProjects();
-                });
-            });
+            function performSearch(searchTerm) {
+                // Show loading state
+                projectsGrid.style.opacity = '0.5';
+                projectsGrid.style.pointerEvents = 'none';
 
-            function filterProjects() {
-                const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
-                let visibleCount = 0;
+                // Build URL with search parameter
+                const url = new URL('{{ route("portfolio.search") }}');
+                if (searchTerm) {
+                    url.searchParams.set('search', searchTerm);
+                }
 
-                projectCards.forEach(card => {
-                    const title = card.querySelector('h3')?.textContent.toLowerCase() || '';
-                    const description = card.querySelector('p')?.textContent.toLowerCase() || '';
-                    const category = card.querySelector('[data-category]')?.dataset.category?.toLowerCase() || '';
-                    const tags = card.querySelector('[data-tags]')?.dataset.tags?.toLowerCase() || '';
+                // Make AJAX request
+                fetch(url.toString(), {
+                    method: 'GET',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json',
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Update grid with new content
+                    projectsGrid.innerHTML = data.html;
                     
-                    // Check search match
-                    const matchesSearch = !searchTerm || 
-                        title.includes(searchTerm) || 
-                        description.includes(searchTerm) || 
-                        category.includes(searchTerm) || 
-                        tags.includes(searchTerm);
-                    
-                    // Check filter match
-                    const matchesFilter = currentFilter === 'all' || 
-                        category === currentFilter.toLowerCase();
-                    
-                    // Show/hide card with animation
-                    if (matchesSearch && matchesFilter) {
-                        card.style.display = 'block';
+                    // Hide pagination when searching (optional: you can implement AJAX pagination too)
+                    if (paginationContainer) {
+                        paginationContainer.style.display = searchTerm ? 'none' : 'flex';
+                    }
+
+                    // Add transition styles to new cards
+                    const newCards = projectsGrid.querySelectorAll('.project-card');
+                    newCards.forEach((card, index) => {
+                        card.style.opacity = '0';
+                        card.style.transform = 'translateY(10px)';
+                        card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                        
+                        // Staggered animation
                         setTimeout(() => {
                             card.style.opacity = '1';
-                            card.style.transform = 'scale(1)';
-                        }, 10);
-                        visibleCount++;
-                    } else {
-                        card.style.opacity = '0';
-                        card.style.transform = 'scale(0.95)';
-                        setTimeout(() => {
-                            card.style.display = 'none';
-                        }, 200);
-                    }
-                });
-
-                // Show "no results" message if needed
-                showNoResultsMessage(visibleCount === 0);
-            }
-
-            function showNoResultsMessage(show) {
-                let noResultsDiv = document.getElementById('no-results-message');
-                
-                if (show) {
-                    if (!noResultsDiv) {
-                        noResultsDiv = document.createElement('div');
-                        noResultsDiv.id = 'no-results-message';
-                        noResultsDiv.className = 'col-span-full text-center py-12';
-                        noResultsDiv.innerHTML = `
-                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            card.style.transform = 'translateY(0)';
+                        }, index * 50);
+                    });
+                })
+                .catch(error => {
+                    console.error('Search error:', error);
+                    projectsGrid.innerHTML = `
+                        <div class="col-span-full text-center py-12">
+                            <svg class="mx-auto h-12 w-12 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            <h3 class="mt-4 text-lg font-medium text-gray-900">Tidak ada hasil ditemukan</h3>
-                            <p class="mt-2 text-gray-500">Coba ubah kata kunci pencarian atau filter Anda.</p>
-                        `;
-                        document.getElementById('projects-grid').appendChild(noResultsDiv);
-                    }
-                    noResultsDiv.style.display = 'block';
-                } else {
-                    if (noResultsDiv) {
-                        noResultsDiv.style.display = 'none';
-                    }
-                }
+                            <h3 class="mt-4 text-lg font-medium text-gray-900">Terjadi kesalahan</h3>
+                            <p class="mt-2 text-gray-500">Gagal memuat hasil pencarian. Silakan coba lagi.</p>
+                        </div>
+                    `;
+                })
+                .finally(() => {
+                    // Remove loading state
+                    projectsGrid.style.opacity = '1';
+                    projectsGrid.style.pointerEvents = 'auto';
+                });
             }
 
-            // Add transition styles to cards
+            // Add initial transition styles to cards
+            const projectCards = projectsGrid.querySelectorAll('.project-card');
             projectCards.forEach(card => {
                 card.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
             });
