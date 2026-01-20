@@ -106,16 +106,16 @@
                             class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
                     </div>
 
-                    <div>
+                    {{-- <div>
                         <label class="text-xs text-gray-500">Kategori</label>
                         <select id="categoryInput" name="category_id"
                             class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200">
                             <option value="">-- Pilih Kategori --</option>
                             @foreach($categories ?? [] as $cat)
-                                <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+                            <option value="{{ $cat->id }}">{{ $cat->name }}</option>
                             @endforeach
                         </select>
-                    </div>
+                    </div> --}}
 
                     <div>
                         <label class="text-xs text-gray-500">Deskripsi Singkat <span
@@ -132,11 +132,11 @@
                             class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200"></textarea>
                     </div>
 
-                    <div>
+                    {{-- <div>
                         <label class="text-xs text-gray-500">Tanggal Proyek</label>
                         <input id="dateInput" name="project_date" type="date"
                             class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
-                    </div>
+                    </div> --}}
 
                     <div>
                         <label class="text-xs text-gray-500">Link YouTube (opsional)</label>
@@ -371,7 +371,7 @@
             formTitle.textContent = 'Edit Proyek';
             titleEl.value = row.dataset.title || '';
             subtitleEl.value = row.dataset.subtitle || '';
-            categoryEl.value = row.dataset.category || '';
+            if (categoryEl) categoryEl.value = row.dataset.category || '';
 
             // Set description in TinyMCE editor
             const descContent = row.dataset.description || '';
@@ -387,7 +387,7 @@
                 tinymce.get('detailInput').setContent(detailContent);
             }
 
-            dateEl.value = row.dataset.date || '';
+            if (dateEl) dateEl.value = row.dataset.date || '';
             youtubeEl.value = row.dataset.youtube || '';
             featuredEl.checked = row.dataset.featured === '1';
             activeEl.checked = row.dataset.active === '1';
