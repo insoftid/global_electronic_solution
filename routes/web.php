@@ -62,6 +62,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::post('/settings/about', [SettingController::class, 'updateAbout'])->name('settings.about');
     Route::post('/settings/contact', [SettingController::class, 'updateContact'])->name('settings.contact');
     Route::post('/settings/social', [SettingController::class, 'updateSocial'])->name('settings.social');
+    Route::post('/settings/section-visibility', [SettingController::class, 'updateSectionVisibility'])->name('settings.section-visibility');
     
     // Landing Page Management (Portfolio)
     Route::get('/landing-page', [AdminPortfolioController::class, 'index'])->name('landing-page');

@@ -14,11 +14,17 @@
         {{-- include about me partial --}}
         @include('LandingPage.Component.AboutMe')
         {{-- include portfolio partial --}}
-        @include('LandingPage.Component.Portfolio')
+        @if(($settings['section_portfolio_active'] ?? '1') === '1')
+            @include('LandingPage.Component.Portfolio')
+        @endif
         {{-- include certificate partial --}}
-        <!-- @include('LandingPage.Component.Certificate') -->
+        @if(($settings['section_certificate_active'] ?? '1') === '1')
+            @include('LandingPage.Component.Certificate')
+        @endif
         {{-- include cooperation partial --}}
-        @include('LandingPage.Component.Cooperation')
+        @if(($settings['section_partner_active'] ?? '1') === '1')
+            @include('LandingPage.Component.Cooperation')
+        @endif
     </main>
 
     {{-- include footer partial --}}

@@ -146,4 +146,31 @@ class SettingController extends Controller
 
         return back()->with('success', 'Social media berhasil diperbarui');
     }
+
+    /**
+     * Update section visibility setting.
+     */
+    public function updateSectionVisibility(Request $request)
+    {
+        $validated = $request->validate([
+            'section' => 'required|string|in:portfolio,certificate,partner',
+            'is_active' => 'required|string|in:0,1',
+        ]);
+
+        $settingKey = 'section_' . $validated['section'] . '_active';
+        SiteSetting::set($settingKey, $validated['is_active']);
+
+        $sectionNames = [
+            'portfolio' => 'Proyek',
+            'certificate' => 'Sertifikat',
+            'partner' => 'Kerjasama',
+        ];
+        $sectionName = $sectionNames[$validated['section']] ?? $validated['section'];
+        $status = $validated['is_active'] === '1' ? 'diaktifkan' : 'dinonaktifkan';
+
+        return response()->json([
+            'success' => true,
+            'message' => "Section {$sectionName} berhasil {$status}",
+        ]);
+    }
 }
