@@ -47,7 +47,7 @@ class CertificateController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg,webp,svg|max:2048',
             'display_order' => 'nullable|integer',
             'is_active' => 'boolean',
         ]);
@@ -85,7 +85,7 @@ class CertificateController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:2048',
             'display_order' => 'nullable|integer',
             'is_active' => 'boolean',
         ]);
