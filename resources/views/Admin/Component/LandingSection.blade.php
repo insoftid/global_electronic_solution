@@ -17,12 +17,13 @@
                     <h4 class="font-medium text-gray-900">Section Proyek</h4>
                     <p class="text-xs text-gray-500">Tampilkan section portfolio/proyek</p>
                 </div>
-                <label class="relative inline-flex items-center cursor-pointer">
+                <label class="relative inline-block w-12 h-7 cursor-pointer">
                     <input type="checkbox" 
-                           class="sr-only peer section-toggle" 
+                           class="opacity-0 w-0 h-0 section-toggle" 
                            data-section="portfolio"
                            {{ ($settings['section_portfolio_active'] ?? '1') === '1' ? 'checked' : '' }}>
-                    <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-green-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
+                    <span class="toggle-slider absolute inset-0 bg-gray-300 rounded-full transition-colors duration-200"></span>
+                    <span class="toggle-dot absolute left-1 top-1 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200"></span>
                 </label>
             </div>
 
@@ -32,12 +33,13 @@
                     <h4 class="font-medium text-gray-900">Section Sertifikat</h4>
                     <p class="text-xs text-gray-500">Tampilkan section sertifikat</p>
                 </div>
-                <label class="relative inline-flex items-center cursor-pointer">
+                <label class="relative inline-block w-12 h-7 cursor-pointer">
                     <input type="checkbox" 
-                           class="sr-only peer section-toggle" 
+                           class="opacity-0 w-0 h-0 section-toggle" 
                            data-section="certificate"
                            {{ ($settings['section_certificate_active'] ?? '1') === '1' ? 'checked' : '' }}>
-                    <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-green-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
+                    <span class="toggle-slider absolute inset-0 bg-gray-300 rounded-full transition-colors duration-200"></span>
+                    <span class="toggle-dot absolute left-1 top-1 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200"></span>
                 </label>
             </div>
 
@@ -47,17 +49,27 @@
                     <h4 class="font-medium text-gray-900">Section Kerjasama</h4>
                     <p class="text-xs text-gray-500">Tampilkan section partner/kerjasama</p>
                 </div>
-                <label class="relative inline-flex items-center cursor-pointer">
+                <label class="relative inline-block w-12 h-7 cursor-pointer">
                     <input type="checkbox" 
-                           class="sr-only peer section-toggle" 
+                           class="opacity-0 w-0 h-0 section-toggle" 
                            data-section="partner"
                            {{ ($settings['section_partner_active'] ?? '1') === '1' ? 'checked' : '' }}>
-                    <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-green-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
+                    <span class="toggle-slider absolute inset-0 bg-gray-300 rounded-full transition-colors duration-200"></span>
+                    <span class="toggle-dot absolute left-1 top-1 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200"></span>
                 </label>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .section-toggle:checked + .toggle-slider {
+        background-color: #16a34a;
+    }
+    .section-toggle:checked ~ .toggle-dot {
+        transform: translateX(20px);
+    }
+</style>
 
 <script>
     document.querySelectorAll('.section-toggle').forEach(toggle => {
