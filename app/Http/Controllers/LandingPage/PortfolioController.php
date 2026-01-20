@@ -62,5 +62,49 @@ class PortfolioController extends Controller
                 ->get(),
         ]);
     }
+
+    /**
+     * AJAX search portfolios.
+     */
+    public function searchAjax(Request $request)
+    {
+        $query = Portfolio::active()->ordered()->with(['category', 'tags']);
+
+        // Filter by category if provided
+        if ($request->filled('category')) {
+            $query->whereHas('category', function ($q) use ($request) {
+                $q->where('slug', $request->category);
+            });
+        }
+
+        // Search by title, subtitle, description
+        if ($request->filled('search')) {
+            $searchTerm = $request->search;
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('title', 'like', '%' . $searchTerm . '%')
+                  ->orWhere('subtitle', 'like', '%' . $searchTerm . '%')
+                  ->orWhere('description', 'like', '%' . $searchTerm . '%');
+            });
+        }
+
+        $portfolios = $query->paginate(9);
+
+        // Return HTML partial for AJAX
+        if ($request->ajax() || $request->wantsJson()) {
+            $html = view('LandingPage.Component.PortfolioGrid', [
+                'portfolios' => $portfolios
+            ])->render();
+
+            return response()->json([
+                'html' => $html,
+                'hasMore' => $portfolios->hasMorePages(),
+                'total' => $portfolios->total(),
+                'currentPage' => $portfolios->currentPage(),
+                'lastPage' => $portfolios->lastPage(),
+            ]);
+        }
+
+        return redirect()->route('portfolio.index');
+    }
 }
 

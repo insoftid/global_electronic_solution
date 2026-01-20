@@ -22,6 +22,7 @@ use App\Http\Controllers\Admin\GalleryController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/produk', [PortfolioController::class, 'index'])->name('portfolio.index');
+Route::get('/produk/search', [PortfolioController::class, 'searchAjax'])->name('portfolio.search');
 Route::get('/produk/{portfolio:slug}', [PortfolioController::class, 'show'])->name('portfolio.show');
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');

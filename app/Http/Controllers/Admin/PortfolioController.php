@@ -71,7 +71,7 @@ class PortfolioController extends Controller
             'is_featured' => 'boolean',
             'is_active' => 'boolean',
             'display_order' => 'nullable|integer',
-            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:2048',
             'tags' => 'nullable|array',
             'tags.*' => 'exists:tags,id',
             // Project metrics
@@ -261,7 +261,7 @@ class PortfolioController extends Controller
     {
         $request->validate([
             'images' => 'required|array',
-            'images.*' => 'image|mimes:jpeg,png,jpg,webp|max:2048',
+            'images.*' => 'image|mimes:jpeg,png,jpg,webp,svg|max:2048',
         ]);
 
         try {
