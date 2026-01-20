@@ -32,7 +32,7 @@ class GalleryController extends Controller
     public function update(Request $request, GalleryPhoto $galleryPhoto)
     {
         $validated = $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg,webp,svg|max:2048',
             'caption' => 'nullable|string|max:255',
         ]);
 

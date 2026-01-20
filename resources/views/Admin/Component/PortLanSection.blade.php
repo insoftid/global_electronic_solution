@@ -161,7 +161,7 @@
                                 class="flex w-28 h-9 px-2 bg-secondary rounded-r-lg shadow text-white text-xs font-semibold items-center justify-center">Choose
                                 File</span>
                         </label>
-                        <p class="text-xs text-gray-400 mt-1">Format: JPG, PNG, WebP. Maks. 2MB</p>
+                        <p class="text-xs text-gray-400 mt-1">Format: JPG, PNG, WebP, SVG. Maks. 2MB</p>
                     </div>
 
                     <div class="flex items-center gap-4">
