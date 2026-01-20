@@ -29,7 +29,7 @@
                                             </div>
                                         </div>
                                         
-                                        <p class="text-sm text-gray-600 mt-4 mb-4">{{ Str::limit($portfolio->description, 100) }}</p>
+                                        <p class="text-sm text-gray-600 mt-4 mb-4">{{ Str::limit(strip_tags($portfolio->description), 100) }}</p>
                                         
                                         <div class="flex items-center justify-between">
                                             <div class="flex items-center gap-2">
