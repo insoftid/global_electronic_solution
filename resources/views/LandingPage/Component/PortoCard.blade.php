@@ -20,7 +20,7 @@
                 </div>
             </div>
 
-            <p class="text-sm text-gray-600 mt-4 mb-4">{{ $description }}</p>
+            <p class="text-sm text-gray-600 mt-4 mb-4">{{ strip_tags($description) }}</p>
 
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2">
