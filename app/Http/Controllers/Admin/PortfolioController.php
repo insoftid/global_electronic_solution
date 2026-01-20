@@ -9,6 +9,7 @@ use App\Models\Category;
 use App\Models\Tag;
 use App\Models\Certificate;
 use App\Models\Partner;
+use App\Models\SiteSetting;
 use App\Services\FileUploadService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -52,6 +53,7 @@ class PortfolioController extends Controller
             'tags' => Tag::all(),
             'certificates' => Certificate::orderBy('display_order')->get(),
             'partners' => Partner::orderBy('display_order')->get(),
+            'settings' => SiteSetting::allAsArray(),
         ]);
     }
 

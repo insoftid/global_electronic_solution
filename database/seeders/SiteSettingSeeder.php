@@ -38,6 +38,11 @@ class SiteSettingSeeder extends Seeder
             'facebook_url' => 'https://facebook.com/globalelectronicsolution',
             'youtube_url' => 'https://youtube.com/@globalelectronicsolution',
             'tiktok_url' => 'https://tiktok.com/@globalelectronicsolution',
+
+            // Section Visibility
+            'section_portfolio_active' => '1',
+            'section_certificate_active' => '1',
+            'section_partner_active' => '1',
         ];
 
         foreach ($settings as $key => $value) {

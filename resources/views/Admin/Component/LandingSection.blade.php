@@ -1,5 +1,100 @@
 {{-- Landing Page Section - Uses dynamic data from controller --}}
-{{-- Controller passes: $portfolios, $categories, $tags, $certificates, $partners --}}
+{{-- Controller passes: $portfolios, $categories, $tags, $certificates, $partners, $settings --}}
+
+{{-- Section Visibility Controls --}}
+<div class="bg-white border border-gray-200 rounded-2xl overflow-hidden mb-6">
+    <div class="px-5 py-4 border-b border-gray-100">
+        <h3 class="font-bold text-gray-900">Pengaturan Tampilan Section</h3>
+        <p class="text-xs text-gray-500 mt-1">
+            Aktifkan atau nonaktifkan section yang tampil di landing page.
+        </p>
+    </div>
+    <div class="px-5 py-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {{-- Portfolio Section Toggle --}}
+            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                <div>
+                    <h4 class="font-medium text-gray-900">Section Proyek</h4>
+                    <p class="text-xs text-gray-500">Tampilkan section portfolio/proyek</p>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" 
+                           class="sr-only peer section-toggle" 
+                           data-section="portfolio"
+                           {{ ($settings['section_portfolio_active'] ?? '1') === '1' ? 'checked' : '' }}>
+                    <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-green-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
+                </label>
+            </div>
+
+            {{-- Certificate Section Toggle --}}
+            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                <div>
+                    <h4 class="font-medium text-gray-900">Section Sertifikat</h4>
+                    <p class="text-xs text-gray-500">Tampilkan section sertifikat</p>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" 
+                           class="sr-only peer section-toggle" 
+                           data-section="certificate"
+                           {{ ($settings['section_certificate_active'] ?? '1') === '1' ? 'checked' : '' }}>
+                    <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-green-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
+                </label>
+            </div>
+
+            {{-- Partner Section Toggle --}}
+            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                <div>
+                    <h4 class="font-medium text-gray-900">Section Kerjasama</h4>
+                    <p class="text-xs text-gray-500">Tampilkan section partner/kerjasama</p>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" 
+                           class="sr-only peer section-toggle" 
+                           data-section="partner"
+                           {{ ($settings['section_partner_active'] ?? '1') === '1' ? 'checked' : '' }}>
+                    <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-green-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.querySelectorAll('.section-toggle').forEach(toggle => {
+        toggle.addEventListener('change', async function() {
+            const section = this.dataset.section;
+            const isActive = this.checked ? '1' : '0';
+            
+            try {
+                const response = await fetch('/admin/settings/section-visibility', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        section: section,
+                        is_active: isActive
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showToast && showToast(result.message, 'success');
+                } else {
+                    showToast && showToast(result.message || 'Gagal mengubah pengaturan', 'error');
+                    this.checked = !this.checked; // Revert toggle
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast && showToast('Gagal menghubungi server', 'error');
+                this.checked = !this.checked; // Revert toggle
+            }
+        });
+    });
+</script>
 
 @include('Admin.Component.PortLanSection')
 
