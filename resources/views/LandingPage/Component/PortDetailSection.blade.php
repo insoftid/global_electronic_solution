@@ -22,7 +22,7 @@
                 {{-- Detail (rendered as HTML from WYSIWYG editor) --}}
                 @if($portfolio->detail)
                     <div class="mt-8">
-                        <h3 class="text-xl font-bold text-gray-900 mb-4">Detail Proyek</h3>
+                        <!-- s -->
                         <div
                             class="text-graytext font-medium text-lg leading-relaxed prose prose-lg max-w-none prose-p:my-2 prose-ul:my-2 prose-ol:my-2 prose-li:my-0">
                             {!! $portfolio->detail !!}
