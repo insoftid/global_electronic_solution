@@ -1,6 +1,6 @@
 <section class="relative">
     <!-- Background hero using CSS background-image so we can overlay and center content -->
-    <div class="relative w-full" style="height: 826px;">
+    <div class="relative w-full overflow-hidden" style="height: 826px;">
         <!-- Background image layer (dimmed) - put on its own absolute layer so children are not affected -->
         @php
             $heroImage = isset($gallery['hero_contact']) && $gallery['hero_contact']->image_path
