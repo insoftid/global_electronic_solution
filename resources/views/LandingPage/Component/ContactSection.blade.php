@@ -5,7 +5,7 @@
             <h3 class="text-2xl sm:text-3xl md:text-4xl lg:text-[40px] font-bold text-primary">Kontak Kami</h3>
             <ul class="mt-6 md:mt-8 space-y-4 md:space-y-6">
                 <li class="flex gap-3 md:gap-5 text-base md:text-lg lg:text-xl items-start">
-                    <div class="bg-primary rounded-full py-2 px-[10px] md:py-3 md:px-[14px] shrink-0">
+                    <div class="bg-primary rounded-full p-2 md:p-3 shrink-0">
                         <svg class="w-4 h-5 md:w-[19px] md:h-6" viewBox="0 0 19 24" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
                             <path
