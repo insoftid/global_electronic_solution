@@ -1,6 +1,6 @@
 <section>
     <div
-        class="flex flex-col lg:flex-row my-8 md:my-16 lg:my-20 gap-6 md:gap-8 lg:gap-10 max-w-6xl mx-auto px-4 md:px-6">
+        class="flex flex-col lg:flex-row py-8 md:py-16 lg:py-20 gap-6 md:gap-8 lg:gap-10 max-w-6xl mx-auto px-4 md:px-6">
         <div class="w-full lg:w-1/2 mb-8 md:mb-0">
             <h3 class="text-2xl sm:text-3xl md:text-4xl lg:text-[40px] font-bold text-primary">Kontak Kami</h3>
             <ul class="mt-6 md:mt-8 space-y-4 md:space-y-6">
@@ -45,7 +45,7 @@
                 </li>
                 <li class="flex gap-3 md:gap-5 text-base md:text-lg lg:text-xl items-start">
                     <div
-                        class="bg-primary rounded-full w-8 h-8 md:w-11 md:h-11 hidden md:flex items-center justify-center shrink-0">
+                        class="bg-primary rounded-full w-8 h-8 md:w-11 md:h-11 flex items-center justify-center shrink-0">
                         <svg class="w-4 h-4 md:w-5 md:h-5" viewBox="0 0 22 18" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
                             <path
