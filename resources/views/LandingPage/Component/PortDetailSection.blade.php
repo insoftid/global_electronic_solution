@@ -2,7 +2,7 @@
     <div class="max-w-6xl mx-auto px-6 py-20">
         <div class="flex flex-col lg:flex-row gap-12">
             {{-- Left Column: Description --}}
-            <div class="w-full lg:w-2/3">
+            <div class="w-full">
                 <h2 class="text-heading">Ringkasan Proyek</h2>
 
                 <!-- {{-- Project Date --}}

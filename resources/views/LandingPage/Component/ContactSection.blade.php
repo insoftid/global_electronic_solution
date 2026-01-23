@@ -134,7 +134,10 @@
                 </div>
                 <div>
                     <button type="submit" id="contactSubmitBtn" disabled
-                        class="bg-secondary flex mx-auto text-white font-semibold px-8 md:px-10 py-2 md:py-3 text-sm md:text-base rounded-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-secondary/80 disabled:hover:bg-secondary">Kirim</button>
+                        class="bg-secondary flex mx-auto text-white font-semibold px-8 md:px-10 py-2 md:py-3 text-sm md:text-base rounded-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-secondary/80 disabled:hover:bg-secondary"
+                        style="
+    padding: 15px 30px !important;
+">Kirim</button>
                 </div>
             </form>
         </div>
