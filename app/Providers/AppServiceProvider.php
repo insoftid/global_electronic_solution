@@ -19,6 +19,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // View Composers
+        \Illuminate\Support\Facades\View::composer(
+            'Admin.Component.Header',
+            \App\View\Composers\NotificationComposer::class
+        );
     }
 }
