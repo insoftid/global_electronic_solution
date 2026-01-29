@@ -97,11 +97,14 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::patch('/contacts/{contactMessage}/note', [ContactMessageController::class, 'addNote'])->name('contacts.note');
     Route::delete('/contacts/{contactMessage}', [ContactMessageController::class, 'destroy'])->name('contacts.destroy');
     
-    // Users Management (Superadmin Only)
+    // Users Management
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::post('/users', [UserController::class, 'store'])->name('users.store');
+    Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+    Route::post('/users/{user}/update', [UserController::class, 'update'])->name('users.update.post'); // Alternative POST route for update
+    
     Route::middleware('superadmin')->group(function () {
-        Route::get('/users', [UserController::class, 'index'])->name('users.index');
-        Route::post('/users', [UserController::class, 'store'])->name('users.store');
-        Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
         Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+        Route::post('/users/{user}/delete', [UserController::class, 'destroy'])->name('users.destroy.post'); // Alternative POST route for delete
     });
 });

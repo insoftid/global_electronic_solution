@@ -18,24 +18,24 @@ class DatabaseSeeder extends Seeder
     {
         // 1. Create Admin Users
         User::firstOrCreate(
-            ['email' => 'admin@globalelectronic.com'],
+            ['email' => env("EMAIL_SUPERADMIN")],
             [
-                'name' => 'Administrator',
-                'password' => Hash::make('admin123'),
-                'role' => 'Superadmin',
-                'status' => 'Aktif',
+                'name' => env("NAME_SUPERADMIN"),
+                'password' => Hash::make(env('PASSWORD_SUPERADMIN')),
+                'role' => env("ROLE_SUPERADMIN"),
+                'status' => env("STATUS_SUPERADMIN"),
             ]
         );
 
-        User::firstOrCreate(
-            ['email' => 'editor@globalelectronic.com'],
-            [
-                'name' => 'Editor',
-                'password' => Hash::make('editor123'),
-                'role' => 'Editor',
-                'status' => 'Aktif',
-            ]
-        );
+        // User::firstOrCreate(
+        //     ['email' => 'editor@globalelectronic.com'],
+        //     [
+        //         'name' => 'Editor',
+        //         'password' => Hash::make('editor123'),
+        //         'role' => 'Editor',
+        //         'status' => 'Aktif',
+        //     ]
+        // );
 
         // 2. Run all seeders in correct order
         $this->call([
