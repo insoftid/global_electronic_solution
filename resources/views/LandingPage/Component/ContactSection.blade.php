@@ -14,9 +14,15 @@
                                 fill="white" />
                         </svg>
                     </div>
-                    <p><span class="font-semibold">Alamat:
-                        </span>{{ $settings['address'] ?? 'Perum JL. Beringin Asri, RT 06/RW 12, Wonosari, Kec. Ngalian, Kota Semarang, Jawa Tengah, 50244' }}
-                    </p>
+                    @php
+                        $addr =
+                            $settings['address'] ??
+                            'JL. Beringin Asri, RT 06/RW 12, Wonosari, Kec. Ngalian, Kota Semarang, Jawa Tengah, 50244';
+                        $addr = str_ireplace('Perum', '', $addr);
+                        $addr = trim(preg_replace('/\s+/', ' ', $addr));
+                    @endphp
+
+                    <p>{{ $addr }}</p>
                 </li>
                 <li class="flex gap-3 md:gap-5 text-base md:text-lg lg:text-xl items-center">
                     <div
@@ -28,20 +34,20 @@
                                 fill="white" />
                         </svg>
                     </div>
-                    <p><span class="font-semibold">Phone:
-                        </span>{{ $settings['whatsapp'] ?? $settings['phone'] ?? '+62 12345670' }}</p>
+                    <p>{{ $settings['whatsapp'] ?? ($settings['phone'] ?? '+62 12345670') }}</p>
                 </li>
                 <li class="flex gap-3 md:gap-5 text-base md:text-lg lg:text-xl items-center">
                     <div
                         class="bg-primary rounded-full w-8 h-8 md:w-11 md:h-11 flex items-center justify-center shrink-0">
                         <svg class="w-4 h-4 md:w-5 md:h-5" viewBox="0 0 21 18" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" clip-rule="evenodd"
-                                d="M17.736 0.125874C18.1709 -0.00988247 18.642 -0.0364708 19.094 0.0492341C19.546 0.134939 19.96 0.329375 20.2874 0.609691C20.6148 0.890008 20.842 1.24455 20.9423 1.63166C21.0425 2.01877 21.0117 2.42235 20.8535 2.79498L15.489 16.5673C15.3585 16.9058 15.1288 17.2099 14.8219 17.4505C14.5149 17.6911 14.141 17.8603 13.7359 17.9418C13.3318 18.0259 12.9091 18.0188 12.5091 17.9209C12.1092 17.8231 11.7458 17.638 11.4545 17.3838L8.57565 14.9294L5.55273 16.2691C5.43686 16.3205 5.30731 16.3452 5.17689 16.3407C5.04646 16.3362 4.91967 16.3026 4.80904 16.2433C4.6984 16.1839 4.60774 16.1009 4.54601 16.0024C4.48428 15.9039 4.45361 15.7933 4.45704 15.6815L4.58162 11.5878L15.1558 5.00894C15.2556 4.9469 15.3401 4.86863 15.4045 4.77861C15.4689 4.68859 15.512 4.58858 15.5313 4.4843C15.5506 4.38001 15.5457 4.27349 15.517 4.17081C15.4882 4.06814 15.4362 3.97132 15.3637 3.88589C15.2913 3.80046 15.1999 3.72808 15.0948 3.6729C14.9897 3.61771 14.873 3.5808 14.7512 3.56426C14.6295 3.54773 14.5051 3.55189 14.3853 3.57653C14.2654 3.60116 14.1524 3.64577 14.0526 3.70782L3.2998 10.3986L0.703155 8.17432C0.423307 7.93454 0.216988 7.63923 0.102553 7.31466C-0.0118812 6.99008 -0.0308829 6.64631 0.0472386 6.31392C0.125654 5.95068 0.315437 5.61184 0.597129 5.33214C0.87882 5.05244 1.24228 4.84194 1.65026 4.72223H1.65626L17.736 0.125874Z"
+                            <path
+                                d="M23.4 0H2.6C1.17 0 0.013 1.18125 0.013 2.625L0 18.375C0 19.8188 1.17 21 2.6 21H23.4C24.83 21 26 19.8188 26 18.375V2.625C26 1.18125 24.83 0 23.4 0ZM23.4 5.25L13 11.8125L2.6 5.25V2.625L13 9.1875L23.4 2.625V5.25Z"
                                 fill="white" />
                         </svg>
+
                     </div>
-                    <p><span class="font-semibold">Email: </span>{{ $settings['email'] ?? 'info@gmail.com' }}</p>
+                    <p>{{ $settings['email'] ?? 'info@gmail.com' }}</p>
                 </li>
                 <li class="flex gap-3 md:gap-5 text-base md:text-lg lg:text-xl items-start">
                     <div
@@ -54,9 +60,11 @@
                         </svg>
                     </div>
                     <div class="embed-map-responsive">
-                        <div class="embed-map-container rounded-2xl"><iframe class="embed-map-frame" frameborder="0"
-                                scrolling="no" marginheight="0" marginwidth="0"
-                                src="{{ $settings['google_maps_url'] ?? 'https://maps.google.com/maps?width=535&height=400&hl=en&q=CV%20GLOBAL%20ELECTRONIC%20SOLUTION%2C%20Semarang&t=&z=14&ie=UTF8&iwloc=B&output=embed' }}"></iframe>
+                        <div class="embed-map-container rounded-2xl">
+                            <iframe
+                                src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1202583.8047450462!2d109.41314764117043!3d-6.984511799999995!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7061a297896505%3A0x802c12a89e596bd2!2sCV%20GLOBAL%20ELECTRONIC%20SOLUTION!5e1!3m2!1sen!2sus!4v1769583827387!5m2!1sen!2sus"
+                                width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+                                referrerpolicy="no-referrer-when-downgrade"></iframe>
                         </div>
                     </div>
                     <style>
@@ -92,18 +100,19 @@
         <div class="w-full lg:w-1/2 flex flex-col justify-center bg-primary p-6 md:p-8 lg:p-10 rounded-2xl">
             <h2 class="text-2xl md:text-3xl font-bold text-center text-white mb-4 md:mb-6">Beri Tanggapan Anda</h2>
 
-            @if(session('success'))
+            @if (session('success'))
                 <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
                     {{ session('success') }}
-            </div> @endif @if($errors->any())
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-                    <ul class="list-disc list-inside">
-                        @foreach($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
                 </div>
-            @endif
+                @endif @if ($errors->any())
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                        <ul class="list-disc list-inside">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
 
             <form action="{{ route('contact.store') }}" method="POST" class="space-y-4 md:space-y-6">
                 @csrf
