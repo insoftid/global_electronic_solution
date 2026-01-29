@@ -20,7 +20,7 @@
             <h1
                 class="uppercase text-3xl sm:text-4xl md:text-5xl lg:text-[70px] text-white font-extrabold leading-tight tracking-tight max-w-4xl">
                 Produk
-                <br><span class="text-secondary">& Proyek Kami</span>
+                <br><span class="text-secondary">& Layanan Kami</span>
             </h1>
             <p class="mt-4 text-white/90 max-w-3xl text-xl">
                 Eksplorasi koleksi lengkap proyek sistem elektrikal yang telah kami kerjakan untuk berbagai industri dan

@@ -1,6 +1,6 @@
 <section>
     <div class="max-w-6xl mx-auto px-6 pb-20">
-        <h2 class="text-3xl font-extrabold text-heading mb-10 text-center">Produk & Proyek Kami</h2>
+        <h2 class="text-3xl font-extrabold text-heading mb-10 text-center">Produk & Layanan Kami</h2>
         
         <div class="relative">
             <div id="portfolio-viewport" class="overflow-hidden h-auto p-4 justify-center">

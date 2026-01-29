@@ -19,15 +19,22 @@
 
     <!-- Middle: Visi | img | Misi -->
     <div class="flex flex-col md:flex-row items-start mb-4 px-4 md:px-0 gap-10">
+        {{-- VISI --}}
         <div class="w-full md:w-1/3">
             <div class="text-center mb-10">
                 <h4 class="text-heading">Visi</h4>
             </div>
             <div class="text-paragraph leading-tight">
-                {!! nl2br(e($settings['about_vision'] ?? 'Menjadi perusahaan terdepan dalam solusi sistem elektrikal dan otomasi industri di Indonesia.')) !!}
+                {!! nl2br(
+                    e(
+                        $settings['about_vision'] ??
+                            'Menjadi perusahaan terdepan dalam solusi sistem elektrikal dan otomasi industri di Indonesia.',
+                    ),
+                ) !!}
             </div>
         </div>
 
+        {{-- GAMBAR --}}
         <div class="w-1/3 hidden md:block">
             <div class="w-full overflow-hidden rounded-t-xl">
                 <img src="{{ isset($gallery['about_2']) && $gallery['about_2']->image_path ? asset('storage/' . $gallery['about_2']->image_path) : asset('img/bghero.png') }}"
@@ -39,13 +46,40 @@
             </div>
         </div>
 
+        {{-- MISI --}}
         <div class="w-full md:w-1/3">
             <div class="text-center mb-10">
                 <h4 class="text-heading">Misi</h4>
             </div>
-            <div class="text-paragraph leading-tight">
-                {!! nl2br(e($settings['about_mission'] ?? 'Menyediakan solusi sistem elektrikal yang inovatif dan berkualitas tinggi.')) !!}
-            </div>
+
+            @php
+                $misiRaw = $settings['about_mission'] ?? '';
+                $misiItems = preg_split("/\r\n|\n|\r/", $misiRaw);
+
+                $misiItems = array_values(
+                    array_filter(
+                        array_map(function ($line) {
+                            $line = trim($line);
+                            // hapus nomor kalau admin nulis "1. ..." / "1) ..." / "1-" / dst
+                            $line = preg_replace('/^\s*\d+\s*[\.\)\-:]\s*/', '', $line);
+                            return $line;
+                        }, $misiItems),
+                    ),
+                );
+            @endphp
+
+            @if (count($misiItems))
+                <div class="space-y-3 text-paragraph leading-tight">
+                    @foreach ($misiItems as $i => $item)
+                        <div class="flex gap-3 items-start">
+                            <span class="font-semibold min-w-[24px] text-right">{{ $i + 1 }}.</span>
+                            <p class="flex-1">{{ $item }}</p>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <p class="text-paragraph leading-tight">—</p>
+            @endif
         </div>
     </div>
 
