@@ -160,7 +160,7 @@
 {{-- AJAX JS for CRUD operations --}}
 <script>
   (function () {
-    const currentUserRole = "{{ auth()->user()->role }}"; // Inject role
+    const currentUserRole = "{{ auth()->user()->role }}";
     const rows = () => Array.from(document.querySelectorAll('.admin-row'));
     const searchInput = document.getElementById('searchInput');
     const roleFilter = document.getElementById('roleFilter');
@@ -184,12 +184,19 @@
 
     const csrfToken = document.querySelector('input[name="_token"]').value;
 
+    // API Base URLs - updated to match new routes
+    const API_URLS = {
+      store: '/admin/users/store',
+      update: (id) => `/admin/users/update/${id}`,
+      delete: (id) => `/admin/users/delete/${id}`
+    };
+
     function clearActive() {
       rows().forEach(r => r.classList.remove('ring-2', 'ring-green-200', 'bg-green-50'));
     }
 
     function fillFormFromRow(row) {
-      adminId.value = (row.dataset.id || '').trim(); // TRIM fix for PUT error
+      adminId.value = (row.dataset.id || '').trim();
       formMethod.value = 'PUT';
       nameInput.value = row.dataset.name || '';
       emailInput.value = row.dataset.email || '';
@@ -198,13 +205,13 @@
       passInput.value = '';
       passHint.textContent = '(kosongkan jika tidak ingin mengubah)';
 
-      // Permission Logic
+      // Permission Logic for non-Superadmin
       if (currentUserRole !== 'Superadmin') {
         roleInput.disabled = true;
         statusInput.disabled = true;
         passInput.disabled = true;
-        passInput.placeholder = "Disabled for " + currentUserRole;
-        deleteBtn.classList.add('hidden'); // Ensure delete is hidden
+        passInput.placeholder = "Hanya Superadmin dapat mengubah password";
+        deleteBtn.classList.add('hidden');
       } else {
         roleInput.disabled = false;
         statusInput.disabled = false;
@@ -221,41 +228,12 @@
       nameInput.value = '';
       emailInput.value = '';
 
-      // Permission Default
       if (currentUserRole !== 'Superadmin') {
         roleInput.value = 'Editor';
         roleInput.disabled = true;
         statusInput.value = 'Aktif';
         statusInput.disabled = true;
-        passInput.disabled = true; // Cannot create user with password? Actually if they can't set password, they can't create user. 
-        // Wait, if they can't input password, they can't create a NEW user properly unless controller handles it. 
-        // But the request said: "jika bukan login sebagai Superadmin tolong input untuk select role status dan ganti password tolong di disable"
-        // It implies for EDITING. For CREATING, if they can't set password, they can't create. 
-        // Let's assume this restriction is mainly for EDITING existing users or altering privilege.
-        // If creating, maybe they can set password? "ganti password" (change password). 
-        // Let's Disable for now as per strict instruction "input ... password tolong di disable".
-        // Use case: Editor seeing users but maybe not creating? Or Editor creating Editor?
-        // If Editor creates, they need to set password. 
-        // Let's allow password on CREATE (resetForm) if we assume they can create. 
-        // Re-reading: "saat mengubah password aku mendapatkan error... oiya aku minta improve juga jika bukan login sebagai Superadmin tolong input untuk select role status dan ganti password tolong di disable"
-        // "Ganti password" implies Update. 
-        // I will disable for Update (fillFormFromRow). 
-        // For Reset (Create), I should probably allow Password? 
-        // If I disable password on Create, they can't create. 
-        // I will Only disable for Update in fillFormFromRow?
-        // "input untuk select role status dan ganti password tolong di disable"
-        // If I disable "role" and "status" on create, they default to what? Editor/Aktif?
-
-        // Let's Refine: 
-        // Update: Disable Role, Status, Password. 
-        // Create: Disable Role (Force Editor?), Status (Force Aktif?). Allow Password?
-        // If I disable Password on create, it fails validation.
-        // I will assume the user meant "Change Password" (Edit). 
-        // But if I disable it globally for non-superadmin, they can't create.
-        // Let's disable Role/Status always (force Editor/Aktif). 
-        // Disable Password ONLY if Editing? The prompt says "ganti password" (Change password), so likely Edit.
-
-        passInput.disabled = false; // Allow for creation
+        passInput.disabled = false;
         passInput.placeholder = "Minimal 8 karakter";
       } else {
         roleInput.value = 'Superadmin';
@@ -263,6 +241,7 @@
         statusInput.value = 'Aktif';
         statusInput.disabled = false;
         passInput.disabled = false;
+        passInput.placeholder = "Minimal 8 karakter";
       }
 
       passInput.value = '';
@@ -281,6 +260,45 @@
       formMessage.classList.add('hidden');
     }
 
+    // Helper function to make API requests
+    async function apiRequest(url, data) {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'X-CSRF-TOKEN': csrfToken,
+        },
+        body: JSON.stringify(data),
+      });
+
+      // Get response text first
+      const responseText = await response.text();
+
+      // Try to parse as JSON
+      let result;
+      try {
+        result = JSON.parse(responseText);
+      } catch (e) {
+        console.error('Failed to parse response:', responseText.substring(0, 500));
+        throw new Error('Server mengembalikan respons yang tidak valid');
+      }
+
+      return { response, result };
+    }
+
+    // Format error messages from API response
+    function formatErrorMessage(result) {
+      if (result.errors) {
+        const errorMessages = [];
+        for (const field in result.errors) {
+          errorMessages.push(...result.errors[field]);
+        }
+        return result.message + ': ' + errorMessages.join(', ');
+      }
+      return result.message || 'Terjadi kesalahan';
+    }
+
     // Bind row click events
     function bindRowEvents() {
       rows().forEach(row => {
@@ -293,7 +311,6 @@
     }
 
     bindRowEvents();
-
     resetBtn.addEventListener('click', resetForm);
 
     // Save (Create or Update)
@@ -301,27 +318,21 @@
       e.preventDefault();
       hideMessage();
 
-      // Get and validate ID properly
       const id = (adminId.value || '').toString().trim();
-      const isUpdate = id !== '' && id !== '0' && id !== 'undefined' && id !== 'null';
-      // Use different paths: /users for create, /users/{id}/update for update
-      const url = isUpdate ? `/admin/users/${encodeURIComponent(id)}/update` : '/admin/users';
+      const isUpdate = id !== '' && id !== '0';
 
-      // Debug log (can be removed in production)
+      // Determine URL based on operation
+      const url = isUpdate ? API_URLS.update(id) : API_URLS.store;
+
       console.log('Form submission:', { id, isUpdate, url });
 
-      // Validate: if formMethod says PUT but ID is empty, show error
-      if (formMethod.value === 'PUT' && !isUpdate) {
-        showMessage('Error: User ID tidak ditemukan. Silakan pilih ulang user dari tabel.', true);
-        return;
-      }
-
+      // Build data object
       const data = {
-        name: nameInput.value,
-        email: emailInput.value,
+        name: nameInput.value.trim(),
+        email: emailInput.value.trim(),
       };
 
-      // Only include role/status if not disabled (for non-Superadmin)
+      // Include role/status only if not disabled
       if (!roleInput.disabled) {
         data.role = roleInput.value;
       }
@@ -329,56 +340,30 @@
         data.status = statusInput.value;
       }
 
+      // Include password if provided and not disabled
       if (passInput.value && !passInput.disabled) {
         data.password = passInput.value;
       }
 
-      // Build headers - use simple POST since we have POST route for both create and update
-      const headers = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'X-CSRF-TOKEN': csrfToken,
-      };
-
       try {
-        const response = await fetch(url, {
-          method: 'POST',
-          headers: headers,
-          body: JSON.stringify(data),
-        });
-
-        // Check if response is JSON
-        const contentType = response.headers.get('content-type');
-        if (!contentType || !contentType.includes('application/json')) {
-          const text = await response.text();
-          console.error('Non-JSON response:', text.substring(0, 500));
-          showMessage('Error: Server mengembalikan respons yang tidak valid. Silakan refresh halaman.', true);
-          return;
-        }
-
-        const result = await response.json();
+        const { response, result } = await apiRequest(url, data);
 
         if (response.ok && result.success) {
           showMessage(result.message);
           setTimeout(() => location.reload(), 1000);
         } else {
-          const errorObj = formatApiError(response, result);
-          // Format for inline message display
-          let errorMsg = errorObj.message;
-          if (errorObj.details && errorObj.details.length > 0) {
-            errorMsg += '\n' + errorObj.details.join('\n');
-          }
+          const errorMsg = formatErrorMessage(result);
           showMessage(errorMsg, true);
-          showToast(errorObj, 'error');
+          if (typeof showToast === 'function') {
+            showToast({ title: 'Error', message: errorMsg }, 'error');
+          }
         }
       } catch (err) {
-        console.error('Fetch error:', err);
-        showMessage('Terjadi kesalahan koneksi: ' + err.message, true);
-        showToast({
-          title: 'Koneksi Error',
-          message: 'Gagal menghubungi server',
-          details: [`• ${err.message || 'Network request failed'}`]
-        }, 'error');
+        console.error('Request error:', err);
+        showMessage(err.message || 'Terjadi kesalahan koneksi', true);
+        if (typeof showToast === 'function') {
+          showToast({ title: 'Error', message: err.message }, 'error');
+        }
       }
     });
 
@@ -389,43 +374,24 @@
       if (!confirm('Yakin ingin menghapus user ini?')) return;
 
       try {
-        // Use POST to the dedicated delete route
-        const response = await fetch(`/admin/users/${encodeURIComponent(id)}/delete`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'X-CSRF-TOKEN': csrfToken,
-          },
-          body: JSON.stringify({}),
-        });
-
-        // Check if response is JSON
-        const contentType = response.headers.get('content-type');
-        if (!contentType || !contentType.includes('application/json')) {
-          const text = await response.text();
-          console.error('Non-JSON response:', text.substring(0, 500));
-          showMessage('Error: Server mengembalikan respons yang tidak valid.', true);
-          return;
-        }
-
-        const result = await response.json();
+        const { response, result } = await apiRequest(API_URLS.delete(id), {});
 
         if (response.ok && result.success) {
           showMessage(result.message);
           setTimeout(() => location.reload(), 1000);
         } else {
-          const errorObj = formatApiError(response, result);
-          showMessage(errorObj.message, true);
-          showToast(errorObj, 'error');
+          const errorMsg = formatErrorMessage(result);
+          showMessage(errorMsg, true);
+          if (typeof showToast === 'function') {
+            showToast({ title: 'Error', message: errorMsg }, 'error');
+          }
         }
       } catch (err) {
-        showMessage('Terjadi kesalahan koneksi', true);
-        showToast({
-          title: 'Koneksi Error',
-          message: 'Gagal menghubungi server',
-          details: [`• ${err.message || 'Network request failed'}`]
-        }, 'error');
+        console.error('Delete error:', err);
+        showMessage(err.message || 'Terjadi kesalahan koneksi', true);
+        if (typeof showToast === 'function') {
+          showToast({ title: 'Error', message: err.message }, 'error');
+        }
       }
     });
 
