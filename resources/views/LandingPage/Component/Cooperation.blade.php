@@ -1,6 +1,6 @@
 <section>
     <div class="max-w-6xl mx-auto px-6 pb-20">
-        <h2 class="text-3xl font-extrabold text-heading mb-10 text-center">Kerjasama</h2>
+        <h2 class="text-3xl font-extrabold text-heading mb-10 text-center">Partner Kami</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center justify-items-center">
             @forelse($partners as $partner)
                 @if($partner->website_url)
