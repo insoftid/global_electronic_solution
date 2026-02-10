@@ -48,8 +48,8 @@ class PortfolioController extends Controller
             abort(404);
         }
 
-        // Load relationships
-        $portfolio->load(['category', 'tags', 'images']);
+    // Load relationships (include variants + variant images)
+    $portfolio->load(['category', 'tags', 'variants.images']);
 
         return view('LandingPage.PortDetail', [
             'settings' => SiteSetting::allAsArray(),

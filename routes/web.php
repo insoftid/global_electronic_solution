@@ -70,8 +70,13 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('/portfolios/{portfolio}', [AdminPortfolioController::class, 'show'])->name('portfolios.show');
     Route::put('/portfolios/{portfolio}', [AdminPortfolioController::class, 'update'])->name('portfolios.update');
     Route::delete('/portfolios/{portfolio}', [AdminPortfolioController::class, 'destroy'])->name('portfolios.destroy');
-    Route::post('/portfolios/{portfolio}/images', [AdminPortfolioController::class, 'uploadImages'])->name('portfolios.images.upload');
-    Route::delete('/portfolio-images/{portfolioImage}', [AdminPortfolioController::class, 'deleteImage'])->name('portfolios.images.delete');
+
+    // Portfolio variants
+    Route::post('/portfolios/{portfolio}/variants', [AdminPortfolioController::class, 'storeVariant'])->name('portfolios.variants.store');
+    Route::put('/variants/{variant}', [AdminPortfolioController::class, 'updateVariant'])->name('portfolios.variants.update');
+    Route::delete('/variants/{variant}', [AdminPortfolioController::class, 'deleteVariant'])->name('portfolios.variants.delete');
+    Route::post('/variants/{variant}/images', [AdminPortfolioController::class, 'uploadVariantImages'])->name('portfolios.variants.images.upload');
+    Route::delete('/variant-images/{variantImage}', [AdminPortfolioController::class, 'deleteVariantImage'])->name('portfolios.variants.images.delete');
     
     // Certificates
     Route::get('/certificates', [CertificateController::class, 'index'])->name('certificates.index');

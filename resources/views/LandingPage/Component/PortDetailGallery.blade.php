@@ -1,22 +1,69 @@
-@if($portfolio->images && $portfolio->images->count() > 0)
+@php
+    $variants = $portfolio->variants ?? collect();
+
+    // Build slides: one cover per variant (first image), each holding its own gallery set.
+    $variantSlides = $variants
+        ->filter(fn($v) => ($v->images && $v->images->count() > 0) || !empty($v->thumbnail_image))
+        ->values()
+        ->map(function ($variant) use ($portfolio) {
+            $images = $variant->images->map(fn($img) => [
+                'type' => ($img->media_type ?? 'image') === 'video' ? 'video' : 'image',
+                'src' => asset('storage/' . (($img->media_type ?? 'image') === 'video' ? ($img->media_path ?? $img->image_path) : $img->image_path)),
+                'alt' => $portfolio->title . ' - ' . ($variant->name ?? 'Varian'),
+            ]);
+
+            $coverPath = $variant->thumbnail_image
+                ? asset('storage/' . $variant->thumbnail_image)
+                : ($images->first()['src'] ?? null);
+
+            if ($images->isEmpty() && $coverPath) {
+                $images = collect([
+                    [
+                        'type' => 'image',
+                        'src' => $coverPath,
+                        'alt' => $portfolio->title . ' - ' . ($variant->name ?? 'Varian'),
+                    ],
+                ]);
+            }
+
+            return [
+                'name' => $variant->name ?? 'Varian',
+                'cover' => $coverPath,
+                'images' => $images,
+            ];
+        });
+
+    $slides = $variantSlides;
+    $hasSlides = $slides->count() > 0;
+@endphp
+
+@if($hasSlides)
     <section>
         <div class="max-w-6xl mx-auto px-6 pb-20">
             <h2 class="text-3xl font-extrabold text-heading mb-10 text-center">Galeri Proyek</h2>
+
             <!-- Carousel wrapper -->
             <div class="relative">
                 <!-- track viewport -->
                 <div id="portfolio-viewport" class="overflow-hidden h-125 p-4 justify-center">
                     <div id="portfolio-track" class="flex items-center gap-5 transition-transform duration-700 ease-in-out">
-                        @foreach($portfolio->images as $image)
-                            <div class="shrink-0 w-full md:w-1/3 h-115">
-                                <div class="h-full flex items-center justify-center">
-                                    <img src="{{ asset('storage/' . $image->image_path) }}"
-                                        alt="{{ $portfolio->title }} - Foto {{ $loop->iteration }}"
-                                        class="w-full h-full object-cover hover:object-contain transition-all duration-500 rounded-lg cursor-pointer gallery-image"
-                                        data-index="{{ $loop->index }}" data-src="{{ asset('storage/' . $image->image_path) }}"
-                                        data-alt="{{ $portfolio->title }} - Foto {{ $loop->iteration }}" />
+                        @foreach($slides as $idx => $slide)
+                            @if($slide['cover'])
+                                <div class="shrink-0 w-full md:w-1/3 h-115">
+                                    <div class="h-full relative rounded-lg overflow-hidden group cursor-pointer gallery-image" data-variant-index="{{ $idx }}">
+                                        <img src="{{ $slide['cover'] }}"
+                                            alt="{{ $portfolio->title }} - {{ $slide['name'] }}"
+                                            class="w-full h-full object-cover transition-all duration-500" />
+                                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                        <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-white pointer-events-none">
+                                            <div>
+                                                <p class="text-xs uppercase tracking-wide">Tipe</p>
+                                                <p class="text-lg font-semibold">{{ $slide['name'] }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                            @endif
                         @endforeach
                     </div>
                 </div>
@@ -140,6 +187,7 @@
             {{-- Image Container --}}
             <div class="relative max-w-7xl max-h-[90vh] mx-auto px-4">
                 <img id="lightbox-image" src="" alt="" class="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl">
+                <video id="lightbox-video" class="hidden max-w-full max-h-[85vh] rounded-lg shadow-2xl" controls playsinline></video>
 
                 {{-- Image Caption --}}
                 <div class="text-center mt-4">
@@ -154,6 +202,7 @@
             (function () {
                 const modal = document.getElementById('lightbox-modal');
                 const lightboxImage = document.getElementById('lightbox-image');
+                const lightboxVideo = document.getElementById('lightbox-video');
                 const lightboxCaption = document.getElementById('lightbox-caption');
                 const lightboxCounter = document.getElementById('lightbox-counter');
                 const closeBtn = document.getElementById('lightbox-close');
@@ -161,23 +210,19 @@
                 const nextBtn = document.getElementById('lightbox-next');
                 const galleryImages = document.querySelectorAll('.gallery-image');
 
+                const slides = @json($slides->values());
+                let currentVariant = 0;
                 let currentIndex = 0;
-                const images = Array.from(galleryImages).map(img => ({
-                    src: img.dataset.src,
-                    alt: img.dataset.alt
-                }));
 
-                function openLightbox(index) {
-                    currentIndex = index;
+                function openLightbox(variantIdx) {
+                    currentVariant = variantIdx;
+                    currentIndex = 0;
                     updateLightboxImage();
                     modal.classList.remove('hidden');
                     modal.classList.add('flex');
                     document.body.style.overflow = 'hidden';
 
-                    // Add fade-in animation
-                    setTimeout(() => {
-                        modal.style.opacity = '1';
-                    }, 10);
+                    setTimeout(() => { modal.style.opacity = '1'; }, 10);
                 }
 
                 function closeLightbox() {
@@ -186,54 +231,70 @@
                         modal.classList.add('hidden');
                         modal.classList.remove('flex');
                         document.body.style.overflow = '';
+                        lightboxVideo.pause();
                     }, 200);
                 }
 
+                function activeImages() {
+                    return slides[currentVariant]?.images || [];
+                }
+
                 function updateLightboxImage() {
-                    if (images.length === 0) return;
+                    const imgs = activeImages();
+                    if (!imgs.length) return;
 
-                    const currentImage = images[currentIndex];
-                    lightboxImage.src = currentImage.src;
-                    lightboxImage.alt = currentImage.alt;
-                    lightboxCaption.textContent = currentImage.alt;
-                    lightboxCounter.textContent = `${currentIndex + 1} / ${images.length}`;
+                    const currentImage = imgs[currentIndex];
+                    if (currentImage.type === 'video') {
+                        lightboxImage.classList.add('hidden');
+                        lightboxVideo.classList.remove('hidden');
+                        lightboxVideo.src = currentImage.src;
+                        lightboxVideo.load();
+                    } else {
+                        lightboxVideo.pause();
+                        lightboxVideo.classList.add('hidden');
+                        lightboxImage.classList.remove('hidden');
+                        lightboxImage.src = currentImage.src;
+                        lightboxImage.alt = currentImage.alt;
+                    }
+                    lightboxCaption.textContent = (slides[currentVariant]?.name || 'Galeri') + ' – ' + (currentImage.alt || '');
+                    lightboxCounter.textContent = `${currentIndex + 1} / ${imgs.length}`;
 
-                    // Add loading animation
-                    lightboxImage.style.opacity = '0';
-                    lightboxImage.onload = () => {
-                        setTimeout(() => {
-                            lightboxImage.style.opacity = '1';
-                        }, 50);
-                    };
+                    if (currentImage.type !== 'video') {
+                        lightboxImage.style.opacity = '0';
+                        lightboxImage.onload = () => {
+                            setTimeout(() => { lightboxImage.style.opacity = '1'; }, 50);
+                        };
+                    }
                 }
 
                 function showNext() {
-                    currentIndex = (currentIndex + 1) % images.length;
+                    const imgs = activeImages();
+                    if (!imgs.length) return;
+                    currentIndex = (currentIndex + 1) % imgs.length;
                     updateLightboxImage();
                 }
 
                 function showPrev() {
-                    currentIndex = (currentIndex - 1 + images.length) % images.length;
+                    const imgs = activeImages();
+                    if (!imgs.length) return;
+                    currentIndex = (currentIndex - 1 + imgs.length) % imgs.length;
                     updateLightboxImage();
                 }
 
-                // Event Listeners
-                galleryImages.forEach((img, index) => {
-                    img.addEventListener('click', () => openLightbox(index));
+                galleryImages.forEach((img) => {
+                    img.addEventListener('click', () => {
+                        const variantIdx = parseInt(img.dataset.variantIndex, 10);
+                        if (isNaN(variantIdx)) return;
+                        openLightbox(variantIdx);
+                    });
                 });
 
                 closeBtn?.addEventListener('click', closeLightbox);
                 prevBtn?.addEventListener('click', showPrev);
                 nextBtn?.addEventListener('click', showNext);
 
-                // Close on backdrop click
-                modal?.addEventListener('click', (e) => {
-                    if (e.target === modal) {
-                        closeLightbox();
-                    }
-                });
+                modal?.addEventListener('click', (e) => { if (e.target === modal) closeLightbox(); });
 
-                // Keyboard navigation
                 document.addEventListener('keydown', (e) => {
                     if (!modal.classList.contains('hidden')) {
                         if (e.key === 'Escape') closeLightbox();
@@ -242,7 +303,6 @@
                     }
                 });
 
-                // Add transition styles
                 modal.style.transition = 'opacity 0.2s ease';
                 lightboxImage.style.transition = 'opacity 0.3s ease';
             })();

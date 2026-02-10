@@ -49,7 +49,7 @@ class DatabaseSeeder extends Seeder
 
             // Portfolio depends on Categories and Tags
             PortfolioSeeder::class,
-            PortfolioImageSeeder::class,
+            PortfolioVariantSeeder::class,
 
             // Independent seeders
             CertificateSeeder::class,
