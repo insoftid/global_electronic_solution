@@ -1,10 +1,29 @@
 <section class="relative">
     <!-- Background hero using CSS background-image so we can overlay and center content -->
+    @php
+        $heroLanding = $gallery['hero_landing'] ?? null;
+        $heroImage = $heroLanding && $heroLanding->image_path
+            ? asset('storage/' . $heroLanding->image_path)
+            : asset('img/bghero.png');
+        $heroVideo = $heroLanding && $heroLanding->video_path
+            ? asset('storage/' . $heroLanding->video_path)
+            : null;
+    @endphp
     <div class="relative w-full" style="height: 826px;">
-        <!-- Background image layer (dimmed) - put on its own absolute layer so children are not affected -->
-        <div class="absolute inset-0 bg-center bg-cover bg-no-repeat"
-            style="background-image: url('{{ isset($gallery['hero_landing']) && $gallery['hero_landing']->image_path ? asset('storage/' . $gallery['hero_landing']->image_path) : asset('img/bghero.png') }}'); filter: brightness(0.4);">
-        </div>
+        @if($heroVideo)
+            <video
+                class="absolute inset-0 w-full h-full object-cover"
+                autoplay
+                loop
+                muted
+                playsinline
+                poster="{{ $heroImage }}"
+            >
+                <source src="{{ $heroVideo }}" />
+            </video>
+        @else
+            <div class="absolute inset-0 bg-center bg-cover" style="background-image: url('{{ $heroImage }}');"></div>
+        @endif
 
         <!-- green overlay to match design (gradient) -->
         <div class="absolute inset-0 bg-linear-to-t from-transparent to-primary/80"></div>
