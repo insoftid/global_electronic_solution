@@ -40,7 +40,7 @@
 @if($hasSlides)
     <section>
         <div class="max-w-6xl mx-auto px-6 pb-20">
-            <h2 class="text-3xl font-extrabold text-heading mb-10 text-center">Galeri Proyek</h2>
+            <h2 class="text-3xl font-extrabold text-heading mb-10 text-center">Galeri Produk</h2>
 
             <!-- Carousel wrapper -->
             <div class="relative">
@@ -55,12 +55,6 @@
                                             alt="{{ $portfolio->title }} - {{ $slide['name'] }}"
                                             class="w-full h-full object-cover transition-all duration-500" />
                                         <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                                        <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-white pointer-events-none">
-                                            <div>
-                                                <p class="text-xs uppercase tracking-wide">Tipe</p>
-                                                <p class="text-lg font-semibold">{{ $slide['name'] }}</p>
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                             @endif

@@ -3,7 +3,7 @@
     $whatsappNumber = preg_replace('/[\s\-\+]/', '', $settings['whatsapp'] ?? '');
 
     // Create WhatsApp message
-    $message = urlencode("Halo, saya tertarik dengan proyek {$portfolio->title}. Boleh saya konsultasi?");
+    $message = urlencode("Halo, saya tertarik dengan produk {$portfolio->title}. Boleh saya konsultasi?");
 
     // Build WhatsApp URL
     $whatsappUrl = "https://wa.me/{$whatsappNumber}?text={$message}";
@@ -12,7 +12,7 @@
 <section class="max-w-6xl mx-auto px-6 mb-20">
     <div class="bg-secondary mx-auto px-6 py-16 flex flex-col gap-5 items-center justify-center rounded-xl ">
         <h3 class="text-white font-bold text-3xl text-center">
-            Tertarik dengan Proyek Serupa?
+            Tertarik dengan Produk Serupa?
         </h3>
         <p class="text-white text-lg ml-4 text-center">Mari diskusikan kebutuhan otomasi industri Anda dan temukan
             solusi terbaik bersama tim ahli kami.</p>

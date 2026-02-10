@@ -24,6 +24,22 @@ class PortfolioController extends Controller
         $this->fileUploadService = $fileUploadService;
     }
 
+    private function generateVariantSlug(string $name, ?string $providedSlug, int $portfolioId, ?int $ignoreId = null): string
+    {
+        $base = Str::slug($providedSlug ?: $name) ?: 'variant';
+        $slug = $base;
+        $counter = 1;
+
+        while (PortfolioVariant::where('portfolio_id', $portfolioId)
+            ->where('slug', $slug)
+            ->when($ignoreId, fn ($q) => $q->where('id', '!=', $ignoreId))
+            ->exists()) {
+            $slug = $base . '-' . $counter++;
+        }
+
+        return $slug;
+    }
+
     /**
      * Display portfolio management page.
      */
@@ -273,12 +289,15 @@ class PortfolioController extends Controller
             'display_order' => 'nullable|integer',
         ]);
 
+        $slug = $this->generateVariantSlug($validated['name'], $validated['slug'] ?? null, $portfolio->id);
+        $nextOrder = ($portfolio->variants()->max('display_order') ?? -1) + 1;
+
         $variant = $portfolio->variants()->create([
             'name' => $validated['name'],
-            'slug' => $validated['slug'] ?? null,
+            'slug' => $slug,
             'description' => $validated['description'] ?? null,
             'is_active' => $validated['is_active'] ?? true,
-            'display_order' => $validated['display_order'] ?? 0,
+            'display_order' => $validated['display_order'] ?? $nextOrder,
         ]);
 
         return response()->json([
@@ -301,9 +320,11 @@ class PortfolioController extends Controller
             'display_order' => 'nullable|integer',
         ]);
 
+        $slug = $this->generateVariantSlug($validated['name'], $validated['slug'] ?? $variant->slug, $variant->portfolio_id, $variant->id);
+
         $variant->update([
             'name' => $validated['name'],
-            'slug' => $validated['slug'] ?? $variant->slug,
+            'slug' => $slug,
             'description' => $validated['description'] ?? null,
             'is_active' => $validated['is_active'] ?? $variant->is_active,
             'display_order' => $validated['display_order'] ?? $variant->display_order,

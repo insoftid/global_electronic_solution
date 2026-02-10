@@ -2,9 +2,9 @@
 {{-- Uses $portfolios and $categories from controller --}}
 <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden">
     <div class="px-5 py-4 border-b border-gray-100">
-        <h3 class="font-bold text-gray-900">Proyek / Portfolio</h3>
+        <h3 class="font-bold text-gray-900">Produk / Portfolio</h3>
         <p class="text-xs text-gray-500 mt-1">
-            Kelola daftar proyek yang tampil di landing page. Klik item untuk edit.
+            Kelola daftar produk yang tampil di landing page. Klik item untuk edit.
         </p>
     </div>
 
@@ -16,8 +16,8 @@
             <div class="lg:col-span-7 bg-white border border-gray-200 rounded-2xl p-4">
                 <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                        <h4 class="font-semibold text-gray-900">Daftar Proyek</h4>
-                        <p class="text-xs text-gray-500 mt-1">Klik baris untuk edit di panel kanan.</p>
+                        <h4 class="font-semibold text-gray-900">Daftar Produk</h4>
+                        <p class="text-xs text-gray-500 mt-1">Pilih produk untuk edit detail di kanan.</p>
                     </div>
 
                     <div class="flex gap-2">
@@ -30,149 +30,130 @@
                     </div>
                 </div>
 
-                <div class="mt-3 overflow-auto max-h-80">
-                    <table class="min-w-full text-sm">
-                        <thead class="sticky top-0 bg-white">
-                            <tr class="text-left text-xs text-gray-500 border-b border-gray-100">
-                                <th class="py-3 pr-3">Judul</th>
-                                <th class="py-3 pr-3">Kategori</th>
-                                <th class="py-3 pr-3">Status</th>
-                                <th class="py-3">Tanggal</th>
-                            </tr>
-                        </thead>
+                <div class="mt-4 space-y-3 max-h-[26rem] overflow-auto" id="projectBody">
+                    @forelse($portfolios ?? [] as $p)
+                        <div class="project-row cursor-pointer border border-gray-100 rounded-2xl p-4 hover:border-green-200 hover:shadow-sm transition"
+                            data-id="{{ $p->id }}" data-title="{{ $p->title }}" data-subtitle="{{ $p->subtitle }}"
+                            data-description="{{ $p->description }}" data-detail="{{ $p->detail }}"
+                            data-category="{{ $p->category_id }}" data-youtube="{{ $p->youtube_url }}"
+                            data-date="{{ $p->project_date ? $p->project_date->format('Y-m-d') : '' }}"
+                            data-featured="{{ $p->is_featured ? 1 : 0 }}" data-active="{{ $p->is_active ? 1 : 0 }}"
+                            data-thumbnail="{{ $p->thumbnail }}" data-efficiency="{{ $p->efficiency_increase }}"
+                            data-waste="{{ $p->waste_reduction }}" data-roi="{{ $p->roi_months }}"
+                            data-downtime="{{ $p->downtime_reduction }}" data-quality="{{ $p->quality_rate }}">
+                            <div class="flex items-center justify-between gap-4">
+                                <div>
+                                    <p class="text-sm font-semibold text-gray-900">{{ $p->title }}</p>
+                                </div>
+                                <span class="inline-flex rounded-full px-2.5 py-1 text-xs {{ $p->is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600' }}">
+                                    {{ $p->is_active ? 'Aktif' : 'Draft' }}
+                                </span>
+                            </div>
+                            <div class="mt-3 text-xs text-gray-500">
+                                <span>{{ Str::limit($p->subtitle ?? '', 60) }}</span>
+                            </div>
+                        </div>
+                    @empty
+                        <div id="projectEmptyRow" class="py-10 text-center text-sm text-gray-500">
+                            Belum ada produk.
+                        </div>
+                    @endforelse
+                </div>
 
-                        <tbody id="projectBody">
-                            @forelse($portfolios ?? [] as $p)
-                                <tr class="project-row cursor-pointer border-b border-gray-50 hover:bg-gray-50 transition"
-                                    data-id="{{ $p->id }}" data-title="{{ $p->title }}" data-subtitle="{{ $p->subtitle }}"
-                                    data-description="{{ $p->description }}" data-detail="{{ $p->detail }}"
-                                    data-category="{{ $p->category_id }}" data-youtube="{{ $p->youtube_url }}"
-                                    data-date="{{ $p->project_date ? $p->project_date->format('Y-m-d') : '' }}"
-                                    data-featured="{{ $p->is_featured ? 1 : 0 }}" data-active="{{ $p->is_active ? 1 : 0 }}"
-                                    data-thumbnail="{{ $p->thumbnail }}" data-efficiency="{{ $p->efficiency_increase }}"
-                                    data-waste="{{ $p->waste_reduction }}" data-roi="{{ $p->roi_months }}"
-                                    data-downtime="{{ $p->downtime_reduction }}" data-quality="{{ $p->quality_rate }}">
-                                    <td class="py-3 pr-3 font-medium text-gray-900">{{ Str::limit($p->title, 25) }}</td>
-                                    <td class="py-3 pr-3 text-gray-600">{{ $p->category->name ?? '-' }}</td>
-                                    <td class="py-3 pr-3">
-                                        @if($p->is_active)
-                                            <span
-                                                class="inline-flex rounded-full bg-green-100 text-green-700 px-2.5 py-1 text-xs">Aktif</span>
-                                        @else
-                                            <span
-                                                class="inline-flex rounded-full bg-gray-100 text-gray-600 px-2.5 py-1 text-xs">Draft</span>
-                                        @endif
-                                    </td>
-                                    <td class="py-3 text-gray-700">
-                                        {{ $p->project_date ? $p->project_date->format('d M Y') : '-' }}
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr id="projectEmptyRow">
-                                    <td colspan="4" class="py-8 text-center text-gray-500">Belum ada proyek.</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-
-                    <div id="projectEmpty" class="hidden text-center py-10 text-sm text-gray-500">
-                        Proyek tidak ditemukan.
-                    </div>
+                <div id="projectEmpty" class="hidden text-center py-10 text-sm text-gray-500">
+                    Produk tidak ditemukan.
                 </div>
             </div>
 
             {{-- KANAN: FORM TAMBAH / EDIT --}}
             <div class="lg:col-span-5 bg-white border border-gray-200 rounded-2xl p-4">
                 <div>
-                    <h4 id="projFormTitle" class="font-semibold text-gray-900">Tambah Proyek Baru</h4>
+                    <h4 id="projFormTitle" class="font-semibold text-gray-900">Tambah Produk Baru</h4>
                     <p class="text-xs text-gray-500 mt-1">Isi data di bawah lalu simpan.</p>
                 </div>
 
-                <form id="projectForm" class="mt-4 space-y-3" enctype="multipart/form-data">
+                <form id="projectForm" class="mt-4 space-y-4" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" id="projectId" value="" />
 
-                    <div>
-                        <label class="text-xs text-gray-500">Judul Proyek <span class="text-red-500">*</span></label>
-                        <input id="titleInput" name="title" type="text" required
-                            placeholder="Contoh: Integrasi Sistem Otomasi"
-                            class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
-                        <p class="text-xs text-gray-400 mt-1">Maksimal 255 karakter</p>
-                    </div>
+                    <div class="space-y-4">
+                        <div class="rounded-2xl border border-gray-100 bg-gray-50/70 p-3 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <h5 class="text-sm font-semibold text-gray-800">Informasi Utama</h5>
+                                <span class="text-[11px] text-gray-400">Wajib</span>
+                            </div>
 
-                    <div>
-                        <label class="text-xs text-gray-500">Subjudul</label>
-                        <input id="subtitleInput" name="subtitle" type="text" placeholder="Contoh: Otomasi & IoT"
-                            class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
-                    </div>
+                            <div>
+                                <label class="text-xs text-gray-500">Judul Produk <span class="text-red-500">*</span></label>
+                                <input id="titleInput" name="title" type="text" required
+                                    placeholder="Contoh: Integrasi Sistem Otomasi"
+                                    class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
+                            </div>
 
-                    {{-- <div>
-                        <label class="text-xs text-gray-500">Kategori</label>
-                        <select id="categoryInput" name="category_id"
-                            class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200">
-                            <option value="">-- Pilih Kategori --</option>
-                            @foreach($categories ?? [] as $cat)
-                            <option value="{{ $cat->id }}">{{ $cat->name }}</option>
-                            @endforeach
-                        </select>
-                    </div> --}}
+                            <div>
+                                <label class="text-xs text-gray-500">Subjudul</label>
+                                <input id="subtitleInput" name="subtitle" type="text" placeholder="Contoh: Otomasi & IoT"
+                                    class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
+                            </div>
 
-                    <div>
-                        <label class="text-xs text-gray-500">Deskripsi Singkat <span
-                                class="text-red-500">*</span></label>
-                        <textarea id="descriptionInput" name="description" rows="2" required
-                            placeholder="Deskripsi singkat untuk preview"
-                            class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200"></textarea>
-                    </div>
-
-                    <div>
-                        <label class="text-xs text-gray-500">Detail Proyek</label>
-                        <textarea id="detailInput" name="detail" rows="3"
-                            placeholder="Jelaskan detail proyek secara lengkap"
-                            class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200"></textarea>
-                    </div>
-
-                    {{-- <div>
-                        <label class="text-xs text-gray-500">Tanggal Proyek</label>
-                        <input id="dateInput" name="project_date" type="date"
-                            class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
-                    </div> --}}
-
-                    <div>
-                        <label class="text-xs text-gray-500">Link YouTube (opsional)</label>
-                        <input id="youtubeInput" name="youtube_url" type="url"
-                            placeholder="https://www.youtube.com/watch?v=..."
-                            class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
-                        <p class="text-xs text-gray-400 mt-1">Masukkan URL YouTube yang valid</p>
-                    </div>
-
-                    <div data-field="thumbnail">
-                        <div class="text-xs text-gray-500">Thumbnail</div>
-                        <div
-                            class="h-24 bg-gray-50 rounded-md overflow-hidden mb-2 flex items-center justify-center text-gray-400 preview-area">
-                            <span class="preview-placeholder">Preview Gambar</span>
+                            <div>
+                                <label class="text-xs text-gray-500">Deskripsi Singkat <span class="text-red-500">*</span></label>
+                                <textarea id="descriptionInput" name="description" rows="2" required
+                                    placeholder="Deskripsi singkat untuk preview"
+                                    class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200"></textarea>
+                            </div>
                         </div>
-                        <label
-                            class="w-full h-9 rounded-lg border border-gray-300 inline-flex justify-between items-center cursor-pointer pl-3">
-                            <span class="text-gray-900/60 text-sm truncate file-name">No file chosen</span>
-                            <input id="thumbnailInput" type="file" name="thumbnail" accept="image/*"
-                                class="hidden file-input" />
-                            <span
-                                class="flex w-28 h-9 px-2 bg-secondary rounded-r-lg shadow text-white text-xs font-semibold items-center justify-center">Choose
-                                File</span>
-                        </label>
-                        <p class="text-xs text-gray-400 mt-1">Format: JPG, PNG, WebP, SVG. Maks. 2MB</p>
-                    </div>
 
-                    <div class="flex items-center gap-4">
-                        <label class="flex items-center gap-2 text-sm">
-                            <input id="featuredInput" name="is_featured" type="checkbox" value="1" class="rounded">
-                            Featured
-                        </label>
-                        <label class="flex items-center gap-2 text-sm">
-                            <input id="activeInput" name="is_active" type="checkbox" value="1" checked class="rounded">
-                            Aktif
-                        </label>
+                        <details class="rounded-2xl border border-gray-100 bg-white p-3 group">
+                            <summary class="flex cursor-pointer list-none items-center justify-between text-sm font-semibold text-gray-800">
+                                Detail & Media Tambahan
+                                <span class="text-xs text-gray-400 group-open:hidden">Buka</span>
+                                <span class="text-xs text-gray-400 hidden group-open:inline">Tutup</span>
+                            </summary>
+                            <div class="mt-3 space-y-3">
+                                <div>
+                                    <label class="text-xs text-gray-500">Detail Produk</label>
+                                    <textarea id="detailInput" name="detail" rows="3"
+                                        placeholder="Jelaskan detail produk secara lengkap"
+                                        class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200"></textarea>
+                                </div>
+
+                                <div>
+                                    <label class="text-xs text-gray-500">Link YouTube (opsional)</label>
+                                    <input id="youtubeInput" name="youtube_url" type="url"
+                                        placeholder="https://www.youtube.com/watch?v=..."
+                                        class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
+                                </div>
+
+                                <div data-field="thumbnail">
+                                    <div class="text-xs text-gray-500">Thumbnail</div>
+                                    <div
+                                        class="h-24 bg-gray-50 rounded-md overflow-hidden mb-2 flex items-center justify-center text-gray-400 preview-area">
+                                        <span class="preview-placeholder">Preview Gambar</span>
+                                    </div>
+                                    <label
+                                        class="w-full h-9 rounded-lg border border-gray-300 inline-flex justify-between items-center cursor-pointer pl-3">
+                                        <span class="text-gray-900/60 text-sm truncate file-name">No file chosen</span>
+                                        <input id="thumbnailInput" type="file" name="thumbnail" accept="image/*"
+                                            class="hidden file-input" />
+                                        <span
+                                            class="flex w-28 h-9 px-2 bg-secondary rounded-r-lg shadow text-white text-xs font-semibold items-center justify-center">Choose
+                                            File</span>
+                                    </label>
+                                </div>
+
+                                <div class="flex items-center gap-4">
+                                    <label class="flex items-center gap-2 text-sm">
+                                        <input id="featuredInput" name="is_featured" type="checkbox" value="1" class="rounded">
+                                        Featured
+                                    </label>
+                                    <label class="flex items-center gap-2 text-sm">
+                                        <input id="activeInput" name="is_active" type="checkbox" value="1" checked class="rounded">
+                                        Aktif
+                                    </label>
+                                </div>
+                            </div>
+                        </details>
                     </div>
 
                     {{-- PROJECT METRICS SECTION --}}
@@ -215,8 +196,8 @@
                     <div class="pt-4 mt-4 border-t border-gray-200" id="variantSection">
                         <div class="flex items-center justify-between mb-3">
                             <div>
-                                <h5 class="font-semibold text-gray-900 text-sm">Varian / Tipe Proyek</h5>
-                                <p class="text-xs text-gray-500">Tambah tipe, lalu unggah foto khusus tiap tipe.</p>
+                                <h5 class="font-semibold text-gray-900 text-sm">Varian / Tipe Produk</h5>
+                                <p class="text-xs text-gray-500">Tambah tipe dan kelola media di bawah ini.</p>
                             </div>
                             <button type="button" id="variantNewBtn"
                                 class="rounded-full bg-slate-100 text-gray-700 px-3 py-1 text-xs hover:bg-slate-200">+ Varian baru</button>
@@ -230,7 +211,7 @@
                                     <span class="text-[11px] text-gray-500" id="variantCount">0 varian</span>
                                 </div>
                                 <div id="variantList" class="space-y-2 max-h-60 overflow-auto">
-                                    <p class="text-xs text-gray-400">Pilih proyek untuk melihat varian.</p>
+                                    <p class="text-xs text-gray-400">Pilih produk untuk melihat varian.</p>
                                 </div>
                             </div>
 
@@ -238,7 +219,7 @@
                             <div class="border border-gray-200 rounded-xl p-3">
                                 <h6 class="font-semibold text-gray-800 text-sm" id="variantFormTitle">Tambah Varian</h6>
                                 <p class="text-[11px] text-gray-500 mb-2">Nama dan deskripsi singkat tipe.</p>
-                                <form id="variantForm" class="space-y-2">
+                                <div id="variantForm" class="space-y-2" role="form">
                                     <input type="hidden" id="variantId" />
                                     <div>
                                         <label class="text-xs text-gray-500">Nama Varian</label>
@@ -257,9 +238,9 @@
                                     </div>
                                     <div class="flex items-center justify-end gap-2 pt-1">
                                         <button type="button" id="variantDeleteBtn" class="hidden rounded-full border border-red-200 bg-red-50 px-3 py-1 text-xs text-red-700 hover:bg-red-100">Hapus</button>
-                                        <button type="submit" id="variantSaveBtn" class="rounded-full bg-green-600 px-4 py-2 text-sm text-white hover:bg-green-700">Simpan Varian</button>
+                                        <button type="button" id="variantSaveBtn" class="rounded-full bg-green-600 px-4 py-2 text-sm text-white hover:bg-green-700">Simpan Varian</button>
                                     </div>
-                                </form>
+                                </div>
                             </div>
                         </div>
 
@@ -296,7 +277,7 @@
 
                         <button type="submit" id="projSaveBtn"
                             class="rounded-full bg-green-600 px-4 py-2 text-sm text-white hover:bg-green-700">
-                            Simpan Proyek
+                            Simpan Produk
                         </button>
                     </div>
                 </form>
@@ -380,7 +361,7 @@
         function resetForm() {
             form.reset();
             idEl.value = '';
-            formTitle.textContent = 'Tambah Proyek Baru';
+            formTitle.textContent = 'Tambah Produk Baru';
             btnDelete.classList.add('hidden');
             activeEl.checked = true;
             if (previewArea) previewArea.innerHTML = '<span class="preview-placeholder">Preview Gambar</span>';
@@ -402,7 +383,7 @@
 
         function fillForm(row) {
             idEl.value = row.dataset.id || '';
-            formTitle.textContent = 'Edit Proyek';
+            formTitle.textContent = 'Edit Produk';
             titleEl.value = row.dataset.title || '';
             subtitleEl.value = row.dataset.subtitle || '';
             if (categoryEl) categoryEl.value = row.dataset.category || '';
@@ -525,7 +506,7 @@
         btnDelete?.addEventListener('click', async () => {
             const id = idEl.value;
             if (!id) return;
-            if (!confirm('Yakin ingin menghapus proyek ini?')) return;
+            if (!confirm('Yakin ingin menghapus produk ini?')) return;
 
             setButtonLoading(btnDelete, true);
 
@@ -575,7 +556,7 @@
         // =====================
         const variantList = document.getElementById('variantList');
         const variantCount = document.getElementById('variantCount');
-        const variantForm = document.getElementById('variantForm');
+    const variantForm = document.getElementById('variantForm');
         const variantFormTitle = document.getElementById('variantFormTitle');
         const variantId = document.getElementById('variantId');
         const variantName = document.getElementById('variantName');
@@ -620,13 +601,16 @@
 
         function resetVariantForm() {
             if (!variantForm) return;
-            variantForm.reset();
             variantId.value = '';
+            variantName.value = '';
+            variantSlug.value = '';
+            variantDescription.value = '';
+            variantActive.checked = true;
             variantFormTitle.textContent = 'Tambah Varian';
             variantDeleteBtn?.classList.add('hidden');
             currentVariantId = null;
             variantPendingFiles = [];
-            variantImageInput.value = '';
+            if (variantImageInput) variantImageInput.value = '';
             renderVariantImages();
             updateVariantUploadState();
         }
@@ -838,10 +822,9 @@
             }
         });
 
-        variantForm?.addEventListener('submit', async (e) => {
-            e.preventDefault();
+        async function handleVariantSave() {
             if (!currentPortfolioId) {
-                showToast({ title: 'Pilih Proyek', message: 'Pilih proyek terlebih dahulu sebelum menambah varian.' }, 'error');
+                showToast({ title: 'Pilih Produk', message: 'Pilih produk terlebih dahulu sebelum menambah varian.' }, 'error');
                 return;
             }
 
@@ -873,16 +856,19 @@
                     if (!variantsData[currentPortfolioId]) variantsData[currentPortfolioId] = [];
 
                     if (isUpdate) {
-                        variantsData[currentPortfolioId] = variantsData[currentPortfolioId].map(v => v.id == variantId.value ? { ...v, ...payload } : v);
+                        const serverVariant = result.variant || {};
+                        variantsData[currentPortfolioId] = variantsData[currentPortfolioId].map(v => v.id == variantId.value ? { ...v, ...payload, ...serverVariant, slug: serverVariant.slug ?? payload.slug } : v);
                     } else {
-                        variantsData[currentPortfolioId].push({ ...payload, id: result.variant?.id, images: [] });
+                        const serverVariant = result.variant || {};
+                        const newVariantId = serverVariant.id || variantId.value || Date.now();
+                        variantsData[currentPortfolioId].push({ ...payload, ...serverVariant, id: newVariantId, slug: serverVariant.slug ?? payload.slug, images: [] });
                     }
 
                     renderVariantList(currentPortfolioId);
                     if (isUpdate) {
-                        selectVariant(variantId.value);
+                        selectVariant(result.variant?.id || variantId.value);
                     } else {
-                        resetVariantForm();
+                        selectVariant(result.variant?.id || variantsData[currentPortfolioId].slice(-1)[0]?.id);
                     }
                 } else {
                     const errorObj = formatApiError(response, result);
@@ -893,6 +879,11 @@
             } finally {
                 setButtonLoading(variantSaveBtn, false);
             }
+        }
+
+        variantSaveBtn?.addEventListener('click', (e) => {
+            e.preventDefault();
+            handleVariantSave();
         });
 
         // Extend fill/reset to include variants
@@ -910,7 +901,7 @@
             currentPortfolioId = null;
             resetVariantForm();
             if (variantList) {
-                variantList.innerHTML = '<p class="text-xs text-gray-400">Pilih proyek untuk melihat varian.</p>';
+                variantList.innerHTML = '<p class="text-xs text-gray-400">Pilih Produk untuk melihat varian.</p>';
                 variantCount.textContent = '0 varian';
             }
         };
@@ -925,5 +916,6 @@
             firstRow.classList.add('ring-2', 'ring-green-200', 'bg-green-50');
             fillForm(firstRow);
         }
+
     })();
 </script>
