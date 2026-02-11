@@ -160,7 +160,6 @@
 {{-- AJAX JS for CRUD operations --}}
 <script>
   (function () {
-    const currentUserRole = "{{ auth()->user()->role }}";
     const rows = () => Array.from(document.querySelectorAll('.admin-row'));
     const searchInput = document.getElementById('searchInput');
     const roleFilter = document.getElementById('roleFilter');
@@ -184,19 +183,12 @@
 
     const csrfToken = document.querySelector('input[name="_token"]').value;
 
-    // API Base URLs - updated to match new routes
-    const API_URLS = {
-      store: '/admin/users/store',
-      update: (id) => `/admin/users/update/${id}`,
-      delete: (id) => `/admin/users/delete/${id}`
-    };
-
     function clearActive() {
       rows().forEach(r => r.classList.remove('ring-2', 'ring-green-200', 'bg-green-50'));
     }
 
     function fillFormFromRow(row) {
-      adminId.value = (row.dataset.id || '').trim();
+      adminId.value = row.dataset.id || '';
       formMethod.value = 'PUT';
       nameInput.value = row.dataset.name || '';
       emailInput.value = row.dataset.email || '';
@@ -204,21 +196,7 @@
       statusInput.value = row.dataset.status || 'Aktif';
       passInput.value = '';
       passHint.textContent = '(kosongkan jika tidak ingin mengubah)';
-
-      // Permission Logic for non-Superadmin
-      if (currentUserRole !== 'Superadmin') {
-        roleInput.disabled = true;
-        statusInput.disabled = true;
-        passInput.disabled = true;
-        passInput.placeholder = "Hanya Superadmin dapat mengubah password";
-        deleteBtn.classList.add('hidden');
-      } else {
-        roleInput.disabled = false;
-        statusInput.disabled = false;
-        passInput.disabled = false;
-        passInput.placeholder = "Minimal 8 karakter";
-        deleteBtn.classList.remove('hidden');
-      }
+      deleteBtn.classList.remove('hidden');
     }
 
     function resetForm() {
@@ -227,23 +205,8 @@
       formMethod.value = 'POST';
       nameInput.value = '';
       emailInput.value = '';
-
-      if (currentUserRole !== 'Superadmin') {
-        roleInput.value = 'Editor';
-        roleInput.disabled = true;
-        statusInput.value = 'Aktif';
-        statusInput.disabled = true;
-        passInput.disabled = false;
-        passInput.placeholder = "Minimal 8 karakter";
-      } else {
-        roleInput.value = 'Superadmin';
-        roleInput.disabled = false;
-        statusInput.value = 'Aktif';
-        statusInput.disabled = false;
-        passInput.disabled = false;
-        passInput.placeholder = "Minimal 8 karakter";
-      }
-
+      roleInput.value = 'Superadmin';
+      statusInput.value = 'Aktif';
       passInput.value = '';
       passHint.textContent = '(wajib untuk user baru)';
       deleteBtn.classList.add('hidden');
@@ -260,45 +223,6 @@
       formMessage.classList.add('hidden');
     }
 
-    // Helper function to make API requests
-    async function apiRequest(url, data) {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'X-CSRF-TOKEN': csrfToken,
-        },
-        body: JSON.stringify(data),
-      });
-
-      // Get response text first
-      const responseText = await response.text();
-
-      // Try to parse as JSON
-      let result;
-      try {
-        result = JSON.parse(responseText);
-      } catch (e) {
-        console.error('Failed to parse response:', responseText.substring(0, 500));
-        throw new Error('Server mengembalikan respons yang tidak valid');
-      }
-
-      return { response, result };
-    }
-
-    // Format error messages from API response
-    function formatErrorMessage(result) {
-      if (result.errors) {
-        const errorMessages = [];
-        for (const field in result.errors) {
-          errorMessages.push(...result.errors[field]);
-        }
-        return result.message + ': ' + errorMessages.join(', ');
-      }
-      return result.message || 'Terjadi kesalahan';
-    }
-
     // Bind row click events
     function bindRowEvents() {
       rows().forEach(row => {
@@ -311,6 +235,7 @@
     }
 
     bindRowEvents();
+
     resetBtn.addEventListener('click', resetForm);
 
     // Save (Create or Update)
@@ -318,80 +243,89 @@
       e.preventDefault();
       hideMessage();
 
-      const id = (adminId.value || '').toString().trim();
-      const isUpdate = id !== '' && id !== '0';
+      const id = adminId.value;
+      const method = id ? 'PUT' : 'POST';
+      const url = id ? `/admin/users/${id}` : '/admin/users';
 
-      // Determine URL based on operation
-      const url = isUpdate ? API_URLS.update(id) : API_URLS.store;
-
-      console.log('Form submission:', { id, isUpdate, url });
-
-      // Build data object
       const data = {
-        name: nameInput.value.trim(),
-        email: emailInput.value.trim(),
+        name: nameInput.value,
+        email: emailInput.value,
+        role: roleInput.value,
+        status: statusInput.value,
+        _token: csrfToken,
       };
 
-      // Include role/status only if not disabled
-      if (!roleInput.disabled) {
-        data.role = roleInput.value;
-      }
-      if (!statusInput.disabled) {
-        data.status = statusInput.value;
-      }
-
-      // Include password if provided and not disabled
-      if (passInput.value && !passInput.disabled) {
+      if (passInput.value) {
         data.password = passInput.value;
       }
 
       try {
-        const { response, result } = await apiRequest(url, data);
+        const response = await fetch(url, {
+          method: method,
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': csrfToken,
+          },
+          body: JSON.stringify(data),
+        });
+
+        const result = await response.json();
 
         if (response.ok && result.success) {
           showMessage(result.message);
           setTimeout(() => location.reload(), 1000);
         } else {
-          const errorMsg = formatErrorMessage(result);
-          showMessage(errorMsg, true);
-          if (typeof showToast === 'function') {
-            showToast({ title: 'Error', message: errorMsg }, 'error');
+          const errorObj = formatApiError(response, result);
+          // Format for inline message display
+          let errorMsg = errorObj.message;
+          if (errorObj.details && errorObj.details.length > 0) {
+            errorMsg += '\n' + errorObj.details.join('\n');
           }
+          showMessage(errorMsg, true);
+          showToast(errorObj, 'error');
         }
       } catch (err) {
-        console.error('Request error:', err);
-        showMessage(err.message || 'Terjadi kesalahan koneksi', true);
-        if (typeof showToast === 'function') {
-          showToast({ title: 'Error', message: err.message }, 'error');
-        }
+        showMessage('Terjadi kesalahan koneksi: ' + err.message, true);
+        showToast({
+          title: 'Koneksi Error',
+          message: 'Gagal menghubungi server',
+          details: [`• ${err.message || 'Network request failed'}`]
+        }, 'error');
       }
     });
 
     // Delete
     deleteBtn.addEventListener('click', async () => {
-      const id = (adminId.value || '').toString().trim();
-      if (!id) return;
+      if (!adminId.value) return;
       if (!confirm('Yakin ingin menghapus user ini?')) return;
 
       try {
-        const { response, result } = await apiRequest(API_URLS.delete(id), {});
+        const response = await fetch(`/admin/users/${adminId.value}`, {
+          method: 'DELETE',
+          headers: {
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': csrfToken,
+          },
+        });
+
+        const result = await response.json();
 
         if (response.ok && result.success) {
           showMessage(result.message);
           setTimeout(() => location.reload(), 1000);
         } else {
-          const errorMsg = formatErrorMessage(result);
-          showMessage(errorMsg, true);
-          if (typeof showToast === 'function') {
-            showToast({ title: 'Error', message: errorMsg }, 'error');
-          }
+          const errorObj = formatApiError(response, result);
+          showMessage(errorObj.message, true);
+          showToast(errorObj, 'error');
         }
       } catch (err) {
-        console.error('Delete error:', err);
-        showMessage(err.message || 'Terjadi kesalahan koneksi', true);
-        if (typeof showToast === 'function') {
-          showToast({ title: 'Error', message: err.message }, 'error');
-        }
+        showMessage('Terjadi kesalahan koneksi', true);
+        showToast({
+          title: 'Koneksi Error',
+          message: 'Gagal menghubungi server',
+          details: [`• ${err.message || 'Network request failed'}`]
+        }, 'error');
       }
     });
 

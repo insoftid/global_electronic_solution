@@ -4,7 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Portfolio;
-use App\Models\PortfolioImage;
+use App\Models\PortfolioVariant;
+use App\Models\PortfolioVariantImage;
 use App\Models\Category;
 use App\Models\Tag;
 use App\Models\Certificate;
@@ -23,12 +24,28 @@ class PortfolioController extends Controller
         $this->fileUploadService = $fileUploadService;
     }
 
+    private function generateVariantSlug(string $name, ?string $providedSlug, int $portfolioId, ?int $ignoreId = null): string
+    {
+        $base = Str::slug($providedSlug ?: $name) ?: 'variant';
+        $slug = $base;
+        $counter = 1;
+
+        while (PortfolioVariant::where('portfolio_id', $portfolioId)
+            ->where('slug', $slug)
+            ->when($ignoreId, fn ($q) => $q->where('id', '!=', $ignoreId))
+            ->exists()) {
+            $slug = $base . '-' . $counter++;
+        }
+
+        return $slug;
+    }
+
     /**
      * Display portfolio management page.
      */
     public function index(Request $request)
     {
-        $query = Portfolio::with(['category', 'tags', 'images'])->ordered();
+    $query = Portfolio::with(['category', 'tags', 'variants.images'])->ordered();
 
         if ($request->filled('search')) {
             $query->where('title', 'like', '%' . $request->search . '%');
@@ -144,7 +161,7 @@ class PortfolioController extends Controller
     public function show(Portfolio $portfolio)
     {
         return response()->json([
-            'portfolio' => $portfolio->load(['category', 'tags', 'images']),
+            'portfolio' => $portfolio->load(['category', 'tags', 'variants.images']),
         ]);
     }
 
@@ -239,9 +256,11 @@ class PortfolioController extends Controller
             $this->fileUploadService->delete($portfolio->thumbnail);
         }
 
-        // Delete portfolio images
-        foreach ($portfolio->images as $image) {
-            $this->fileUploadService->delete($image->image_path);
+        // Delete variant images
+        foreach ($portfolio->variants as $variant) {
+            foreach ($variant->images as $variantImage) {
+                $this->fileUploadService->delete($variantImage->image_path);
+            }
         }
 
         $portfolio->delete();
@@ -256,53 +275,150 @@ class PortfolioController extends Controller
         return back()->with('success', 'Portfolio berhasil dihapus');
     }
 
+
     /**
-     * Upload additional images to portfolio.
+     * Create a new variant for a portfolio.
      */
-    public function uploadImages(Request $request, Portfolio $portfolio)
+    public function storeVariant(Request $request, Portfolio $portfolio)
     {
-        $request->validate([
-            'images' => 'required|array',
-            'images.*' => 'image|mimes:jpeg,png,jpg,webp,svg|max:2048',
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'slug' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
+            'is_active' => 'boolean',
+            'display_order' => 'nullable|integer',
         ]);
 
-        try {
-            $uploadedImages = [];
-            foreach ($request->file('images') as $image) {
-                $path = $this->fileUploadService->upload($image, 'portfolios/gallery');
-                $portfolioImage = PortfolioImage::create([
-                    'portfolio_id' => $portfolio->id,
-                    'image_path' => $path,
-                    'display_order' => $portfolio->images()->count(),
-                ]);
-                $uploadedImages[] = $portfolioImage;
-            }
+        $slug = $this->generateVariantSlug($validated['name'], $validated['slug'] ?? null, $portfolio->id);
+        $nextOrder = ($portfolio->variants()->max('display_order') ?? -1) + 1;
 
-            return response()->json([
-                'success' => true,
-                'message' => count($uploadedImages) . ' gambar berhasil diupload',
-                'images' => $uploadedImages,
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal mengupload gambar',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
-    }
-
-    /**
-     * Delete portfolio image.
-     */
-    public function deleteImage(Request $request, PortfolioImage $portfolioImage)
-    {
-        $this->fileUploadService->delete($portfolioImage->image_path);
-        $portfolioImage->delete();
+        $variant = $portfolio->variants()->create([
+            'name' => $validated['name'],
+            'slug' => $slug,
+            'description' => $validated['description'] ?? null,
+            'is_active' => $validated['is_active'] ?? true,
+            'display_order' => $validated['display_order'] ?? $nextOrder,
+        ]);
 
         return response()->json([
             'success' => true,
-            'message' => 'Gambar berhasil dihapus',
+            'message' => 'Variant berhasil dibuat',
+            'variant' => $variant,
         ]);
     }
+
+    /**
+     * Update an existing variant.
+     */
+    public function updateVariant(Request $request, PortfolioVariant $variant)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'slug' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
+            'is_active' => 'boolean',
+            'display_order' => 'nullable|integer',
+        ]);
+
+        $slug = $this->generateVariantSlug($validated['name'], $validated['slug'] ?? $variant->slug, $variant->portfolio_id, $variant->id);
+
+        $variant->update([
+            'name' => $validated['name'],
+            'slug' => $slug,
+            'description' => $validated['description'] ?? null,
+            'is_active' => $validated['is_active'] ?? $variant->is_active,
+            'display_order' => $validated['display_order'] ?? $variant->display_order,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Variant berhasil diperbarui',
+            'variant' => $variant,
+        ]);
+    }
+
+    /**
+     * Delete a variant and its images.
+     */
+    public function deleteVariant(Request $request, PortfolioVariant $variant)
+    {
+        foreach ($variant->images as $image) {
+            $this->fileUploadService->delete($image->image_path);
+        }
+
+        $variant->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Variant berhasil dihapus',
+        ]);
+    }
+
+    /**
+     * Upload images for a variant.
+     */
+    public function uploadVariantImages(Request $request, PortfolioVariant $variant)
+    {
+        $request->validate([
+            'images' => 'required|array',
+            'images.*' => 'file|mimes:jpeg,png,jpg,webp,svg,mp4,webm,mov|max:51200',
+        ]);
+
+        $uploadedImages = [];
+        $shouldSetThumbnail = empty($variant->thumbnail_image);
+        foreach ($request->file('images') as $image) {
+            $mime = $image->getMimeType();
+            $isVideo = $mime && str_starts_with($mime, 'video/');
+            $path = $this->fileUploadService->upload($image, $isVideo ? 'portfolios/videos' : 'portfolios/gallery');
+
+            $variantImage = PortfolioVariantImage::create([
+                'portfolio_variant_id' => $variant->id,
+                'media_type' => $isVideo ? 'video' : 'image',
+                'media_path' => $isVideo ? $path : null,
+                'image_path' => $isVideo ? null : $path,
+                'display_order' => $variant->images()->count(),
+            ]);
+            $uploadedImages[] = $variantImage;
+
+            if ($shouldSetThumbnail) {
+                $variant->thumbnail_image = $variantImage->image_path;
+                $variant->save();
+                $shouldSetThumbnail = false;
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => count($uploadedImages) . ' gambar berhasil diupload',
+            'images' => $uploadedImages,
+        ]);
+    }
+
+    /**
+     * Delete a variant image.
+     */
+    public function deleteVariantImage(Request $request, PortfolioVariantImage $variantImage)
+    {
+        $variant = $variantImage->variant;
+        $filePath = $variantImage->media_type === 'video'
+            ? $variantImage->media_path
+            : $variantImage->image_path;
+
+        if ($filePath) {
+            $this->fileUploadService->delete($filePath);
+        }
+        $variantImage->delete();
+
+        if ($variant && $variant->thumbnail_image === $variantImage->image_path) {
+            $nextImage = $variant->images()->orderBy('display_order')->first();
+            $variant->thumbnail_image = $nextImage?->image_path;
+            $variant->save();
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Gambar variant berhasil dihapus',
+        ]);
+    }
+
 }

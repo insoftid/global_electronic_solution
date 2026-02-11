@@ -39,11 +39,13 @@
                 <li class="flex gap-3 md:gap-5 text-base md:text-lg lg:text-xl items-center">
                     <div
                         class="bg-primary rounded-full w-8 h-8 md:w-11 md:h-11 flex items-center justify-center shrink-0">
-                        <svg class="w-4 h-4 md:w-5 md:h-5" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                            fill="white" class="bi bi-envelope-fill" viewBox="0 0 16 16">
+                        <svg class="w-4 h-4 md:w-5 md:h-5" viewBox="0 0 21 18" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
                             <path
-                                d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414zM0 4.697v7.104l5.803-3.558zM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586zm3.436-.586L16 11.801V4.697z" />
+                                d="M23.4 0H2.6C1.17 0 0.013 1.18125 0.013 2.625L0 18.375C0 19.8188 1.17 21 2.6 21H23.4C24.83 21 26 19.8188 26 18.375V2.625C26 1.18125 24.83 0 23.4 0ZM23.4 5.25L13 11.8125L2.6 5.25V2.625L13 9.1875L23.4 2.625V5.25Z"
+                                fill="white" />
                         </svg>
+
                     </div>
                     <p>{{ $settings['email'] ?? 'info@gmail.com' }}</p>
                 </li>
@@ -102,15 +104,15 @@
                 <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
                     {{ session('success') }}
                 </div>
-            @endif @if ($errors->any())
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-                    <ul class="list-disc list-inside">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
+                @endif @if ($errors->any())
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                        <ul class="list-disc list-inside">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
 
             <form action="{{ route('contact.store') }}" method="POST" class="space-y-4 md:space-y-6">
                 @csrf

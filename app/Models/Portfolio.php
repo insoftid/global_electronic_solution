@@ -75,11 +75,11 @@ class Portfolio extends Model
     }
 
     /**
-     * Get the images for the portfolio.
+     * Variants belonging to this portfolio.
      */
-    public function images(): HasMany
+    public function variants(): HasMany
     {
-        return $this->hasMany(PortfolioImage::class)->orderBy('display_order');
+        return $this->hasMany(PortfolioVariant::class)->orderBy('display_order');
     }
 
     /*

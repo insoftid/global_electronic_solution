@@ -18,6 +18,7 @@ class GalleryPhoto extends Model
         'slot_key',
         'label',
         'image_path',
+        'video_path',
         'caption',
         'placement_description',
     ];

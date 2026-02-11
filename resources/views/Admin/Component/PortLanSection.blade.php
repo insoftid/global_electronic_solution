@@ -2,9 +2,9 @@
 {{-- Uses $portfolios and $categories from controller --}}
 <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden">
     <div class="px-5 py-4 border-b border-gray-100">
-        <h3 class="font-bold text-gray-900">Proyek / Portfolio</h3>
+        <h3 class="font-bold text-gray-900">Produk / Portfolio</h3>
         <p class="text-xs text-gray-500 mt-1">
-            Kelola daftar proyek yang tampil di landing page. Klik item untuk edit.
+            Kelola daftar produk yang tampil di landing page. Klik item untuk edit.
         </p>
     </div>
 
@@ -16,8 +16,8 @@
             <div class="lg:col-span-7 bg-white border border-gray-200 rounded-2xl p-4">
                 <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                        <h4 class="font-semibold text-gray-900">Daftar Proyek</h4>
-                        <p class="text-xs text-gray-500 mt-1">Klik baris untuk edit di panel kanan.</p>
+                        <h4 class="font-semibold text-gray-900">Daftar Produk</h4>
+                        <p class="text-xs text-gray-500 mt-1">Pilih produk untuk edit detail di kanan.</p>
                     </div>
 
                     <div class="flex gap-2">
@@ -30,149 +30,130 @@
                     </div>
                 </div>
 
-                <div class="mt-3 overflow-auto max-h-80">
-                    <table class="min-w-full text-sm">
-                        <thead class="sticky top-0 bg-white">
-                            <tr class="text-left text-xs text-gray-500 border-b border-gray-100">
-                                <th class="py-3 pr-3">Judul</th>
-                                <th class="py-3 pr-3">Kategori</th>
-                                <th class="py-3 pr-3">Status</th>
-                                <th class="py-3">Tanggal</th>
-                            </tr>
-                        </thead>
+                <div class="mt-4 space-y-3 max-h-[26rem] overflow-auto" id="projectBody">
+                    @forelse($portfolios ?? [] as $p)
+                        <div class="project-row cursor-pointer border border-gray-100 rounded-2xl p-4 hover:border-green-200 hover:shadow-sm transition"
+                            data-id="{{ $p->id }}" data-title="{{ $p->title }}" data-subtitle="{{ $p->subtitle }}"
+                            data-description="{{ $p->description }}" data-detail="{{ $p->detail }}"
+                            data-category="{{ $p->category_id }}" data-youtube="{{ $p->youtube_url }}"
+                            data-date="{{ $p->project_date ? $p->project_date->format('Y-m-d') : '' }}"
+                            data-featured="{{ $p->is_featured ? 1 : 0 }}" data-active="{{ $p->is_active ? 1 : 0 }}"
+                            data-thumbnail="{{ $p->thumbnail }}" data-efficiency="{{ $p->efficiency_increase }}"
+                            data-waste="{{ $p->waste_reduction }}" data-roi="{{ $p->roi_months }}"
+                            data-downtime="{{ $p->downtime_reduction }}" data-quality="{{ $p->quality_rate }}">
+                            <div class="flex items-center justify-between gap-4">
+                                <div>
+                                    <p class="text-sm font-semibold text-gray-900">{{ $p->title }}</p>
+                                </div>
+                                <span class="inline-flex rounded-full px-2.5 py-1 text-xs {{ $p->is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600' }}">
+                                    {{ $p->is_active ? 'Aktif' : 'Draft' }}
+                                </span>
+                            </div>
+                            <div class="mt-3 text-xs text-gray-500">
+                                <span>{{ Str::limit($p->subtitle ?? '', 60) }}</span>
+                            </div>
+                        </div>
+                    @empty
+                        <div id="projectEmptyRow" class="py-10 text-center text-sm text-gray-500">
+                            Belum ada produk.
+                        </div>
+                    @endforelse
+                </div>
 
-                        <tbody id="projectBody">
-                            @forelse($portfolios ?? [] as $p)
-                                <tr class="project-row cursor-pointer border-b border-gray-50 hover:bg-gray-50 transition"
-                                    data-id="{{ $p->id }}" data-title="{{ $p->title }}" data-subtitle="{{ $p->subtitle }}"
-                                    data-description="{{ $p->description }}" data-detail="{{ $p->detail }}"
-                                    data-category="{{ $p->category_id }}" data-youtube="{{ $p->youtube_url }}"
-                                    data-date="{{ $p->project_date ? $p->project_date->format('Y-m-d') : '' }}"
-                                    data-featured="{{ $p->is_featured ? 1 : 0 }}" data-active="{{ $p->is_active ? 1 : 0 }}"
-                                    data-thumbnail="{{ $p->thumbnail }}" data-efficiency="{{ $p->efficiency_increase }}"
-                                    data-waste="{{ $p->waste_reduction }}" data-roi="{{ $p->roi_months }}"
-                                    data-downtime="{{ $p->downtime_reduction }}" data-quality="{{ $p->quality_rate }}">
-                                    <td class="py-3 pr-3 font-medium text-gray-900">{{ Str::limit($p->title, 25) }}</td>
-                                    <td class="py-3 pr-3 text-gray-600">{{ $p->category->name ?? '-' }}</td>
-                                    <td class="py-3 pr-3">
-                                        @if($p->is_active)
-                                            <span
-                                                class="inline-flex rounded-full bg-green-100 text-green-700 px-2.5 py-1 text-xs">Aktif</span>
-                                        @else
-                                            <span
-                                                class="inline-flex rounded-full bg-gray-100 text-gray-600 px-2.5 py-1 text-xs">Draft</span>
-                                        @endif
-                                    </td>
-                                    <td class="py-3 text-gray-700">
-                                        {{ $p->project_date ? $p->project_date->format('d M Y') : '-' }}
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr id="projectEmptyRow">
-                                    <td colspan="4" class="py-8 text-center text-gray-500">Belum ada proyek.</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-
-                    <div id="projectEmpty" class="hidden text-center py-10 text-sm text-gray-500">
-                        Proyek tidak ditemukan.
-                    </div>
+                <div id="projectEmpty" class="hidden text-center py-10 text-sm text-gray-500">
+                    Produk tidak ditemukan.
                 </div>
             </div>
 
             {{-- KANAN: FORM TAMBAH / EDIT --}}
             <div class="lg:col-span-5 bg-white border border-gray-200 rounded-2xl p-4">
                 <div>
-                    <h4 id="projFormTitle" class="font-semibold text-gray-900">Tambah Proyek Baru</h4>
+                    <h4 id="projFormTitle" class="font-semibold text-gray-900">Tambah Produk Baru</h4>
                     <p class="text-xs text-gray-500 mt-1">Isi data di bawah lalu simpan.</p>
                 </div>
 
-                <form id="projectForm" class="mt-4 space-y-3" enctype="multipart/form-data">
+                <form id="projectForm" class="mt-4 space-y-4" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" id="projectId" value="" />
 
-                    <div>
-                        <label class="text-xs text-gray-500">Judul Proyek <span class="text-red-500">*</span></label>
-                        <input id="titleInput" name="title" type="text" required
-                            placeholder="Contoh: Integrasi Sistem Otomasi"
-                            class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
-                        <p class="text-xs text-gray-400 mt-1">Maksimal 255 karakter</p>
-                    </div>
+                    <div class="space-y-4">
+                        <div class="rounded-2xl border border-gray-100 bg-gray-50/70 p-3 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <h5 class="text-sm font-semibold text-gray-800">Informasi Utama</h5>
+                                <span class="text-[11px] text-gray-400">Wajib</span>
+                            </div>
 
-                    <div>
-                        <label class="text-xs text-gray-500">Subjudul</label>
-                        <input id="subtitleInput" name="subtitle" type="text" placeholder="Contoh: Otomasi & IoT"
-                            class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
-                    </div>
+                            <div>
+                                <label class="text-xs text-gray-500">Judul Produk <span class="text-red-500">*</span></label>
+                                <input id="titleInput" name="title" type="text" required
+                                    placeholder="Contoh: Integrasi Sistem Otomasi"
+                                    class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
+                            </div>
 
-                    {{-- <div>
-                        <label class="text-xs text-gray-500">Kategori</label>
-                        <select id="categoryInput" name="category_id"
-                            class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200">
-                            <option value="">-- Pilih Kategori --</option>
-                            @foreach($categories ?? [] as $cat)
-                            <option value="{{ $cat->id }}">{{ $cat->name }}</option>
-                            @endforeach
-                        </select>
-                    </div> --}}
+                            <div>
+                                <label class="text-xs text-gray-500">Subjudul</label>
+                                <input id="subtitleInput" name="subtitle" type="text" placeholder="Contoh: Otomasi & IoT"
+                                    class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
+                            </div>
 
-                    <div>
-                        <label class="text-xs text-gray-500">Deskripsi Singkat <span
-                                class="text-red-500">*</span></label>
-                        <textarea id="descriptionInput" name="description" rows="2" required
-                            placeholder="Deskripsi singkat untuk preview"
-                            class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200"></textarea>
-                    </div>
-
-                    <div>
-                        <label class="text-xs text-gray-500">Detail Proyek</label>
-                        <textarea id="detailInput" name="detail" rows="3"
-                            placeholder="Jelaskan detail proyek secara lengkap"
-                            class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200"></textarea>
-                    </div>
-
-                    {{-- <div>
-                        <label class="text-xs text-gray-500">Tanggal Proyek</label>
-                        <input id="dateInput" name="project_date" type="date"
-                            class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
-                    </div> --}}
-
-                    <div>
-                        <label class="text-xs text-gray-500">Link YouTube (opsional)</label>
-                        <input id="youtubeInput" name="youtube_url" type="url"
-                            placeholder="https://www.youtube.com/watch?v=..."
-                            class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
-                        <p class="text-xs text-gray-400 mt-1">Masukkan URL YouTube yang valid</p>
-                    </div>
-
-                    <div data-field="thumbnail">
-                        <div class="text-xs text-gray-500">Thumbnail</div>
-                        <div
-                            class="h-24 bg-gray-50 rounded-md overflow-hidden mb-2 flex items-center justify-center text-gray-400 preview-area">
-                            <span class="preview-placeholder">Preview Gambar</span>
+                            <div>
+                                <label class="text-xs text-gray-500">Deskripsi Singkat <span class="text-red-500">*</span></label>
+                                <textarea id="descriptionInput" name="description" rows="2" required
+                                    placeholder="Deskripsi singkat untuk preview"
+                                    class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200"></textarea>
+                            </div>
                         </div>
-                        <label
-                            class="w-full h-9 rounded-lg border border-gray-300 inline-flex justify-between items-center cursor-pointer pl-3">
-                            <span class="text-gray-900/60 text-sm truncate file-name">No file chosen</span>
-                            <input id="thumbnailInput" type="file" name="thumbnail" accept="image/*"
-                                class="hidden file-input" />
-                            <span
-                                class="flex w-28 h-9 px-2 bg-secondary rounded-r-lg shadow text-white text-xs font-semibold items-center justify-center">Choose
-                                File</span>
-                        </label>
-                        <p class="text-xs text-gray-400 mt-1">Format: JPG, PNG, WebP, SVG. Maks. 2MB</p>
-                    </div>
 
-                    <div class="flex items-center gap-4">
-                        <label class="flex items-center gap-2 text-sm">
-                            <input id="featuredInput" name="is_featured" type="checkbox" value="1" class="rounded">
-                            Featured
-                        </label>
-                        <label class="flex items-center gap-2 text-sm">
-                            <input id="activeInput" name="is_active" type="checkbox" value="1" checked class="rounded">
-                            Aktif
-                        </label>
+                        <details class="rounded-2xl border border-gray-100 bg-white p-3 group">
+                            <summary class="flex cursor-pointer list-none items-center justify-between text-sm font-semibold text-gray-800">
+                                Detail & Media Tambahan
+                                <span class="text-xs text-gray-400 group-open:hidden">Buka</span>
+                                <span class="text-xs text-gray-400 hidden group-open:inline">Tutup</span>
+                            </summary>
+                            <div class="mt-3 space-y-3">
+                                <div>
+                                    <label class="text-xs text-gray-500">Detail Produk</label>
+                                    <textarea id="detailInput" name="detail" rows="3"
+                                        placeholder="Jelaskan detail produk secara lengkap"
+                                        class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200"></textarea>
+                                </div>
+
+                                <div>
+                                    <label class="text-xs text-gray-500">Link YouTube (opsional)</label>
+                                    <input id="youtubeInput" name="youtube_url" type="url"
+                                        placeholder="https://www.youtube.com/watch?v=..."
+                                        class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-200" />
+                                </div>
+
+                                <div data-field="thumbnail">
+                                    <div class="text-xs text-gray-500">Thumbnail</div>
+                                    <div
+                                        class="h-24 bg-gray-50 rounded-md overflow-hidden mb-2 flex items-center justify-center text-gray-400 preview-area">
+                                        <span class="preview-placeholder">Preview Gambar</span>
+                                    </div>
+                                    <label
+                                        class="w-full h-9 rounded-lg border border-gray-300 inline-flex justify-between items-center cursor-pointer pl-3">
+                                        <span class="text-gray-900/60 text-sm truncate file-name">No file chosen</span>
+                                        <input id="thumbnailInput" type="file" name="thumbnail" accept="image/*"
+                                            class="hidden file-input" />
+                                        <span
+                                            class="flex w-28 h-9 px-2 bg-secondary rounded-r-lg shadow text-white text-xs font-semibold items-center justify-center">Choose
+                                            File</span>
+                                    </label>
+                                </div>
+
+                                <div class="flex items-center gap-4">
+                                    <label class="flex items-center gap-2 text-sm">
+                                        <input id="featuredInput" name="is_featured" type="checkbox" value="1" class="rounded">
+                                        Featured
+                                    </label>
+                                    <label class="flex items-center gap-2 text-sm">
+                                        <input id="activeInput" name="is_active" type="checkbox" value="1" checked class="rounded">
+                                        Aktif
+                                    </label>
+                                </div>
+                            </div>
+                        </details>
                     </div>
 
                     {{-- PROJECT METRICS SECTION --}}
@@ -211,40 +192,74 @@
                         </div>
                     </div> --}}
 
-                    {{-- GALERI FOTO - Terintegrasi dalam form --}}
-                    <div class="pt-3 mt-3 border-t border-gray-200">
+                    {{-- VARIAN PROYEK --}}
+                    <div class="pt-4 mt-4 border-t border-gray-200" id="variantSection">
                         <div class="flex items-center justify-between mb-3">
                             <div>
-                                <h5 class="font-semibold text-gray-900 text-sm">Galeri Foto Proyek</h5>
-                                <p class="text-xs text-gray-500">Opsional. Foto-foto tambahan untuk proyek.</p>
+                                <h5 class="font-semibold text-gray-900 text-sm">Varian / Tipe Produk</h5>
+                                <p class="text-xs text-gray-500">Tambah tipe dan kelola media di bawah ini.</p>
                             </div>
-                            <span id="galleryFileCount" class="text-xs text-gray-500">0 foto baru</span>
+                            <button type="button" id="variantNewBtn"
+                                class="rounded-full bg-slate-100 text-gray-700 px-3 py-1 text-xs hover:bg-slate-200">+ Varian baru</button>
                         </div>
 
-                        {{-- Existing Gallery Images (only show when editing) --}}
-                        <div id="existingGallery" class="grid grid-cols-3 gap-2 mb-3">
-                            {{-- Populated by JS when editing --}}
+                        <div class="grid grid-cols-1 gap-3 lg:grid-cols-2">
+                            {{-- List & selector --}}
+                            <div class="border border-gray-200 rounded-xl p-3">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h6 class="font-semibold text-gray-800 text-sm">Daftar Varian</h6>
+                                    <span class="text-[11px] text-gray-500" id="variantCount">0 varian</span>
+                                </div>
+                                <div id="variantList" class="space-y-2 max-h-60 overflow-auto">
+                                    <p class="text-xs text-gray-400">Pilih produk untuk melihat varian.</p>
+                                </div>
+                            </div>
+
+                            {{-- Form varian --}}
+                            <div class="border border-gray-200 rounded-xl p-3">
+                                <h6 class="font-semibold text-gray-800 text-sm" id="variantFormTitle">Tambah Varian</h6>
+                                <p class="text-[11px] text-gray-500 mb-2">Nama dan deskripsi singkat tipe.</p>
+                                <div id="variantForm" class="space-y-2" role="form">
+                                    <input type="hidden" id="variantId" />
+                                    <div>
+                                        <label class="text-xs text-gray-500">Nama Varian</label>
+                                        <input type="text" id="variantName" class="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-green-200" placeholder="Contoh: Tipe A" />
+                                    </div>
+                                    <div>
+                                        <label class="text-xs text-gray-500">Slug (opsional)</label>
+                                        <input type="text" id="variantSlug" class="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-green-200" placeholder="slug-tipe-a" />
+                                    </div>
+                                    <div>
+                                        <label class="text-xs text-gray-500">Deskripsi</label>
+                                        <textarea id="variantDescription" rows="2" class="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-green-200" placeholder="Ringkas tipe ini"></textarea>
+                                    </div>
+                                    <div class="flex items-center gap-3 text-sm">
+                                        <label class="flex items-center gap-2"><input type="checkbox" id="variantActive" class="rounded" checked> Aktif</label>
+                                    </div>
+                                    <div class="flex items-center justify-end gap-2 pt-1">
+                                        <button type="button" id="variantDeleteBtn" class="hidden rounded-full border border-red-200 bg-red-50 px-3 py-1 text-xs text-red-700 hover:bg-red-100">Hapus</button>
+                                        <button type="button" id="variantSaveBtn" class="rounded-full bg-green-600 px-4 py-2 text-sm text-white hover:bg-green-700">Simpan Varian</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
-                        {{-- Upload New Gallery Images --}}
-                        <div id="galleryPreview"
-                            class="min-h-[70px] bg-gray-50 rounded-lg border-2 border-dashed border-gray-200 flex flex-wrap items-start gap-2 p-2">
-                            {{-- + Button and previews rendered by JS --}}
-                            <label id="addPhotoBtn"
-                                class="w-14 h-14 rounded-lg border-2 border-dashed border-gray-300 bg-white flex flex-col items-center justify-center cursor-pointer hover:border-green-400 hover:bg-green-50 transition group">
-                                <svg class="w-5 h-5 text-gray-400 group-hover:text-green-500" fill="none"
-                                    stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 4v16m8-8H4"></path>
-                                </svg>
-                                <span class="text-[9px] text-gray-400 group-hover:text-green-500">Tambah</span>
-                                <input id="galleryInput" type="file" accept="image/*" multiple class="hidden" />
-                            </label>
-                        </div>
-                        <div class="flex items-center justify-between mt-1">
-                            <p class="text-[10px] text-gray-500">Klik + untuk menambah foto galeri.</p>
-                            <button type="button" id="clearGalleryBtn"
-                                class="hidden text-[10px] text-red-500 hover:text-red-600">Hapus semua</button>
+                        {{-- Upload & list images for selected variant --}}
+                        <div class="border border-gray-200 rounded-xl p-3 mt-3">
+                            <div class="flex items-center justify-between mb-2">
+                                <div>
+                                    <h6 class="font-semibold text-gray-800 text-sm">Media Varian Terpilih</h6>
+                                    <p class="text-[11px] text-gray-500" id="variantImageHint">Pilih varian untuk mengelola media.</p>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <label class="cursor-pointer text-xs bg-slate-100 hover:bg-slate-200 text-gray-700 rounded-full px-3 py-1 flex items-center gap-1">
+                                        <input type="file" id="variantImageInput" class="hidden" accept="image/*,video/*" multiple />
+                                        <span>+ Tambah Media</span>
+                                    </label>
+                                    <button type="button" id="variantUploadBtn" class="text-xs bg-green-600 text-white px-3 py-1 rounded-full hover:bg-green-700" disabled>Upload</button>
+                                </div>
+                            </div>
+                            <div id="variantImages" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2"></div>
                         </div>
                     </div>
 
@@ -262,7 +277,7 @@
 
                         <button type="submit" id="projSaveBtn"
                             class="rounded-full bg-green-600 px-4 py-2 text-sm text-white hover:bg-green-700">
-                            Simpan Proyek
+                            Simpan Produk
                         </button>
                     </div>
                 </form>
@@ -346,7 +361,7 @@
         function resetForm() {
             form.reset();
             idEl.value = '';
-            formTitle.textContent = 'Tambah Proyek Baru';
+            formTitle.textContent = 'Tambah Produk Baru';
             btnDelete.classList.add('hidden');
             activeEl.checked = true;
             if (previewArea) previewArea.innerHTML = '<span class="preview-placeholder">Preview Gambar</span>';
@@ -368,7 +383,7 @@
 
         function fillForm(row) {
             idEl.value = row.dataset.id || '';
-            formTitle.textContent = 'Edit Proyek';
+            formTitle.textContent = 'Edit Produk';
             titleEl.value = row.dataset.title || '';
             subtitleEl.value = row.dataset.subtitle || '';
             if (categoryEl) categoryEl.value = row.dataset.category || '';
@@ -471,46 +486,7 @@
                 if (response.ok && result.success) {
                     showToast(result.message || 'Berhasil disimpan', 'success');
 
-                    // Step 2: Upload gallery files if any
-                    const portfolioId = id || (result.portfolio?.id);
-
-                    if (galleryFiles.length > 0 && portfolioId) {
-                        showToast(`Mengupload ${galleryFiles.length} foto galeri...`, 'info');
-
-                        const galleryFormData = new FormData();
-                        galleryFiles.forEach(file => {
-                            galleryFormData.append('images[]', file);
-                        });
-
-                        try {
-                            const galleryResponse = await fetch(`/admin/portfolios/${portfolioId}/images`, {
-                                method: 'POST',
-                                headers: {
-                                    'X-CSRF-TOKEN': csrfToken,
-                                    'Accept': 'application/json',
-                                    'X-Requested-With': 'XMLHttpRequest'
-                                },
-                                body: galleryFormData,
-                            });
-                            const galleryResult = await galleryResponse.json();
-
-                            if (galleryResponse.ok && galleryResult.success) {
-                                showToast(galleryResult.message || 'Foto galeri berhasil diupload', 'success');
-                            } else {
-                                const galleryError = formatApiError(galleryResponse, galleryResult);
-                                showToast(galleryError, 'error');
-                            }
-                        } catch (galleryErr) {
-                            console.error('Gallery upload error:', galleryErr);
-                            showToast({
-                                title: 'Upload Error',
-                                message: 'Gagal mengupload foto galeri',
-                                details: [`• ${galleryErr.message || 'Network error'}`]
-                            }, 'error');
-                        }
-                    }
-
-                    // Step 3: Reload page after all done
+                    // Reload page after all done
                     setTimeout(() => location.reload(), 1500);
                 } else {
                     const errorObj = formatApiError(response, result);
@@ -530,7 +506,7 @@
         btnDelete?.addEventListener('click', async () => {
             const id = idEl.value;
             if (!id) return;
-            if (!confirm('Yakin ingin menghapus proyek ini?')) return;
+            if (!confirm('Yakin ingin menghapus produk ini?')) return;
 
             setButtonLoading(btnDelete, true);
 
@@ -576,206 +552,370 @@
         });
 
         // =====================
-        // GALLERY FUNCTIONALITY
+        // VARIANT MANAGEMENT
         // =====================
-        const existingGallery = document.getElementById('existingGallery');
-        const galleryPreview = document.getElementById('galleryPreview');
-        const galleryInput = document.getElementById('galleryInput');
+        const variantList = document.getElementById('variantList');
+        const variantCount = document.getElementById('variantCount');
+    const variantForm = document.getElementById('variantForm');
+        const variantFormTitle = document.getElementById('variantFormTitle');
+        const variantId = document.getElementById('variantId');
+        const variantName = document.getElementById('variantName');
+        const variantSlug = document.getElementById('variantSlug');
+        const variantDescription = document.getElementById('variantDescription');
+        const variantActive = document.getElementById('variantActive');
+        const variantDeleteBtn = document.getElementById('variantDeleteBtn');
+        const variantNewBtn = document.getElementById('variantNewBtn');
+    const variantSaveBtn = document.getElementById('variantSaveBtn');
+        const variantUploadBtn = document.getElementById('variantUploadBtn');
+        const variantImageInput = document.getElementById('variantImageInput');
+        const variantImages = document.getElementById('variantImages');
+        const variantImageHint = document.getElementById('variantImageHint');
 
-        let galleryFiles = [];
-        let portfolioImages = @json($portfolios->mapWithKeys(function ($p) {
-            return [
-                (string) $p->id => $p->images->map(function ($img) {
-                    return ['id' => $img->id, 'path' => $img->image_path];
-                })->values()->toArray()
-            ];
-        })->toArray());
+        let currentPortfolioId = null;
+        let currentVariantId = null;
+        let variantPendingFiles = [];
 
-        // Load existing gallery when editing (called from fillForm)
-        function loadExistingGallery(portfolioId) {
-            if (!existingGallery) return;
+        @php
+            $variantsJson = $portfolios->mapWithKeys(function ($p) {
+                return [
+                    (string) $p->id => $p->variants->map(function ($v) {
+                        return [
+                            'id' => $v->id,
+                            'name' => $v->name,
+                            'slug' => $v->slug,
+                            'description' => $v->description,
+                            'is_active' => (bool) $v->is_active,
+                            'images' => $v->images->map(function ($img) {
+                                return [
+                                    'id' => $img->id,
+                                    'path' => $img->media_type === 'video' ? $img->media_path : $img->image_path,
+                                    'media_type' => $img->media_type ?? 'image',
+                                ];
+                            })->values()->toArray(),
+                        ];
+                    })->values()->toArray(),
+                ];
+            })->toArray();
+        @endphp
+        let variantsData = @json($variantsJson);
 
-            const images = portfolioImages[portfolioId] || [];
-            if (images.length === 0) {
-                existingGallery.innerHTML = '';
+        function resetVariantForm() {
+            if (!variantForm) return;
+            variantId.value = '';
+            variantName.value = '';
+            variantSlug.value = '';
+            variantDescription.value = '';
+            variantActive.checked = true;
+            variantFormTitle.textContent = 'Tambah Varian';
+            variantDeleteBtn?.classList.add('hidden');
+            currentVariantId = null;
+            variantPendingFiles = [];
+            if (variantImageInput) variantImageInput.value = '';
+            renderVariantImages();
+            updateVariantUploadState();
+        }
+
+        function renderVariantList(portfolioId) {
+            if (!variantList) return;
+            const list = variantsData[portfolioId] || [];
+            variantList.innerHTML = '';
+            variantCount.textContent = `${list.length} varian`;
+
+            if (list.length === 0) {
+                variantList.innerHTML = '<p class="text-xs text-gray-400">Belum ada varian. Tambah varian baru.</p>';
                 return;
             }
 
-            existingGallery.innerHTML = '';
-            images.forEach(img => {
-                const wrapper = document.createElement('div');
-                wrapper.className = 'relative group';
-                wrapper.innerHTML = `
-                    <img src="/storage/${img.path}" alt="Gallery" class="w-full h-20 object-cover rounded cursor-pointer" onclick="openImageModal && openImageModal(this.src, 'Gallery')">
-                    <button type="button" class="delete-gallery-img absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition" data-id="${img.id}">&times;</button>
+            list.forEach((v) => {
+                const item = document.createElement('div');
+                item.className = 'border border-gray-200 rounded-lg px-3 py-2 flex items-start justify-between hover:border-green-200 cursor-pointer';
+                item.innerHTML = `
+                    <div>
+                        <p class="text-sm font-semibold text-gray-800">${v.name || 'Tanpa nama'}</p>
+                        <p class="text-[11px] text-gray-500">${v.description ? v.description.substring(0, 80) : ''}</p>
+                        <span class="inline-flex mt-1 rounded-full px-2 py-0.5 text-[11px] ${v.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}">${v.is_active ? 'Aktif' : 'Nonaktif'}</span>
+                    </div>
+                    <button type="button" class="text-xs text-primary hover:underline" data-id="${v.id}">Kelola</button>
                 `;
-                existingGallery.appendChild(wrapper);
-            });
-
-            // Add delete handlers
-            existingGallery.querySelectorAll('.delete-gallery-img').forEach(btn => {
-                btn.addEventListener('click', async (e) => {
+                item.querySelector('button')?.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    const imgId = btn.dataset.id;
-                    if (!confirm('Hapus foto ini dari galeri?')) return;
+                    selectVariant(v.id);
+                });
+                item.addEventListener('click', () => selectVariant(v.id));
+                variantList.appendChild(item);
+            });
+        }
 
-                    btn.disabled = true;
-                    btn.innerHTML = '...';
+        function selectVariant(id) {
+            if (!currentPortfolioId) return;
+            const list = variantsData[currentPortfolioId] || [];
+            const variant = list.find(v => v.id == id);
+            if (!variant) return;
 
-                    try {
-                        const response = await fetch(`/admin/portfolio-images/${imgId}`, {
-                            method: 'DELETE',
-                            headers: {
-                                'X-CSRF-TOKEN': csrfToken,
-                                'Accept': 'application/json',
-                                'X-Requested-With': 'XMLHttpRequest'
-                            },
-                        });
-                        const result = await response.json();
+            currentVariantId = variant.id;
+            variantId.value = variant.id;
+            variantName.value = variant.name || '';
+            variantSlug.value = variant.slug || '';
+            variantDescription.value = variant.description || '';
+            variantActive.checked = !!variant.is_active;
+            variantFormTitle.textContent = 'Edit Varian';
+            variantDeleteBtn?.classList.remove('hidden');
+            variantPendingFiles = [];
+            if (variantImageInput) variantImageInput.value = '';
+            renderVariantImages();
+            updateVariantUploadState();
+        }
 
-                        if (response.ok && result.success) {
-                            showToast(result.message || 'Foto dihapus', 'success');
-                            btn.closest('.relative').remove();
-                            // Update local data
-                            const pid = idEl.value;
-                            if (portfolioImages[pid]) {
-                                portfolioImages[pid] = portfolioImages[pid].filter(i => i.id != imgId);
-                            }
-                        } else {
-                            const errorObj = formatApiError(response, result);
-                            showToast(errorObj, 'error');
-                            btn.disabled = false;
-                            btn.innerHTML = '&times;';
-                        }
-                    } catch (err) {
-                        showToast({
-                            title: 'Koneksi Error',
-                            message: 'Gagal menghapus foto',
-                            details: [`• ${err.message || 'Network error'}`]
-                        }, 'error');
-                        btn.disabled = false;
-                        btn.innerHTML = '&times;';
+        function renderVariantImages() {
+            if (!variantImages) return;
+            variantImages.innerHTML = '';
+
+            if (!currentVariantId) {
+                variantImageHint.textContent = 'Pilih varian untuk mengelola media.';
+                return;
+            }
+
+            variantImageHint.textContent = 'Unggah atau hapus media khusus varian ini.';
+            const list = variantsData[currentPortfolioId]?.find(v => v.id == currentVariantId)?.images || [];
+            if (list.length === 0) {
+                variantImages.innerHTML = '<p class="text-xs text-gray-400">Belum ada foto untuk varian ini.</p>';
+                return;
+            }
+
+            list.forEach(img => {
+                const wrap = document.createElement('div');
+                wrap.className = 'relative group';
+                const isVideo = img.media_type === 'video';
+                const mediaTag = isVideo
+                    ? `<video src="/storage/${img.path}" class="w-full h-24 object-cover rounded" muted playsinline></video>`
+                    : `<img src="/storage/${img.path}" class="w-full h-24 object-cover rounded" alt="${img.path}">`;
+
+                wrap.innerHTML = `
+                    ${mediaTag}
+                    <button type="button" class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition" data-id="${img.id}">&times;</button>
+                `;
+                wrap.querySelector('button')?.addEventListener('click', () => deleteVariantImage(img.id));
+                variantImages.appendChild(wrap);
+            });
+        }
+
+        async function deleteVariantImage(imageId) {
+            if (!confirm('Hapus foto varian ini?')) return;
+            try {
+                const response = await fetch(`/admin/variant-images/${imageId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                });
+                const result = await response.json();
+                if (response.ok && result.success) {
+                    showToast(result.message || 'Foto varian dihapus', 'success');
+                    // remove locally
+                    const list = variantsData[currentPortfolioId] || [];
+                    const target = list.find(v => v.id == currentVariantId);
+                    if (target) {
+                        target.images = target.images.filter(img => img.id != imageId);
                     }
-                });
-            });
-        }
-
-        function resetGalleryUpload() {
-            galleryFiles = [];
-            if (galleryInput) galleryInput.value = '';
-            updateGalleryUI();
-        }
-
-        function updateGalleryUI() {
-            const fileCount = document.getElementById('galleryFileCount');
-            const clearBtn = document.getElementById('clearGalleryBtn');
-
-            // Update file count
-            if (fileCount) {
-                fileCount.textContent = `${galleryFiles.length} foto dipilih`;
-            }
-
-            // Show/hide clear button and enable/disable upload button
-            if (clearBtn) {
-                clearBtn.classList.toggle('hidden', galleryFiles.length === 0);
-            }
-            if (uploadGalleryBtn) {
-                uploadGalleryBtn.disabled = galleryFiles.length === 0;
+                    renderVariantImages();
+                } else {
+                    const errorObj = formatApiError(response, result);
+                    showToast(errorObj, 'error');
+                }
+            } catch (err) {
+                showToast({ title: 'Koneksi Error', message: 'Gagal menghapus foto varian', details: [`• ${err.message || 'Network error'}`]}, 'error');
             }
         }
 
-        function renderGalleryPreview() {
-            if (!galleryPreview) return;
-
-            // Clear preview but keep the + button
-            galleryPreview.innerHTML = '';
-
-            // Re-add the + button first
-            const addBtn = document.createElement('label');
-            addBtn.id = 'addPhotoBtn';
-            addBtn.className = 'w-16 h-16 rounded-lg border-2 border-dashed border-gray-300 bg-white flex flex-col items-center justify-center cursor-pointer hover:border-green-400 hover:bg-green-50 transition group flex-shrink-0';
-            addBtn.innerHTML = `
-                <svg class="w-6 h-6 text-gray-400 group-hover:text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                </svg>
-                <span class="text-[10px] text-gray-400 group-hover:text-green-500 mt-1">Tambah</span>
-                <input type="file" accept="image/*" multiple class="hidden" />
-            `;
-            galleryPreview.appendChild(addBtn);
-
-            // Attach event to the new input
-            const newInput = addBtn.querySelector('input');
-            newInput.addEventListener('change', function () {
-                const newFiles = Array.from(this.files || []);
-                // Accumulate files instead of replace
-                galleryFiles = galleryFiles.concat(newFiles);
-                this.value = ''; // Clear input so same files can be added again
-                renderGalleryPreview();
-                updateGalleryUI();
-            });
-
-            // Add preview for each file
-            galleryFiles.forEach((file, idx) => {
-                const url = URL.createObjectURL(file);
-                const wrapper = document.createElement('div');
-                wrapper.className = 'relative w-16 h-16 overflow-hidden rounded bg-white flex items-center justify-center border border-gray-100 flex-shrink-0';
-                wrapper.innerHTML = `
-                    <img src="${url}" alt="${file.name}" class="w-full h-full object-cover">
-                    <button type="button" class="remove-preview absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs shadow hover:bg-red-600" data-idx="${idx}">&times;</button>
-                `;
-                galleryPreview.appendChild(wrapper);
-
-                // Add remove handler
-                wrapper.querySelector('.remove-preview').addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    URL.revokeObjectURL(url); // Clean up
-                    galleryFiles.splice(idx, 1);
-                    renderGalleryPreview();
-                    updateGalleryUI();
-                });
-            });
-
-            updateGalleryUI();
+        function updateVariantUploadState() {
+            if (variantUploadBtn) variantUploadBtn.disabled = !currentVariantId || variantPendingFiles.length === 0;
         }
 
-        // Clear all button handler
-        document.getElementById('clearGalleryBtn')?.addEventListener('click', () => {
-            resetGalleryUpload();
-            renderGalleryPreview();
+        variantImageInput?.addEventListener('change', function () {
+            const files = Array.from(this.files || []);
+            if (files.length) {
+                variantPendingFiles = variantPendingFiles.concat(files);
+                showToast(`${variantPendingFiles.length} file siap diupload`, 'info');
+                updateVariantUploadState();
+            }
         });
 
-        // Initial render on load (for when gallery section becomes visible)
-        function initGalleryPreview() {
-            renderGalleryPreview();
-        }
+        variantUploadBtn?.addEventListener('click', async () => {
+            if (!currentVariantId || variantPendingFiles.length === 0) return;
+            const formData = new FormData();
+            variantPendingFiles.forEach(f => formData.append('images[]', f));
 
-        galleryInput?.addEventListener('change', function () {
-            const newFiles = Array.from(this.files || []);
-            galleryFiles = galleryFiles.concat(newFiles);
-            this.value = '';
-            renderGalleryPreview();
-            updateGalleryUI();
+            variantUploadBtn.disabled = true;
+            variantUploadBtn.textContent = 'Uploading...';
+
+            try {
+                const response = await fetch(`/admin/variants/${currentVariantId}/images`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: formData,
+                });
+                const result = await response.json();
+                if (response.ok && result.success) {
+                    showToast(result.message || 'Foto varian diupload', 'success');
+                    const list = variantsData[currentPortfolioId] || [];
+                    const target = list.find(v => v.id == currentVariantId);
+                    if (target) {
+                        const added = (result.images || []).map(img => ({
+                            id: img.id,
+                            path: img.media_type === 'video' ? (img.media_path || img.path) : (img.image_path || img.path),
+                            media_type: img.media_type || 'image'
+                        }));
+                        target.images = (target.images || []).concat(added);
+                    }
+                    variantPendingFiles = [];
+                    variantImageInput.value = '';
+                    renderVariantImages();
+                } else {
+                    const errorObj = formatApiError(response, result);
+                    showToast(errorObj, 'error');
+                }
+            } catch (err) {
+                showToast({ title: 'Upload Error', message: 'Gagal mengupload foto varian', details: [`• ${err.message || 'Network error'}`]}, 'error');
+            } finally {
+                variantUploadBtn.disabled = false;
+                variantUploadBtn.textContent = 'Upload';
+                updateVariantUploadState();
+            }
         });
 
-        // Update fillForm to load existing gallery when editing
-        const originalFillForm = fillForm;
+        variantNewBtn?.addEventListener('click', resetVariantForm);
+
+        variantDeleteBtn?.addEventListener('click', async () => {
+            if (!currentVariantId) return;
+            if (!confirm('Hapus varian ini beserta fotonya?')) return;
+
+            setButtonLoading(variantDeleteBtn, true);
+            try {
+                const response = await fetch(`/admin/variants/${currentVariantId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                });
+                const result = await response.json();
+                if (response.ok && result.success) {
+                    showToast(result.message || 'Varian dihapus', 'success');
+                    variantsData[currentPortfolioId] = (variantsData[currentPortfolioId] || []).filter(v => v.id != currentVariantId);
+                    resetVariantForm();
+                    renderVariantList(currentPortfolioId);
+                } else {
+                    const errorObj = formatApiError(response, result);
+                    showToast(errorObj, 'error');
+                }
+            } catch (err) {
+                showToast({ title: 'Koneksi Error', message: 'Gagal menghapus varian', details: [`• ${err.message || 'Network error'}`]}, 'error');
+            } finally {
+                setButtonLoading(variantDeleteBtn, false);
+            }
+        });
+
+        async function handleVariantSave() {
+            if (!currentPortfolioId) {
+                showToast({ title: 'Pilih Produk', message: 'Pilih produk terlebih dahulu sebelum menambah varian.' }, 'error');
+                return;
+            }
+
+            const isUpdate = !!variantId.value;
+            const url = isUpdate ? `/admin/variants/${variantId.value}` : `/admin/portfolios/${currentPortfolioId}/variants`;
+            const payload = {
+                name: variantName.value,
+                slug: variantSlug.value,
+                description: variantDescription.value,
+                is_active: variantActive.checked ? 1 : 0,
+            };
+
+            setButtonLoading(variantSaveBtn, true);
+
+            try {
+                const response = await fetch(url, {
+                    method: isUpdate ? 'PUT' : 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify(payload),
+                });
+                const result = await response.json();
+                if (response.ok && result.success) {
+                    showToast(result.message || 'Varian disimpan', 'success');
+                    if (!variantsData[currentPortfolioId]) variantsData[currentPortfolioId] = [];
+
+                    if (isUpdate) {
+                        const serverVariant = result.variant || {};
+                        variantsData[currentPortfolioId] = variantsData[currentPortfolioId].map(v => v.id == variantId.value ? { ...v, ...payload, ...serverVariant, slug: serverVariant.slug ?? payload.slug } : v);
+                    } else {
+                        const serverVariant = result.variant || {};
+                        const newVariantId = serverVariant.id || variantId.value || Date.now();
+                        variantsData[currentPortfolioId].push({ ...payload, ...serverVariant, id: newVariantId, slug: serverVariant.slug ?? payload.slug, images: [] });
+                    }
+
+                    renderVariantList(currentPortfolioId);
+                    if (isUpdate) {
+                        selectVariant(result.variant?.id || variantId.value);
+                    } else {
+                        selectVariant(result.variant?.id || variantsData[currentPortfolioId].slice(-1)[0]?.id);
+                    }
+                } else {
+                    const errorObj = formatApiError(response, result);
+                    showToast(errorObj, 'error');
+                }
+            } catch (err) {
+                showToast({ title: 'Koneksi Error', message: 'Gagal menyimpan varian', details: [`• ${err.message || 'Network error'}`]}, 'error');
+            } finally {
+                setButtonLoading(variantSaveBtn, false);
+            }
+        }
+
+        variantSaveBtn?.addEventListener('click', (e) => {
+            e.preventDefault();
+            handleVariantSave();
+        });
+
+        // Extend fill/reset to include variants
+        const originalFillFormWithGallery = fillForm;
         fillForm = function (row) {
-            originalFillForm(row);
-            loadExistingGallery(row.dataset.id);
-            resetGalleryUpload();
-            renderGalleryPreview();
+            originalFillFormWithGallery(row);
+            currentPortfolioId = row.dataset.id;
+            resetVariantForm();
+            renderVariantList(currentPortfolioId);
         };
 
-        // Update resetForm to clear gallery
-        const originalResetForm = resetForm;
+        const originalResetFormWithGallery = resetForm;
         resetForm = function () {
-            originalResetForm();
-            if (existingGallery) existingGallery.innerHTML = '';
-            resetGalleryUpload();
-            renderGalleryPreview();
+            originalResetFormWithGallery();
+            currentPortfolioId = null;
+            resetVariantForm();
+            if (variantList) {
+                variantList.innerHTML = '<p class="text-xs text-gray-400">Pilih Produk untuk melihat varian.</p>';
+                variantCount.textContent = '0 varian';
+            }
         };
 
-        // Initialize gallery preview on load
-        renderGalleryPreview();
+        // Initialize default state
+        updateVariantUploadState();
+
+        // Auto-select first project so variants are visible without extra clicks
+        if (!idEl.value && rows().length > 0) {
+            const firstRow = rows()[0];
+            clearActive();
+            firstRow.classList.add('ring-2', 'ring-green-200', 'bg-green-50');
+            fillForm(firstRow);
+        }
+
     })();
 </script>

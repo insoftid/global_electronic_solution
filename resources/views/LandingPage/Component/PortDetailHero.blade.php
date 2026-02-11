@@ -1,5 +1,5 @@
 @php
-    $title = $portfolio->title ?? 'Proyek';
+    $title = $portfolio->title ?? 'Produk';
 @endphp
 <section class="relative">
     <!-- Background hero using CSS background-image so we can overlay and center content -->
@@ -27,7 +27,7 @@
 
             {{-- Title - Split first word and rest for styling --}}
             @php
-                $words = explode(' ', $portfolio->title ?? 'Proyek', 2);
+                $words = explode(' ', $portfolio->title ?? 'Produk', 2);
                 $firstWord = $words[0] ?? '';
                 $restWords = $words[1] ?? '';
             @endphp

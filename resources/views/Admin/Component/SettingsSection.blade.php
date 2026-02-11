@@ -241,7 +241,7 @@
                 <h2 class="font-bold text-lg">Galeri Foto</h2>
                 <span class="text-sm font-base text-graytext">Upload foto untuk Hero dan bagian About Us.</span>
             </div>
-            <div class="text-sm text-gray-500">PNG, JPG, WebP, SVG (Max 2 MB).</div>
+            <div class="text-sm text-gray-500">PNG, JPG, WebP, SVG (Max 2 MB). Video MP4/WebM/Ogg khusus Hero Beranda (Max 50 MB).</div>
         </div>
 
         <div class="p-5">
@@ -251,6 +251,9 @@
                 @foreach($slots as $slot)
                     @php
                         $photo = $galleryPhotos[$slot['key']] ?? null;
+                        $isHeroLanding = $slot['key'] === 'hero_landing';
+                        $accept = $isHeroLanding ? 'image/*,video/*' : 'image/*';
+                        $uploadLabel = $isHeroLanding ? 'Pilih Media (Gambar/Video)' : 'Pilih Foto';
                     @endphp
                     <div class="border rounded-lg p-4" data-slot="{{ $slot['key'] }}" data-id="{{ $photo->id ?? '' }}">
                         <div class="flex items-center justify-between mb-3">
@@ -262,11 +265,15 @@
 
                         <div
                             class="h-36 md:h-44 lg:h-48 bg-gray-50 rounded-md overflow-hidden mb-3 flex items-center justify-center text-gray-400 preview-area">
-                            @if($photo && $photo->image_path)
+                            @if($photo && $photo->video_path && $isHeroLanding)
+                                <video class="w-full h-full object-cover" muted playsinline autoplay loop>
+                                    <source src="{{ asset('storage/' . $photo->video_path) }}" />
+                                </video>
+                            @elseif($photo && $photo->image_path)
                                 <img src="{{ asset('storage/' . $photo->image_path) }}" alt="{{ $slot['label'] }}"
                                     class="w-full h-full object-cover">
                             @else
-                                <span class="preview-placeholder">Preview Foto</span>
+                                <span class="preview-placeholder">Preview Media</span>
                             @endif
                         </div>
 
@@ -274,12 +281,12 @@
                             enctype="multipart/form-data">
                             @csrf
                             <div>
-                                <div class="text-sm text-gray-700">Pilih Foto</div>
+                                <div class="text-sm text-gray-700">{{ $uploadLabel }}</div>
                                 <label for="photos_{{ $slot['key'] }}"
                                     class="my-2 w-full h-9 rounded-lg border border-gray-300 inline-flex justify-between items-center cursor-pointer pl-3">
                                     <span class="text-gray-900/60 text-sm font-normal leading-snug truncate file-name">No
                                         file chosen</span>
-                                    <input id="photos_{{ $slot['key'] }}" type="file" name="image" accept="image/*"
+                                    <input id="photos_{{ $slot['key'] }}" type="file" name="image" accept="{{ $accept }}"
                                         class="hidden file-input" />
                                     <span
                                         class="flex w-28 h-9 px-2 flex-col bg-secondary rounded-r-lg shadow text-white text-xs font-semibold leading-4 items-center justify-center">Choose
@@ -428,10 +435,14 @@
                 if (this.files && this.files.length > 0) {
                     const file = this.files[0];
                     if (fileNameSpan) fileNameSpan.textContent = file.name;
-                    if (previewArea) {
-                        const url = URL.createObjectURL(file);
-                        previewArea.innerHTML = `<img src="${url}" alt="${file.name}" class="w-full h-full object-cover">`;
-                    }
+                        if (previewArea) {
+                            const url = URL.createObjectURL(file);
+                            if (file.type.startsWith('video/')) {
+                                previewArea.innerHTML = `<video src="${url}" class="w-full h-full object-cover" muted autoplay loop playsinline></video>`;
+                            } else {
+                                previewArea.innerHTML = `<img src="${url}" alt="${file.name}" class="w-full h-full object-cover">`;
+                            }
+                        }
                     showToast(`File "${file.name}" siap untuk diupload`, 'success', 2000);
                 }
             });

@@ -22,7 +22,7 @@
                 <span class="text-secondary">Kami</span>
             </h1>
             <p class="mt-4 text-white/90 max-w-xl text-xl">
-                Siap membantu mewujudkan proyek sistem elektrikal Anda dengan solusi terbaik dan konsultasi profesional.
+                Siap membantu mewujudkan produk sistem elektrikal Anda dengan solusi terbaik dan konsultasi profesional.
             </p>
         </div>
     </div>

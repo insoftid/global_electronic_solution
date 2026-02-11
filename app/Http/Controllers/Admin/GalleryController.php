@@ -31,22 +31,51 @@ class GalleryController extends Controller
      */
     public function update(Request $request, GalleryPhoto $galleryPhoto)
     {
-        $validated = $request->validate([
+        $isHeroLanding = $galleryPhoto->slot_key === 'hero_landing';
+
+        $validated = $request->validate($isHeroLanding ? [
+            'image' => 'required|file|mimes:jpeg,png,jpg,webp,svg,mp4,webm,ogg|max:51200',
+            'caption' => 'nullable|string|max:255',
+        ] : [
             'image' => 'required|image|mimes:jpeg,png,jpg,webp,svg|max:2048',
             'caption' => 'nullable|string|max:255',
         ]);
 
-        // Delete old image if exists
-        if ($galleryPhoto->image_path) {
-            $this->fileUploadService->delete($galleryPhoto->image_path);
+        $file = $request->file('image');
+        $extension = strtolower($file?->getClientOriginalExtension() ?? '');
+        $isVideo = $isHeroLanding && in_array($extension, ['mp4', 'webm', 'ogg'], true);
+
+        if ($isVideo) {
+            if ($galleryPhoto->video_path) {
+                $this->fileUploadService->delete($galleryPhoto->video_path);
+            }
+            if ($galleryPhoto->image_path) {
+                $this->fileUploadService->delete($galleryPhoto->image_path);
+            }
+
+            $videoPath = $this->fileUploadService->upload($file, 'gallery');
+
+            $galleryPhoto->update([
+                'video_path' => $videoPath,
+                'image_path' => null,
+                'caption' => $validated['caption'] ?? null,
+            ]);
+        } else {
+            if ($galleryPhoto->image_path) {
+                $this->fileUploadService->delete($galleryPhoto->image_path);
+            }
+            if ($galleryPhoto->video_path) {
+                $this->fileUploadService->delete($galleryPhoto->video_path);
+            }
+
+            $imagePath = $this->fileUploadService->upload($file, 'gallery');
+
+            $galleryPhoto->update([
+                'image_path' => $imagePath,
+                'video_path' => null,
+                'caption' => $validated['caption'] ?? null,
+            ]);
         }
-
-        $imagePath = $this->fileUploadService->upload($request->file('image'), 'gallery');
-
-        $galleryPhoto->update([
-            'image_path' => $imagePath,
-            'caption' => $validated['caption'] ?? null,
-        ]);
 
         return response()->json([
             'success' => true,
@@ -64,8 +93,13 @@ class GalleryController extends Controller
             $this->fileUploadService->delete($galleryPhoto->image_path);
         }
 
+        if ($galleryPhoto->video_path) {
+            $this->fileUploadService->delete($galleryPhoto->video_path);
+        }
+
         $galleryPhoto->update([
             'image_path' => null,
+            'video_path' => null,
             'caption' => null,
         ]);
 

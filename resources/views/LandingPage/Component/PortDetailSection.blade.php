@@ -3,7 +3,7 @@
         <div class="flex flex-col lg:flex-row gap-12">
             {{-- Left Column: Description --}}
             <div class="w-full">
-                <h2 class="text-heading">Ringkasan Proyek</h2>
+                <h2 class="text-heading">Ringkasan Produk</h2>
 
                 <!-- {{-- Project Date --}}
                 @if($portfolio->project_date)
@@ -105,7 +105,7 @@
                 @endphp
 
                 @if($embedId)
-                    <h3 class="text-xl font-bold text-gray-900 mb-4">Video Proyek</h3>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">Video Produk</h3>
                     <div class="aspect-video w-full rounded-lg overflow-hidden bg-black shadow-lg">
                         <iframe class="w-full h-full" src="https://www.youtube.com/embed/{{ $embedId }}"
                             title="{{ $portfolio->title }}" frameborder="0"

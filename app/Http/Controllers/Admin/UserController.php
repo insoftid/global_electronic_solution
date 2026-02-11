@@ -6,9 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
-use Exception;
 
 class UserController extends Controller
 {
@@ -36,7 +34,7 @@ class UserController extends Controller
         $users = $query->orderBy('created_at', 'desc')->get();
 
         // For AJAX requests
-        if ($request->ajax() || $request->wantsJson()) {
+        if ($request->ajax()) {
             return response()->json([
                 'users' => $users,
                 'total' => $users->count(),
@@ -53,163 +51,93 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        try {
-            $validated = $request->validate([
-                'name' => 'required|string|max:255',
-                'email' => 'required|email|unique:users,email',
-                'password' => 'required|string|min:8',
-                'role' => 'required|in:Superadmin,Editor',
-                'status' => 'required|in:Aktif,Nonaktif',
-            ]);
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:8',
+            'role' => 'required|in:Superadmin,Editor',
+            'status' => 'required|in:Aktif,Nonaktif',
+        ]);
 
-            $user = User::create([
-                'name' => $validated['name'],
-                'email' => $validated['email'],
-                'password' => Hash::make($validated['password']),
-                'role' => $validated['role'],
-                'status' => $validated['status'],
-            ]);
+        $user = User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+            'role' => $validated['role'],
+            'status' => $validated['status'],
+        ]);
 
+        if ($request->ajax()) {
             return response()->json([
                 'success' => true,
                 'message' => 'User berhasil ditambahkan',
                 'user' => $user,
             ]);
-
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validasi gagal',
-                'errors' => $e->errors(),
-            ], 422);
-
-        } catch (Exception $e) {
-            Log::error('User store error: ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
-            ], 500);
         }
+
+        return back()->with('success', 'User berhasil ditambahkan');
     }
 
     /**
      * Update the specified user.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, User $user)
     {
-        try {
-            // Find user manually (not using route model binding to avoid 404 issues)
-            $user = User::find($id);
-            
-            if (!$user) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'User tidak ditemukan',
-                ], 404);
-            }
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
+            'password' => 'nullable|string|min:8',
+            'role' => 'required|in:Superadmin,Editor',
+            'status' => 'required|in:Aktif,Nonaktif',
+        ]);
 
-            // Build validation rules - role and status optional for non-superadmin
-            $rules = [
-                'name' => 'required|string|max:255',
-                'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
-                'password' => 'nullable|string|min:8',
-            ];
+        $user->name = $validated['name'];
+        $user->email = $validated['email'];
+        $user->role = $validated['role'];
+        $user->status = $validated['status'];
 
-            // Only validate role/status if provided (allows non-superadmin to skip these)
-            if ($request->has('role')) {
-                $rules['role'] = 'in:Superadmin,Editor';
-            }
-            if ($request->has('status')) {
-                $rules['status'] = 'in:Aktif,Nonaktif';
-            }
+        if (!empty($validated['password'])) {
+            $user->password = Hash::make($validated['password']);
+        }
 
-            $validated = $request->validate($rules);
+        $user->save();
 
-            // Update basic fields
-            $user->name = $validated['name'];
-            $user->email = $validated['email'];
-            
-            // Update role/status only if provided
-            if (isset($validated['role'])) {
-                $user->role = $validated['role'];
-            }
-            if (isset($validated['status'])) {
-                $user->status = $validated['status'];
-            }
-
-            // Update password only if provided
-            if (!empty($validated['password'])) {
-                $user->password = Hash::make($validated['password']);
-            }
-
-            $user->save();
-
+        if ($request->ajax()) {
             return response()->json([
                 'success' => true,
                 'message' => 'User berhasil diperbarui',
                 'user' => $user,
             ]);
-
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validasi gagal',
-                'errors' => $e->errors(),
-            ], 422);
-
-        } catch (Exception $e) {
-            Log::error('User update error: ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
-            ], 500);
         }
+
+        return back()->with('success', 'User berhasil diperbarui');
     }
 
     /**
      * Remove the specified user.
      */
-    public function destroy(Request $request, $id)
+    public function destroy(Request $request, User $user)
     {
-        try {
-            // Check if current user is Superadmin
-            if (auth()->user()->role !== 'Superadmin') {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Hanya Superadmin yang dapat menghapus user',
-                ], 403);
-            }
-
-            $user = User::find($id);
-            
-            if (!$user) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'User tidak ditemukan',
-                ], 404);
-            }
-
-            // Prevent deleting yourself
-            if ($user->id === auth()->id()) {
+        // Prevent deleting yourself
+        if ($user->id === auth()->id()) {
+            if ($request->ajax()) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Tidak dapat menghapus akun sendiri',
                 ], 400);
             }
+            return back()->with('error', 'Tidak dapat menghapus akun sendiri');
+        }
 
-            $user->delete();
+        $user->delete();
 
+        if ($request->ajax()) {
             return response()->json([
                 'success' => true,
                 'message' => 'User berhasil dihapus',
             ]);
-
-        } catch (Exception $e) {
-            Log::error('User delete error: ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
-            ], 500);
         }
+
+        return back()->with('success', 'User berhasil dihapus');
     }
 }
