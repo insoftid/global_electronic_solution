@@ -22,7 +22,7 @@ class UserController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
+                    ->orWhere('email', 'like', "%{$search}%");
             });
         }
 
@@ -62,7 +62,7 @@ class UserController extends Controller
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
+            'password' => $validated['password'], // Model has 'hashed' cast
             'role' => $validated['role'],
             'status' => $validated['status'],
         ]);
@@ -83,13 +83,21 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
-            'password' => 'nullable|string|min:8',
-            'role' => 'required|in:Superadmin,Editor',
-            'status' => 'required|in:Aktif,Nonaktif',
-        ]);
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
+                'password' => 'nullable|string|min:8',
+                'role' => 'required|in:Superadmin,Editor',
+                'status' => 'required|in:Aktif,Nonaktif',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'errors' => $e->errors(),
+            ], 422);
+        }
 
         $user->name = $validated['name'];
         $user->email = $validated['email'];
@@ -97,20 +105,17 @@ class UserController extends Controller
         $user->status = $validated['status'];
 
         if (!empty($validated['password'])) {
-            $user->password = Hash::make($validated['password']);
+            // Model has 'hashed' cast, so assign raw password (no Hash::make needed)
+            $user->password = $validated['password'];
         }
 
         $user->save();
 
-        if ($request->ajax()) {
-            return response()->json([
-                'success' => true,
-                'message' => 'User berhasil diperbarui',
-                'user' => $user,
-            ]);
-        }
-
-        return back()->with('success', 'User berhasil diperbarui');
+        return response()->json([
+            'success' => true,
+            'message' => 'User berhasil diperbarui',
+            'user' => $user,
+        ]);
     }
 
     /**
